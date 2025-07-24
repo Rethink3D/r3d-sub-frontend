@@ -16,7 +16,7 @@ const App: React.FC = () => {
   return (
     // O div principal não precisa de classes de layout,
     // pois o fundo é controlado pelo <body> e o layout interno é gerenciado pelos filhos.
-    <div>
+    <div className="bg-[#1F1F24] min-h-screen flex flex-col">
       <Header />
       
       {/* Área principal onde o conteúdo das páginas será renderizado */}
