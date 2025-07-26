@@ -1,38 +1,30 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-// Importando os componentes de layout
+// Importando os componentes de layout com caminhos em minúsculas
 import Header from './components/header/header';
 import Footer from './components/footer/footer';
 
-// Importando os componentes das páginas
+// Importando os componentes das páginas com caminhos em minúsculas
 import HomePage from './pages/homepage';
-import ContatoPage from './pages/contatopage';
+import CatalogoPage from './pages/catalogopage';
+import QuemSomosPage from './pages/quemsomos';
+import ContatoPage from './pages/contatopage'; // 1. Garanta que o import está correto
 
-// Importando o CSS global (mesmo que esteja vazio, é bom manter a estrutura)
+// Importando o CSS global
 import './App.css';
 
 const App: React.FC = () => {
   return (
-    // O div principal não precisa de classes de layout,
-    // pois o fundo é controlado pelo <body> e o layout interno é gerenciado pelos filhos.
     <div>
       <Header />
       
-      {/* Área principal onde o conteúdo das páginas será renderizado */}
       <main className="container mx-auto flex-1 p-8">
         <Routes>
-          {/* Rota para a página inicial */}
           <Route path="/" element={<HomePage />} />
-
-          {/* Rota para a página de catálogo */}
-          <Route path="/catalogo" element={<p>Página do Catálogo em construção...</p>} />
-
-          {/* Rota para a página "Quem Somos" */}
-          <Route path="/quem-somos" element={<p>Página "Quem Somos" em construção...</p>} />
-
-          {/* Rota para a página de contato */}
-          <Route path="/contato" element={<ContatoPage />} />
+          <Route path="/catalogo" element={<CatalogoPage />} />
+          <Route path="/quem-somos" element={<QuemSomosPage />} />
+          <Route path="/contato" element={<ContatoPage />} /> {/* 2. Rota já aponta para o componente correto */}
         </Routes>
       </main>
 

@@ -1,0 +1,20 @@
+/* Gradiente Ciano -> Azul para títulos */
+.titleGradient {
+    background: linear-gradient(90.53deg, #00f6ff 0%, #0080ff 55.77%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+  }
+  
+  /* Cor rosa/magenta para o destaque do lema */
+  .lemaHighlight {
+    color: #ff28e2;
+  }
+  
+  /* Efeito de contorno no texto */
+  .textStroke {
+    -webkit-text-stroke: 1px #666666;
+    text-stroke: 1px #666666;
+  }
+  

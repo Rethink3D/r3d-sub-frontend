@@ -1,4 +1,4 @@
-/* Nomes de classe com hífen, como .logo-text, são convertidos para camelCase no objeto styles (styles.logoText) */
+/* CSS para estilos que o Tailwind não cobre facilmente, como gradientes */
 
 .logoText a {
   background: linear-gradient(90.53deg, #00ffff 0%, #0080ff 55.77%);
@@ -7,25 +7,10 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* Nomes com hífen viram camelCase: .cta-button -> styles.ctaButton */
-.ctaButton {
-  background: linear-gradient(90deg, #ff00aa 0%, #8000ff 56.25%);
-}
-
-.active {
-  background: linear-gradient(90deg, #f700af 0%, #ff00aa 67.79%, #8000ff 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  position: relative;
-}
-
-.active::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: #f700af;
+/* Estilo para a borda do botão com gradiente (método mais robusto) */
+.ctaButtonWithBorder {
+  border: 1.5px solid transparent;
+  /* 1º background: cor de fundo interna. 2º background: gradiente da borda */
+  background: linear-gradient(#141414, #141414) padding-box,
+              linear-gradient(90.53deg, #00eeff 0%, #77eebc 16.83%, #ff00dd 63.46%, #eeee7a 100%) border-box;
 }
