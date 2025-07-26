@@ -9,7 +9,7 @@ import Footer from './components/footer/footer';
 import HomePage from './pages/homepage';
 import CatalogoPage from './pages/catalogopage';
 import QuemSomosPage from './pages/quemsomos';
-import ContatoPage from './pages/contatopage'; // 1. Garanta que o import está correto
+import ContatoPage from './pages/contatopage';
 
 // Importando o CSS global
 import './App.css';
@@ -24,7 +24,7 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/catalogo" element={<CatalogoPage />} />
           <Route path="/quem-somos" element={<QuemSomosPage />} />
-          <Route path="/contato" element={<ContatoPage />} /> {/* 2. Rota já aponta para o componente correto */}
+          <Route path="/contato" element={<ContatoPage />} />
         </Routes>
       </main>
 

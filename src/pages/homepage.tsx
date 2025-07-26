@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './HomePage.module.css'; // O nosso CSS Module para estilos especiais
+import styles from './homepage.module.css'; // O nosso CSS Module para estilos especiais
 
 const HomePage: React.FC = () => {
   return (
@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
           />
         </div>
       </section>
-
+    
       {/* SEÇÃO 2: APLICAÇÃO RETHINK3D */}
       <section className="flex flex-col items-center gap-8">
         <h2 className={`text-5xl lg:text-6xl text-center text-white ${styles.textStroke}`}>
