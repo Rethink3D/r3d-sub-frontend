@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// O ícone permanece o mesmo
 const CubeIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -119,13 +118,20 @@ const InviteForm: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full mt-4 text-white font-bold rounded-lg text-base px-5 py-3 text-center transition-all duration-300 ease-in-out
-                     bg-[linear-gradient(90deg,#ff00aa_0%,#8000ff_100%)]
-                     hover:scale-105 hover:shadow-xl hover:shadow-pink-500/20
-                     disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100" // Estilos para o botão desabilitado
-          disabled={isSubmitting} // Desabilita o botão durante o envio
+          className="w-full mt-4 p-[1px] rounded-lg font-bold text-white
+                    bg-[conic-gradient(from_275deg,#FF00DD_10%,#FF55CC_15%,#EEEE7A_40%,#CCEEAA_45%,#00EEFF_70%,#55EEFF_75%)]
+                    shadow-[0_0_5px_rgba(128,128,128,0.3)]
+                    transition-all duration-300 ease-in-out
+                    hover:scale-105 hover:shadow-xl hover:shadow-[#FF00DD]/20
+                    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          disabled={isSubmitting}
         >
-          {isSubmitting ? 'Enviando...' : 'Quero Ser um Parceiro'}
+          <span className="block w-full h-full px-5 py-3 rounded-[7px]
+                          bg-[#1F1F24] 
+                          transition-colors duration-300
+                          group-disabled:bg-gray-600">
+            {isSubmitting ? 'Enviando...' : 'Quero Ser um Parceiro'}
+          </span>
         </button>
       </form>
     </div>
