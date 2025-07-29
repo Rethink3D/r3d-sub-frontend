@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
 };
 
 return (
-    <footer className="bg-[#1f1f1fc9] dark:bg-[#141414] text-gray-400 py-12">
+    <footer className="bg-black dark:bg-[#141414] text-gray-400 py-12">
       <div className="container mx-auto px-8">
         
         {/* Seção superior com as colunas de links */}

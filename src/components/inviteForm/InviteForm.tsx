@@ -71,7 +71,7 @@ const InviteForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto borderborder-gray-300 dark:border-gray-700 bg-white dark:bg-[#1F1F24] rounded-lg p-8 shadow-lg">
+    <div className="w-full max-w-lg mx-auto border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1F1F24] rounded-lg p-8 shadow-lg">
       <div className="flex flex-col items-center text-center mb-8">
         <CubeIcon />
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
