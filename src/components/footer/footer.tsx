@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
 };
 
 return (
-    <footer className="bg-[#141414] text-gray-400 py-12">
+    <footer className="bg-[#1f1f1fc9] dark:bg-[#141414] text-gray-400 py-12">
       <div className="container mx-auto px-8">
         
         {/* Seção superior com as colunas de links */}
@@ -60,7 +60,7 @@ return (
         </div>
 
         {/* Linha divisória e Copyright */}
-        <div className="border-t border-gray-800 pt-8 text-center text-sm">
+        <div className="border-t border-gray-700 dark:border-gray-800 pt-8 text-center text-sm">
           <p>Copyright {new Date().getFullYear()} Rethink3D. Todos os direitos reservados.</p>
         </div>
 

@@ -12,16 +12,18 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ iconUrl, iconBgColor, title, text }) => {
   return (
     // Aplicando a nova borda de gradiente
-    <div className={`${styles.gradientBorder} rounded-3xl p-[1px] h-full`}>
-      <div className="bg-[#1a1a1a] rounded-[23px] p-8 flex flex-col items-center text-center h-full">
+    <div className={`${styles.gradientBorder} rounded-3xl p-0 dark:p-[1px] h-full shadow-2xl 
+        dark:shadow-none 
+        transition-shadow `}>
+      <div className="bg-white dark:bg-[#1a1a1a] rounded-[23px] p-8 flex flex-col items-center text-center h-full">
         <div
           className="rounded-full p-4 mb-5 inline-flex"
           style={{ backgroundColor: iconBgColor }}
         >
           <img src={iconUrl} alt={`${title} icon`} className="w-12 h-12" />
         </div>
-        <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
-        <p className="text-gray-300 text-lg leading-relaxed">
+        <h3 className="text-2xl font-bold text-texto-principal mb-3">{title}</h3>
+        <p className="text-texto-secundario text-lg leading-relaxed">
           {text}
         </p>
       </div>
@@ -32,8 +34,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ iconUrl, iconBgColor, title, 
 // Componente reutilizável para os vídeos (da nossa versão anterior)
 const VideoCard: React.FC<{ videoSrc: string; title: string; }> = ({ videoSrc, title }) => {
   return (
-    <div className="bg-[#1a1a1a] border border-gray-800 rounded-lg p-4">
-      <h3 className="text-white font-bold text-lg mb-4 text-center">{title}</h3>
+    <div className="bg-gray-300 dark:bg-[#1a1a1a] border border-gray-800 rounded-lg p-4">
+      <h3 className="text-texto-principal font-bold text-lg mb-4 text-center">{title}</h3>
       <video 
         className="w-full rounded"
         autoPlay

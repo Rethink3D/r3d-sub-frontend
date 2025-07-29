@@ -14,7 +14,7 @@ const InstagramIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 const ContatoPage: React.FC = () => {
   return (
     // ATUALIZADO: Adicionadas classes para expandir e centralizar o conteúdo
-    <div className="flex flex-col flex-grow justify-center py-12 text-white">
+    <div className="flex flex-col flex-grow justify-center py-12 text-texto-principal">
       <h1 className="text-5xl font-bold mb-10 text-center">Entre em contato</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
@@ -22,12 +22,12 @@ const ContatoPage: React.FC = () => {
         {/* Coluna da Esquerda: Formulário */}
         <form className="flex flex-col gap-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">Seu nome</label>
+            <label htmlFor="name" className="block text-sm font-medium text-texto-secundario mb-2">Seu nome</label>
             <input 
               disabled
               type="text" 
               id="name" 
-              className="w-full bg-white text-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full bg-gray-300 dark:bg-white text-texto-secundario rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
           <div>
@@ -36,7 +36,7 @@ const ContatoPage: React.FC = () => {
               disabled
               type="email" 
               id="email" 
-              className="w-full bg-white text-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full bg-gray-300 dark:bg-white text-texto-secundario rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
           <div>
@@ -45,14 +45,14 @@ const ContatoPage: React.FC = () => {
               disabled
               id="message" 
               rows={5}
-              className="w-full bg-white text-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full bg-gray-300 dark:bg-white text-texto-secundario rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
             ></textarea>
           </div>
           <div>
             <button 
               disabled
               type="submit"
-              className="bg-transparent border border-gray-500 text-white rounded-lg py-2 px-8 hover:bg-white hover:text-black transition-colors duration-300"
+              className="bg-transparent border border-gray-500 text-texto-principal rounded-lg py-2 px-8 hover:bg-white hover:text-black transition-colors duration-300"
             >
               Enviar
             </button>
@@ -60,18 +60,18 @@ const ContatoPage: React.FC = () => {
         </form>
 
         {/* Coluna da Direita: Cartão de Contatos */}
-        <div className="bg-[#1a1a1a] border border-gray-700 rounded-2xl p-8 flex flex-col gap-6">
-            <h3 className="text-3xl font-bold text-white">Nossos Canais</h3>
-            <p className="text-gray-400">Prefere um contato mais direto? Encontre-nos nas seguintes plataformas.</p>
-            <a href="mailto:rethink3dbr@gmail.com" className="flex items-center gap-4 text-lg text-white hover:text-blue-400 transition-colors">
+        <div className="bg-white dark:bg-[#1a1a1a] border border-gray-700 rounded-2xl p-8 flex flex-col gap-6">
+            <h3 className="text-3xl font-bold text-texto-principal">Nossos Canais</h3>
+            <p className="text-texto-secundario">Prefere um contato mais direto? Encontre-nos nas seguintes plataformas.</p>
+            <a href="mailto:rethink3dbr@gmail.com" className="flex items-center gap-4 text-lg text-texto-principal hover:text-blue-400 transition-colors">
               <MailIcon className="w-7 h-7 text-blue-400" />
               <span>rethink3dbr@gmail.com</span>
             </a>
-            <a href="https://github.com/Rethink3D" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-lg text-white hover:text-gray-400 transition-colors">
+            <a href="https://github.com/Rethink3D" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-lg text-texto-principal hover:text-gray-400 transition-colors">
               <GithubIcon className="w-7 h-7 text-gray-400" />
               <span>Rethink3D</span>
             </a>
-            <a href="#" className="flex items-center gap-4 text-lg text-white hover:text-pink-400 transition-colors">
+            <a href="#" className="flex items-center gap-4 text-lg text-texto-principal hover:text-pink-400 transition-colors">
               <InstagramIcon className="w-7 h-7 text-pink-400" />
               <span>_rethink3d</span>
             </a>
