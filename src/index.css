@@ -1,7 +1,45 @@
+/* Arquivo: src/index.css */
+
+/* Adicione este bloco no topo do seu arquivo */
+:root {
+  /* Tema Claro (Padrão) */
+  --cor-fundo-principal: #ffffff;
+  --cor-fundo-secundario: #f1f5f9; /* Um cinza bem claro */
+  --cor-texto-principal: #111827; /* Um preto suave */
+  --cor-texto-secundario: #6b7280; /* Um cinza médio */
+  --cor-borda: #e5e7eb;
+
+  /* Cores para aquele gradiente específico do header */
+  --cor-gradiente-logo-1: #0080ff;
+  --cor-gradiente-logo-2: #00ffff;
+  --cor-cta-borda-1: #00eeff;
+  --cor-cta-borda-2: #ff00dd;
+  --gradiente-botoes: linear-gradient(90.53deg, #00eeff 0%, #77eebc 16.83%, #ff00dd 63.46%, #eeee7a 100%);
+}
+
+html.dark {
+  /* Tema Escuro (Sobrescreve as variáveis) */
+  --cor-fundo-principal: #141414;
+  --cor-fundo-secundario: #1F1F24;
+  --cor-texto-principal: #ffffff;
+  --cor-texto-secundario: #9ca3af; /* Um cinza mais claro */
+  --cor-borda: #374151; /* Um cinza escuro */
+
+  /* Você pode manter os mesmos gradientes ou criar versões diferentes para o dark mode */
+  --cor-gradiente-logo-1: #00ffff;
+  --cor-gradiente-logo-2: #0080ff;
+  --cor-cta-borda-1: #00eeff;
+  --cor-cta-borda-2: #ff00dd;
+  --gradiente-botoes: linear-gradient(90.53deg, #00eeff 0%, #77eebc 16.83%, #ff00dd 63.46%, #eeee7a 100%);
+}
+
+
 body {
-    background-color: #141414;
-  }
-  
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+  background-color: var(--cor-fundo-principal); /* Use a variável aqui! */
+  color: var(--cor-texto-principal);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

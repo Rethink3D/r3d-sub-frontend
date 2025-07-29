@@ -19,10 +19,10 @@ const StatItem: React.FC<{ iconUrl: string; value: string; label: string; }> = (
 // Componente para os passos de "Como Funciona"
 const HowItWorksStep: React.FC<{ step: number; title: string; description: string; }> = ({ step, title, description }) => {
   return (
-    <div className="bg-[#1a1a1a] border border-gray-800 rounded-lg p-6 text-center">
+    <div className="dark:bg-[#1a1a1a] border border-gray-800 rounded-lg p-6 text-center">
       <div className="mb-4 text-3xl font-bold text-blue-500">0{step}</div>
-      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-      <p className="text-gray-400">{description}</p>
+      <h3 className="text-xl font-bold text-texto-principal mb-2">{title}</h3>
+      <p className="text-texto-secundario">{description}</p>
     </div>
   );
 };
@@ -48,12 +48,12 @@ const HomePage: React.FC = () => {
       {/* SECÇÃO HERO */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div className="flex flex-col gap-8 text-center lg:text-left">
-          <h1 className="text-5xl md:text-6xl font-light text-white leading-tight">
+          <h1 className="text-5xl md:text-6xl font-light text-texto-principal leading-tight">
             Imagine o que quiser,
             <br />
             <strong className="font-bold">nós cuidamos do resto.</strong>
           </h1>
-          <p className="text-lg text-gray-300 max-w-lg mx-auto lg:mx-0">
+          <p className="text-lg text-texto-secundario max-w-lg mx-auto lg:mx-0">
             Conectamos suas ideias aos melhores makers do Brasil. Impressão 3D personalizada, rápida e com qualidade profissional.
           </p>
           
@@ -61,25 +61,25 @@ const HomePage: React.FC = () => {
             <button className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300">
               <Link to='/quem-somos'>Saiba quem somos &rarr;</Link>
             </button>
-            <button className="bg-transparent border border-gray-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+            <button className="bg-transparent border border-gray-600 text-texto-principal font-bold py-3 px-8 rounded-lg hover:bg-gray-800 hover:text-white transition-colors duration-300">
               <Link to="/contato">Contato</Link>
             </button>
           </div>
 
         </div>
         <div className="flex justify-center items-center">
-          {/* IMAGEM ANIMADA E AUMENTADA */}
+          {/* IMAGEM ANIMADA E AUMENTADA - imagem com "cópia" foi cortada para ficar 1:1*/}
           <img 
-            src="/imagemtest.png" 
+            src="/imagemtest - Copia.png" 
             alt="Impressão 3D" 
-            className={`w-full max-w-[30rem] aspect-square[3/2] ${styles.animateFloat}`} 
+            className={`w-full max-w-[30rem] aspect-square ${styles.animateFloat}`} 
           />
         </div>
       </section>
 
       {/* SECÇÃO: COMO FUNCIONA */}
       <section className="text-center">
-        <h2 className="text-4xl font-bold text-white mb-12">Simples, Rápido e Personalizado</h2>
+        <h2 className="text-4xl font-bold text-texto-principal mb-12">Simples, Rápido e Personalizado</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <HowItWorksStep
             step={1}

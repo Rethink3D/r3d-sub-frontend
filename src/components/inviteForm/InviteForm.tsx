@@ -71,32 +71,32 @@ const InviteForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto border border-gray-700 bg-[#1F1F24] rounded-lg p-8 shadow-lg">
+    <div className="w-full max-w-lg mx-auto borderborder-gray-300 dark:border-gray-700 bg-white dark:bg-[#1F1F24] rounded-lg p-8 shadow-lg">
       <div className="flex flex-col items-center text-center mb-8">
         <CubeIcon />
-        <h2 className="text-4xl font-bold text-white tracking-tight">
+        <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
           Exponha sua Arte na Rethink3D
         </h2>
-        <p className="text-gray-400 mt-4 max-w-md">
+        <p className="text-gray-600 dark:text-gray-400 mt-4 max-w-md">
           Buscamos artistas e estúdios 3D para expandir nosso catálogo. Se você
           cria, nós ajudamos a divulgar.
         </p>
       </div>
 
-      <hr className="border-gray-700 my-8" />
+      <hr className="border-gray-200 dark:border-gray-700 my-8" />
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
           <label
             htmlFor="name"
-            className="block mb-2 text-sm font-medium text-gray-300"
+            className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             Seu Nome ou Nome do Estúdio
           </label>
           <input
             type="text"
             id="name"
-            className="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-3 transition-colors duration-300"
+            className="bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-3 transition-colors duration-300"
             placeholder="Como podemos te chamar?"
             required
             value={name}
@@ -115,7 +115,7 @@ const InviteForm: React.FC = () => {
           <input
             type="email"
             id="email"
-            className="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-3 transition-colors duration-300"
+            className="bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-3 transition-colors duration-300"
             placeholder="exemplo@email.com"
             required
             value={email}
@@ -139,7 +139,7 @@ const InviteForm: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full mt-4 p-[1px] rounded-lg font-bold text-white
+          className="w-full mt-4 p-0.5 dark:p-[1px] rounded-lg font-bold dark:text-white
                     bg-[conic-gradient(from_275deg,#FF00DD_10%,#FF55CC_15%,#EEEE7A_40%,#CCEEAA_45%,#00EEFF_70%,#55EEFF_75%)]
                     shadow-[0_0_5px_rgba(128,128,128,0.3)]
                     transition-all duration-300 ease-in-out
@@ -149,7 +149,7 @@ const InviteForm: React.FC = () => {
         >
           <span
             className="block w-full h-full px-5 py-3 rounded-[7px]
-                          bg-[#1F1F24] 
+                          bg-white dark:bg-[#1F1F24] 
                           transition-colors duration-300
                           group-disabled:bg-gray-600"
           >

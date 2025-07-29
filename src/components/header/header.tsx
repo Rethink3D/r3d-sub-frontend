@@ -2,17 +2,18 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { HashLink as Link } from 'react-router-hash-link';
 import styles from './header.module.css'; // O nosso CSS Module para gradientes
+import { ThemeToggle } from '../themeToggle/ThemeToggle';
 
 const Header: React.FC = () => {
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `text-2xl font-light transition-colors duration-300 ${
       isActive
         ? styles.active // Aplica a classe com a animação
-        : 'text-white hover:text-gray-300'
+        : 'dark:text-white hover:text-gray-300'
     }`;
 
   return (
-    <header className="bg-[#141414] border-b border-gray-800">
+    <header className="bg-white dark:bg-[#141414] border-b border-gray-200 dark:border-gray-800 transition-colors">
       <div className="container mx-auto flex w-full items-center h-28 px-4">
         
         {/* Bloco do Logo Atualizado */}
@@ -34,10 +35,11 @@ const Header: React.FC = () => {
           </nav>
           
           <div>
-            <Link to='/#form-maker' smooth className={`${styles.ctaButtonWithBorder} font-semibold text-white text-xl rounded-2xl px-7 py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}>
+            <Link to='/#form-maker' smooth className={`${styles.ctaButtonWithBorder} font-semibold text-xl rounded-2xl px-7 py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}>
               Seja um Maker
             </Link>
           </div>
+          <ThemeToggle />
         </div>
 
       </div>
