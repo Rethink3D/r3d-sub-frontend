@@ -1,8 +1,8 @@
 /* Efeito de borda com gradiente para o cartão */
 .gradientBorder {
     border: 2px solid transparent;
-    /* 1º background: cor de fundo interna. 2º background: gradiente da borda */
-    background: linear-gradient(#2a2a3a, #2a2a3a) padding-box,
+    /* 1º background: cor de fundo interna (AGORA MAIS ESCURA). 2º background: gradiente da borda */
+    background: linear-gradient(#1f1f2b, #1f1f2b) padding-box,
                 linear-gradient(to right, #00c6ff, #8c52ff, #f700af) border-box;
   }
   

@@ -1,6 +1,7 @@
 import React from 'react';
-import styles from './productcard.module.css';
+import styles from './productcard.module.css'; // Importando o nosso CSS Module
 
+// Define os tipos de dados que o nosso cartão irá receber
 interface ProductCardProps {
   imageUrl: string;
   title: string;
@@ -10,7 +11,8 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ imageUrl, title, description, price }) => {
   return (
-    <div className={`${styles.gradientBorder} rounded-2xl p-4 flex flex-col text-white transform hover:scale-105 transition-transform duration-300 min-w-60`}>
+    // ATUALIZADO: Aumentei a largura mínima para min-w-80
+    <div className={`${styles.gradientBorder} rounded-2xl p-4 flex flex-col text-white transform hover:scale-105 transition-transform duration-300 min-w-80`}>
       
       {/* Contêiner da Imagem */}
       <div className="bg-white rounded-lg mb-4">

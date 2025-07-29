@@ -16,9 +16,12 @@ import './App.css';
 
 const App: React.FC = () => {
   return (
-    <div>
+    // CORREÇÃO: Estas 3 classes forçam o layout a ocupar a altura total do ecrã
+    <div className="flex flex-col min-h-screen">
       <Header />
       
+      {/* A classe 'flex-1' faz com que esta secção principal cresça,
+          empurrando o rodapé para o fundo do ecrã. */}
       <main className="container mx-auto flex-1 p-8">
         <Routes>
           <Route path="/" element={<HomePage />} />
