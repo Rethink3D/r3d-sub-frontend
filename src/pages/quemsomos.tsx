@@ -79,7 +79,7 @@ const QuemSomosPage: React.FC = () => {
       
       {/* SECÇÃO DOS VÍDEOS (ADICIONADA NOVAMENTE) */}
       <section className="flex flex-col items-center gap-8">
-        <h2 className="text-4xl font-bold text-white">Veja a Plataforma em desenvolvimento em Ação</h2>
+        <h2 className="text-4xl font-bold text-texto-principal">Veja a Plataforma em desenvolvimento em Ação</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-4">
           <VideoCard 
             videoSrc="/Home_Produtos_Makers.mp4"

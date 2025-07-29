@@ -49,9 +49,9 @@ const HomePage: React.FC = () => {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div className="flex flex-col gap-8 text-center lg:text-left">
           <h1 className="text-5xl md:text-6xl font-light text-texto-principal leading-tight">
-            Imagine o que quiser,
+            Democratizando o acesso à
             <br />
-            <strong className="font-bold">nós cuidamos do resto.</strong>
+            <strong className="font-bold">impressão 3d.</strong>
           </h1>
           <p className="text-lg text-texto-secundario max-w-lg mx-auto lg:mx-0">
             Conectamos suas ideias aos melhores makers do Brasil. Impressão 3D personalizada, rápida e com qualidade profissional.
@@ -59,7 +59,7 @@ const HomePage: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
             <button className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300">
-              <Link to='/quem-somos'>Saiba quem somos &rarr;</Link>
+              <Link to='/quem-somos'>Saiba mais &rarr;</Link>
             </button>
             <button className="bg-transparent border border-gray-600 text-texto-principal font-bold py-3 px-8 rounded-lg hover:bg-gray-800 hover:text-white transition-colors duration-300">
               <Link to="/contato">Contato</Link>
@@ -98,6 +98,46 @@ const HomePage: React.FC = () => {
           />
         </div>
       </section>
+
+      {/* SECÇÃO: SER MAKER */}
+      <section className="py-20">
+  {/* Contêiner principal para limitar a largura e centralizar */}
+  <div className="max-w-7xl mx-auto px-4">
+    
+    {/* Layout em grid: 1 coluna em mobile, 2 colunas em telas grandes (lg) */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      
+      {/* Coluna da Imagem */}
+      <div className="flex justify-center">
+        {/* Substitua o 'src' pela imagem que preferir. Uma foto de uma oficina, impressora 3D ou pessoa criando algo funciona bem. */}
+        <img 
+          src="https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+          alt="Maker trabalhando em um projeto de tecnologia"
+          className="rounded-2xl object-cover w-full h-full max-h-[500px] shadow-lg"
+        />
+      </div>
+
+      {/* Coluna do Texto */}
+      <div className="text-center lg:text-left">
+        {/* Título com fonte maior */}
+        <h2 className="text-5xl font-bold text-texto-principal mb-6">
+          O que é ser um maker?
+        </h2>
+        
+        {/* Parágrafos com fonte maior, mais espaçamento entre linhas e divididos para melhor legibilidade */}
+        <div className="space-y-6 text-xl text-texto-secundario leading-relaxed">
+          <p>
+            Um maker é, em essência, um inventor da era digital. Uma pessoa curiosa e proativa que utiliza a tecnologia para criar, consertar e personalizar o mundo ao seu redor. Movidos pela paixão de aprender e pela satisfação de fazer com as próprias mãos, eles combinam ferramentas modernas, como a impressão 3D, com habilidades tradicionais.
+          </p>
+          <p>
+            Eles representam a ideia de que qualquer um pode ser um criador, solucionando problemas de forma criativa e transformando um conceito digital em um objeto físico. Cada peça que você encontra aqui nasceu desse espírito inventivo e da busca incansável por materializar grandes ideias.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
       <section id='form-maker'>
         <InviteForm />

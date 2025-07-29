@@ -108,7 +108,7 @@ const InviteForm: React.FC = () => {
         <div className="mb-6">
           <label
             htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-300"
+            className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             Seu Melhor E-mail
           </label>
