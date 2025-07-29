@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './homepage.module.css'; // Importando os nossos estilos, incluindo a animação
+import InviteForm from '../components/inviteForm/InviteForm';
 
 // Componente reutilizável para as estatísticas
 const StatItem: React.FC<{ iconUrl: string; value: string; label: string; }> = ({ iconUrl, value, label }) => {
@@ -97,6 +98,8 @@ const HomePage: React.FC = () => {
           />
         </div>
       </section>
+
+      <InviteForm />
 
     </div>
   );

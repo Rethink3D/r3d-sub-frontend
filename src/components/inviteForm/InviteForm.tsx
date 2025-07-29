@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const CubeIcon = () => (
   <svg
@@ -18,11 +18,14 @@ const CubeIcon = () => (
 );
 
 const InviteForm: React.FC = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error";
+  } | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -30,30 +33,38 @@ const InviteForm: React.FC = () => {
     setMessage(null);
 
     try {
-      const response = await fetch('http://localhost:3000/maker-invite', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/maker-invite", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nome: name, 
+          nome: name,
           email: email,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Ocorreu um erro ao enviar seu convite.');
+        throw new Error(
+          errorData.message || "Ocorreu um erro ao enviar seu convite."
+        );
       }
 
-      setMessage({ text: 'Obrigado! Seu convite foi enviado com sucesso.', type: 'success' });
-      setName('');
-      setEmail('');
-
+      setMessage({
+        text: "Obrigado! Seu convite foi enviado com sucesso.",
+        type: "success",
+      });
+      setName("");
+      setEmail("");
     } catch (error: any) {
-      console.error('Erro ao enviar o formulário:', error);
-      setMessage({ text: error.message || 'Falha na comunicação com o servidor. Tente novamente.', type: 'error' });
-    
+      console.error("Erro ao enviar o formulário:", error);
+      setMessage({
+        text:
+          error.message ||
+          "Falha na comunicação com o servidor. Tente novamente.",
+        type: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -67,7 +78,8 @@ const InviteForm: React.FC = () => {
           Exponha sua Arte na Rethink3D
         </h2>
         <p className="text-gray-400 mt-4 max-w-md">
-          Buscamos artistas e estúdios 3D para expandir nosso catálogo. Se você cria, nós ajudamos a divulgar.
+          Buscamos artistas e estúdios 3D para expandir nosso catálogo. Se você
+          cria, nós ajudamos a divulgar.
         </p>
       </div>
 
@@ -75,7 +87,10 @@ const InviteForm: React.FC = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-300">
+          <label
+            htmlFor="name"
+            className="block mb-2 text-sm font-medium text-gray-300"
+          >
             Seu Nome ou Nome do Estúdio
           </label>
           <input
@@ -91,7 +106,10 @@ const InviteForm: React.FC = () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-300">
+          <label
+            htmlFor="email"
+            className="block mb-2 text-sm font-medium text-gray-300"
+          >
             Seu Melhor E-mail
           </label>
           <input
@@ -108,8 +126,11 @@ const InviteForm: React.FC = () => {
 
         {/* Área para exibir mensagens de sucesso ou erro */}
         {message && (
-          <div className={`text-center p-2 mb-4 rounded-md text-sm ${
-              message.type === 'success' ? 'bg-green-800 text-green-200' : 'bg-red-800 text-red-200'
+          <div
+            className={`text-center p-2 mb-4 rounded-md text-sm ${
+              message.type === "success"
+                ? "bg-green-800 text-green-200"
+                : "bg-red-800 text-red-200"
             }`}
           >
             {message.text}
@@ -126,11 +147,13 @@ const InviteForm: React.FC = () => {
                     disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           disabled={isSubmitting}
         >
-          <span className="block w-full h-full px-5 py-3 rounded-[7px]
+          <span
+            className="block w-full h-full px-5 py-3 rounded-[7px]
                           bg-[#1F1F24] 
                           transition-colors duration-300
-                          group-disabled:bg-gray-600">
-            {isSubmitting ? 'Enviando...' : 'Quero Ser um Parceiro'}
+                          group-disabled:bg-gray-600"
+          >
+            {isSubmitting ? "Enviando..." : "Quero Ser um Parceiro"}
           </span>
         </button>
       </form>
