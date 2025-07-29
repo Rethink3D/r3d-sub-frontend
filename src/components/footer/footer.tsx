@@ -33,7 +33,6 @@ return (
             <h4 className="font-semibold text-white text-xl mb-4">Navegação</h4>
             <ul className="space-y-3 text-lg">
               <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-              <li><Link to="/catalogo" className="hover:text-white transition-colors">Catálogo</Link></li>
               <li><Link to="/quem-somos" className="hover:text-white transition-colors">Quem Somos</Link></li>
               <li><Link to="/contato" className="hover:text-white transition-colors">Contato</Link></li>
             </ul>
@@ -46,7 +45,6 @@ return (
               <li><a href="#" className="hover:text-white transition-colors">Impressão 3D</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Projetos Personalizados</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Consultoria Técnica</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Suporte aos Makers</a></li>
             </ul>
           </div>
 

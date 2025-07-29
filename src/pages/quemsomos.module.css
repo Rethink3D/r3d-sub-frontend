@@ -1,9 +1,36 @@
-/* Borda fina e arredondada para os cartões */
-.cardBorder {
-  border: 1px solid #4c2b85; /* Um roxo mais escuro e subtil */
+/* Efeito de borda com o gradiente do botão */
+.gradientBorder {
+  background: conic-gradient(
+    from 275deg,
+    #ff00dd 10%,
+    #ff55cc 15%,
+    #eeee7a 40%,
+    #cceeaa 45%,
+    #00eeff 70%,
+    #55eeff 75%
+  );
+  transition: all 0.3s ease;
 }
 
-/* Efeito de contorno no texto (movido da homepage para aqui) */
+.gradientBorder:hover {
+  /* Efeito sutil no hover para dar vida */
+  box-shadow: 0 0 20px rgba(0, 238, 255, 0.3), 0 0 15px rgba(255, 0, 221, 0.2);
+}
+
+/* Efeito de texto com gradiente */
+.gradientText {
+  background: linear-gradient(
+    90deg,
+    #ff00dd,
+    #00eeff
+  ); /* Um gradiente linear mais simples, ótimo para texto */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Você pode usar o conic-gradient também, mas linear costuma ser mais legível */
+}
+
+/* Opcional: manter o text-stroke se quiser */
 .textStroke {
   -webkit-text-stroke: 1px #666666;
   text-stroke: 1px #666666;

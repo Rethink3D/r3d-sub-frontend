@@ -1,25 +1,30 @@
 import React from 'react';
-import styles from './quemsomos.module.css'; // O nosso CSS Module para a borda e texto
+import styles from './quemsomos.module.css';
 
-// Componente reutilizável para cada cartão de destaque
+// Componente reutilizável para cada cartão
 interface FeatureCardProps {
   iconUrl: string;
-  text: string;
   iconBgColor: string;
+  title: string;
+  text: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ iconUrl, text, iconBgColor }) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ iconUrl, iconBgColor, title, text }) => {
   return (
-    <div className={`${styles.cardBorder} bg-[#1a1a1a] rounded-3xl p-8 flex flex-col items-center text-center h-full`}>
-      <div 
-        className="rounded-full p-5 mb-6 inline-flex" 
-        style={{ backgroundColor: iconBgColor }}
-      >
-        <img src={iconUrl} alt="Ícone da funcionalidade" className="w-16 h-16" />
+    // Aplicando a nova borda de gradiente!
+    <div className={`${styles.gradientBorder} rounded-3xl p-[1px] h-full`}>
+      <div className="bg-[#1a1a1a] rounded-[23px] p-8 flex flex-col items-center text-center h-full">
+        <div
+          className="rounded-full p-4 mb-5 inline-flex"
+          style={{ backgroundColor: iconBgColor }}
+        >
+          <img src={iconUrl} alt={`${title} icon`} className="w-12 h-12" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+        <p className="text-gray-300 text-lg leading-relaxed">
+          {text}
+        </p>
       </div>
-      <p className="text-white text-xl md:text-2xl leading-relaxed">
-        {text}
-      </p>
     </div>
   );
 };
@@ -49,42 +54,39 @@ const QuemSomosPage: React.FC = () => {
       {/* Secção dos Cartões de Destaque */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <FeatureCard
-          iconUrl="company.png"
+          iconUrl="public/company.png"
           iconBgColor="#5a3a9a"
           text="Uma empresa focada em resolver problemas de makers que não tem uma plataforma própria de vendas online"
         />
         <FeatureCard
-          iconUrl="goal.png"
+          iconUrl="/public/goal.png"
           iconBgColor="#e11d48"
           text="Unir o desconhecido, juntar Makers3D com clientes em busca de algo personalizado ou produtos 3D"
         />
         <FeatureCard
-          iconUrl="rocket (1).png"
+          iconUrl="public/rocket (1).png"
           iconBgColor="#5a3a9a"
           text="Uma STARTUP que começou em São Luís/do Maranhão"
         />
       </section>
 
-
-
-      {/* NOVA SECÇÃO: VÍDEOS DA APLICAÇÃO */}
+      {/* NOVA SECÇÃO: APLICAÇÃO RETHINK3D */}
       <section className="flex flex-col items-center gap-8">
-        <h2 className="text-4xl font-bold text-white">Veja a nossa plataforma em desenvolvimento em Ação</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-4">
-          <VideoCard 
-            videoSrc="/Home_Produtos_Makers.mp4"
-            title="Home, Produtos e Makers"
-          />
-          <VideoCard 
-            videoSrc="/Carrinho_Pesquisa_Categorias.mp4"
-            title="Carrinho e Pesquisa"
-          />
-          <VideoCard 
-            videoSrc="/Pedidos_Chats_Servicos.mp4"
-            title="Pedidos e Chat"
+        <h2 className={`text-5xl lg:text-6xl text-center text-white ${styles.textStroke}`}>
+          Aplicação Rethink3D
+        </h2>
+        {/* Linha decorativa */}
+        <div className="w-1/3 h-1.5 bg-gray-600 rounded-full"></div>
+        
+        <div className="w-full max-w-6xl mt-4">
+          <img 
+            src="https://placehold.co/1646x707/141414/686868?text=Screenshots+da+Aplicação" 
+            alt="Screenshots da aplicação Rethink3D" 
+            className="rounded-3xl border-4 border-gray-700 w-full h-auto"
           />
         </div>
       </section>
+
     </div>
   );
 };
