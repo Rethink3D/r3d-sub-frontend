@@ -1,18 +1,16 @@
 import React from 'react';
-import styles from './quemsomos.module.css'; // O nosso CSS Module para a borda
+import styles from './quemsomos.module.css'; // O nosso CSS Module para a borda e texto
 
-// Componente reutilizável para cada cartão, agora com cor de fundo do ícone personalizável
+// Componente reutilizável para cada cartão
 interface FeatureCardProps {
   iconUrl: string;
   text: string;
-  iconBgColor: string; // Nova propriedade para a cor de fundo do ícone
+  iconBgColor: string;
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ iconUrl, text, iconBgColor }) => {
   return (
-    // O cartão agora tem um fundo mais escuro
-    <div className={`${styles.cardBorder} bg-[#1a1a1a] rounded-3xl p-10 flex flex-col items-center text-center h-full`}>
-      {/* O fundo do ícone agora é dinâmico */}
+    <div className={`${styles.cardBorder} bg-[#1a1a1a] rounded-3xl p-8 flex flex-col items-center text-center h-full`}>
       <div 
         className="rounded-full p-5 mb-6 inline-flex" 
         style={{ backgroundColor: iconBgColor }}
@@ -28,25 +26,42 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ iconUrl, text, iconBgColor })
 
 const QuemSomosPage: React.FC = () => {
   return (
-    <div className="py-12">
-      {/* Grid que contém os três cartões */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="py-12 flex flex-col gap-24">
+      {/* Secção dos Cartões de Destaque */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <FeatureCard
-          iconUrl="public/company.png" // ATUALIZADO: Coloque o seu ícone na pasta 'public'
-          iconBgColor="#5a3a9a" // Roxo
+          iconUrl="public/company.png"
+          iconBgColor="#5a3a9a"
           text="Uma empresa focada em resolver problemas de makers que não tem uma plataforma própria de vendas online"
         />
         <FeatureCard
-          iconUrl="public/goal.png" // ATUALIZADO: Coloque o seu ícone na pasta 'public'
-          iconBgColor="#e11d48" // Rosa/Vermelho
+          iconUrl="/public/goal.png"
+          iconBgColor="#e11d48"
           text="Unir o desconhecido, juntar Makers3D com clientes em busca de algo personalizado ou produtos 3D"
         />
         <FeatureCard
-          iconUrl="public/rocket (1).png" // ATUALIZADO: Coloque o seu ícone na pasta 'public'
-          iconBgColor="#5a3a9a" // Roxo
+          iconUrl="public/rocket (1).png"
+          iconBgColor="#5a3a9a"
           text="Uma STARTUP que começou em São Luís/do Maranhão"
         />
-      </div>
+      </section>
+
+      {/* NOVA SECÇÃO: APLICAÇÃO RETHINK3D */}
+      <section className="flex flex-col items-center gap-8">
+        <h2 className={`text-5xl lg:text-6xl text-center text-white ${styles.textStroke}`}>
+          Aplicação Rethink3D
+        </h2>
+        {/* Linha decorativa */}
+        <div className="w-1/3 h-1.5 bg-gray-600 rounded-full"></div>
+        
+        <div className="w-full max-w-6xl mt-4">
+          <img 
+            src="https://placehold.co/1646x707/141414/686868?text=Screenshots+da+Aplicação" 
+            alt="Screenshots da aplicação Rethink3D" 
+            className="rounded-3xl border-4 border-gray-700 w-full h-auto"
+          />
+        </div>
+      </section>
     </div>
   );
 };

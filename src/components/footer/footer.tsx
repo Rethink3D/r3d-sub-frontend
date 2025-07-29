@@ -18,7 +18,7 @@ return (
             {/* NOVO: Contêiner para alinhar a imagem e o texto horizontalmente */}
             <div className="flex items-center gap-3 mb-4">
               {/* Coloque a sua imagem do logo aqui */}
-              <img src="public/logo.png" alt="Logotipo Rethink3D" className="h-10 w-10" /> 
+              
               
               <h3 className={`${styles.logoGradient} text-4xl font-semibold`}>
                 Rethink3D               

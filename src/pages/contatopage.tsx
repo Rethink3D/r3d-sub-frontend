@@ -45,14 +45,7 @@ const ContatoPage: React.FC = () => {
 
         {/* Coluna da Direita: QR Code */}
         <div className="flex flex-col items-center">
-          <h2 className="text-3xl font-bold mb-4">Qr Code</h2>
-          <div className="bg-white p-4 rounded-lg">
-            <img 
-              src= "public/qrcode.png"
-              alt="QR Code para contato"
-              className="w-64 h-64"
-            />
-          </div>
+
         </div>
       </div>
     </div>

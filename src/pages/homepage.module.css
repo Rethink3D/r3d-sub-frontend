@@ -1,20 +1,15 @@
-/* Gradiente Ciano -> Azul para títulos */
-.titleGradient {
-    background: linear-gradient(90.53deg, #00f6ff 0%, #0080ff 55.77%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
+/* Adicione este código ao seu ficheiro homepage.module.css */
+
+/* Animação de flutuação suave */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
   }
-  
-  /* Cor rosa/magenta para o destaque do lema */
-  .lemaHighlight {
-    color: #ff28e2;
+  50% {
+    transform: translateY(-15px); /* Controla a altura do "pulo" */
   }
-  
-  /* Efeito de contorno no texto */
-  .textStroke {
-    -webkit-text-stroke: 1px #666666;
-    text-stroke: 1px #666666;
-  }
-  
+}
+
+.animateFloat {
+  animation: float 5s ease-in-out infinite; /* Controla a velocidade da animação */
+}

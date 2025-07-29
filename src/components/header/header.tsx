@@ -20,9 +20,9 @@ const Header: React.FC = () => {
         {/* Bloco do Logo: Imagem e Título lado a lado */}
         <div className="flex items-center gap-4">
           {/* Adicionando a imagem do logo */}
-          <img src="public/logo.png" alt="Logotipo Rethink3D" className="h-14 w-auto" />
+     {/*      <img src="public/logo.png" alt="Logotipo Rethink3D" className="h-14 w-auto" />  */}
           <div className={`${styles.logoText} text-4xl font-semibold`}>
-            <NavLink to="/">Rethink3D</NavLink>
+            <NavLink to="/">RethinkWeb</NavLink>
           </div>
         </div>
 
@@ -30,7 +30,7 @@ const Header: React.FC = () => {
         <div className="hidden md:flex items-center ml-auto gap-10">
           <nav className="flex items-center gap-10">
             <NavLink to="/" className={navLinkClasses}>Home</NavLink>
-            <NavLink to="/catalogo" className={navLinkClasses}>Catálogo</NavLink>
+    {/*        <NavLink to="/catalogo" className={navLinkClasses}>Catálogo</NavLink> */}
             <NavLink to="/quem-somos" className={navLinkClasses}>Quem Somos</NavLink>
             <NavLink to="/contato" className={navLinkClasses}>Contato</NavLink>
           </nav>

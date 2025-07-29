@@ -1,5 +1,10 @@
 /* Borda fina e arredondada para os cartões */
 .cardBorder {
-    border: 1px solid #4c2b85; /* Um roxo mais escuro e subtil */
-  }
-  
+  border: 1px solid #4c2b85; /* Um roxo mais escuro e subtil */
+}
+
+/* Efeito de contorno no texto (movido da homepage para aqui) */
+.textStroke {
+  -webkit-text-stroke: 1px #666666;
+  text-stroke: 1px #666666;
+}
