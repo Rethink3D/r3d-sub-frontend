@@ -34,7 +34,7 @@ const Header: React.FC = () => {
           </nav>
           
           <div>
-            <Link to='/#form-maker' smooth className={`${styles.ctaButtonWithBorder} font-semibold text-white text-xl rounded-2xl px-7 py-3 transition-transform duration-200 hover:scale-105`}>
+            <Link to='/#form-maker' smooth className={`${styles.ctaButtonWithBorder} font-semibold text-white text-xl rounded-2xl px-7 py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}>
               Seja um Maker
             </Link>
           </div>

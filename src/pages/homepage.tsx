@@ -69,11 +69,10 @@ const HomePage: React.FC = () => {
         </div>
         <div className="flex justify-center items-center">
           {/* IMAGEM ANIMADA E AUMENTADA */}
-          {/* O cartão foi removido para dar foco total à imagem flutuante */}
           <img 
             src="/imagemtest.png" 
             alt="Impressão 3D" 
-            className={`w-[30rem] h-[30rem] ${styles.animateFloat}`} 
+            className={`w-full max-w-[30rem] aspect-square[3/2] ${styles.animateFloat}`} 
           />
         </div>
       </section>

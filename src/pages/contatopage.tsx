@@ -24,6 +24,7 @@ const ContatoPage: React.FC = () => {
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">Seu nome</label>
             <input 
+              disabled
               type="text" 
               id="name" 
               className="w-full bg-white text-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -32,6 +33,7 @@ const ContatoPage: React.FC = () => {
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">Seu email</label>
             <input 
+              disabled
               type="email" 
               id="email" 
               className="w-full bg-white text-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -40,6 +42,7 @@ const ContatoPage: React.FC = () => {
           <div>
             <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2">Sua mensagem</label>
             <textarea 
+              disabled
               id="message" 
               rows={5}
               className="w-full bg-white text-black rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -47,6 +50,7 @@ const ContatoPage: React.FC = () => {
           </div>
           <div>
             <button 
+              disabled
               type="submit"
               className="bg-transparent border border-gray-500 text-white rounded-lg py-2 px-8 hover:bg-white hover:text-black transition-colors duration-300"
             >
