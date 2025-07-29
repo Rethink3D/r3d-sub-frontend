@@ -54,19 +54,19 @@ const QuemSomosPage: React.FC = () => {
       {/* Secção dos Cartões de Destaque (com o novo design) */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <FeatureCard
-          iconUrl="/company.png"
+          iconUrl="public/company.png"
           iconBgColor="#5a3a9a"
           title="Empresa de Vendas Online"
           text="Uma empresa focada em resolver problemas de makers que não tem uma plataforma própria de vendas online"
         />
         <FeatureCard
-          iconUrl="/goal.png"
+          iconUrl="public/goal.png"
           iconBgColor="#e11d48"
           title="Conexão entre Makers e Clientes"
           text="Unir o desconhecido, juntar Makers3D com clientes em busca de algo personalizado ou produtos 3D"
         />
         <FeatureCard
-          iconUrl="/rocket (1).png"
+          iconUrl="public/rocket (1).png"
           iconBgColor="#5a3a9a"
           title="Startup em São Luís"
           text="Uma STARTUP que começou em São Luís/do Maranhão"
