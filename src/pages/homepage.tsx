@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-5xl md:text-6xl font-light text-texto-principal leading-tight">
             Democratizando o acesso à
             <br />
-            <strong className="font-bold">impressão 3d.</strong>
+            <strong className="font-bold">Impressão 3D.</strong>
           </h1>
           <p className="text-lg text-texto-secundario max-w-lg mx-auto lg:mx-0">
             Conectamos suas ideias aos melhores makers do Brasil. Impressão 3D personalizada, rápida e com qualidade profissional.
