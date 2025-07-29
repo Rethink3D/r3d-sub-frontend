@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './homepage.module.css'; // Importando os nossos estilos, incluindo a animação
 import InviteForm from '../components/inviteForm/InviteForm';
+import { Link } from 'react-router-dom';
 
 // Componente reutilizável para as estatísticas
 const StatItem: React.FC<{ iconUrl: string; value: string; label: string; }> = ({ iconUrl, value, label }) => {
@@ -58,10 +59,10 @@ const HomePage: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
             <button className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300">
-              Saiba quem somos &rarr;
+              <Link to='/quem-somos'>Saiba quem somos &rarr;</Link>
             </button>
             <button className="bg-transparent border border-gray-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-800 transition-colors duration-300">
-              Contato
+              <Link to="/contato">Contato</Link>
             </button>
           </div>
 
@@ -99,7 +100,9 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <InviteForm />
+      <section id='form-maker'>
+        <InviteForm />
+      </section>
 
     </div>
   );

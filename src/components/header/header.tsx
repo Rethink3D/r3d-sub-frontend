@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { HashLink as Link } from 'react-router-hash-link';
 import styles from './header.module.css'; // O nosso CSS Module para gradientes
 
 const Header: React.FC = () => {
@@ -33,9 +34,9 @@ const Header: React.FC = () => {
           </nav>
           
           <div>
-            <button className={`${styles.ctaButtonWithBorder} font-semibold text-white text-xl rounded-2xl px-7 py-3 transition-transform duration-200 hover:scale-105`}>
+            <Link to='/#form-maker' smooth className={`${styles.ctaButtonWithBorder} font-semibold text-white text-xl rounded-2xl px-7 py-3 transition-transform duration-200 hover:scale-105`}>
               Seja um Maker
-            </button>
+            </Link>
           </div>
         </div>
 
