@@ -33,7 +33,7 @@ const InviteForm: React.FC = () => {
     setMessage(null);
 
     try {
-      const response = await fetch("http://localhost:3000/maker-invite", {
+      const response = await fetch("https://r3d-sub-backend.onrender.com/maker-invite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
