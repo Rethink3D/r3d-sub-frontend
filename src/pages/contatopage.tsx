@@ -17,9 +17,9 @@ const ContatoPage: React.FC = () => {
     <div className="flex flex-col flex-grow justify-center py-12 text-texto-principal">
       <h1 className="text-5xl font-bold mb-10 text-center">Entre em contato</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+      <div className="grid grid-cols-1  gap-16 items-start">
         
-        {/* Coluna da Esquerda: Formulário */}
+        {/* Coluna da Esquerda: Formulário 
         <form className="flex flex-col gap-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-texto-secundario mb-2">Seu nome</label>
@@ -58,24 +58,39 @@ const ContatoPage: React.FC = () => {
             </button>
           </div>
         </form>
-
+*/}
         {/* Coluna da Direita: Cartão de Contatos */}
-        <div className="bg-white dark:bg-[#1a1a1a] border border-gray-700 rounded-2xl p-8 flex flex-col gap-6">
-            <h3 className="text-3xl font-bold text-texto-principal">Nossos Canais</h3>
-            <p className="text-texto-secundario">Prefere um contato mais direto? Encontre-nos nas seguintes plataformas.</p>
-            <a href="mailto:rethink3dbr@gmail.com" className="flex items-center gap-4 text-lg text-texto-principal hover:text-blue-400 transition-colors">
-              <MailIcon className="w-7 h-7 text-blue-400" />
-              <span>rethink3dbr@gmail.com</span>
-            </a>
-            <a href="https://github.com/Rethink3D" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-lg text-texto-principal hover:text-gray-400 transition-colors">
-              <GithubIcon className="w-7 h-7 text-gray-400" />
-              <span>Rethink3D</span>
-            </a>
-            <a href="#" className="flex items-center gap-4 text-lg text-texto-principal hover:text-pink-400 transition-colors">
-              <InstagramIcon className="w-7 h-7 text-pink-400" />
-              <span>_rethink3d</span>
-            </a>
-          </div>
+        <div className="bg-white dark:bg-[#1a1a1a] border dark:border-gray-700 rounded-2xl p-8 flex flex-col gap-6 max-w-2xl mx-auto w-full">
+      <h3 className="text-3xl font-bold text-texto-principal">Nossos Canais</h3>
+      <p className="text-texto-secundario">
+        Prefere um contato mais direto? Encontre-nos nas seguintes plataformas.
+      </p>
+      <a
+        href="mailto:rethink3dbr@gmail.com"
+        className="flex items-center gap-4 text-lg text-texto-principal hover:text-blue-400 transition-colors"
+      >
+        <MailIcon className="w-7 h-7 text-blue-400" />
+        <span>rethink3dbr@gmail.com</span>
+      </a>
+      <a
+        href="https://github.com/Rethink3D"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-4 text-lg text-texto-principal hover:text-gray-400 transition-colors"
+      >
+        <GithubIcon className="w-7 h-7 text-gray-400" />
+        <span>Rethink3D</span>
+      </a>
+      <a
+        href="https://www.instagram.com/_rethink3d/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-4 text-lg text-texto-principal hover:text-pink-400 transition-colors"
+      >
+        <InstagramIcon className="w-7 h-7 text-pink-400" />
+        <span>_rethink3d</span>
+      </a>
+    </div>
       </div>
     </div>
   );

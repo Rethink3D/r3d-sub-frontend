@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './Footer.module.css'; // Importando o nosso CSS Module
+import styles from './footer.module.css'; // Importando o nosso CSS Module
 
 const Footer: React.FC = () => {
   const handleServiceClick = (serviceName: string) => {
