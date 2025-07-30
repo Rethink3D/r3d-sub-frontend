@@ -1,11 +1,12 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import HomePage from "./pages/Home/Home";
-import CatalogoPage from "./pages/Catalog/Catalog";
-import QuemSomosPage from "./pages/About/About";
-import ContatoPage from "./pages/Contact/Contact";
+import Home from "./pages/Home/Home";
+import Catalog from "./pages/Catalog/Catalog";
+import About from "./pages/About/About";
+import Contact from "./pages/Contact/Contact";
 
 import "./App.css";
 
@@ -16,10 +17,10 @@ const App: React.FC = () => {
 
       <main className="container mx-auto flex-1 p-8">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/catalogo" element={<CatalogoPage />} />
-          <Route path="/quem-somos" element={<QuemSomosPage />} />
-          <Route path="/contato" element={<ContatoPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/catalogo" element={<Catalog />} />
+          <Route path="/quem-somos" element={<About />} />
+          <Route path="/contato" element={<Contact />} />
         </Routes>
       </main>
 

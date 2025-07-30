@@ -56,7 +56,7 @@ const Header: React.FC = () => {
             <Link
               to="/#form-maker"
               smooth
-              scroll={(el) =>
+              scroll={(el: { offsetTop: number; }) =>
                 window.scrollTo({
                   top: el.offsetTop - 130,
                   behavior: "smooth",
