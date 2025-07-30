@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./About.module.css";
 import VideoCard from "./components/VideoCard";
 import FeatureCard from "./components/FeatureCard";
 
