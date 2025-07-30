@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { HashLink as Link } from "react-router-hash-link";
-import styles from "./header.module.css";
+import styles from "./Header.module.css";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 
 export const handleNavClick = () => {
