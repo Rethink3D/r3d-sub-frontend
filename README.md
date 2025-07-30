@@ -1,69 +1,72 @@
-# React + TypeScript + Vite
+# Rethink3D Web: Democratizando o acesso à **Impressão 3D**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositório contém o código do frontend para a plataforma web Rethink3D, um marketplace projetado para democratizar o acesso à impressão 3D. Nossa missão é conectar makers e estúdios 3D talentosos com clientes que buscam impressões 3D personalizadas e produtos inovadores.
 
-Currently, two official plugins are available:
+A plataforma serve como um hub centralizado onde makers podem exibir seu trabalho e clientes podem facilmente encontrar e encomendar modelos 3D personalizados. A Rethink3D é uma startup que começou em São Luís/MA, com o objetivo de resolver um problema chave para os makers: a falta de uma plataforma de vendas online própria.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Sobre o Projeto
 
-## Expanding the ESLint configuration
+Rethink3D é um marketplace online dinâmico que preenche a lacuna entre artistas 3D e pessoas ou empresas que necessitam de serviços de impressão 3D. Acreditamos que qualquer pessoa pode ser um criador, e nossa plataforma capacita makers a transformar conceitos digitais em objetos físicos.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Principais Características:
+* **Para Clientes:** Uma maneira simples, rápida e personalizada de materializar ideias. Descreva seu projeto, receba orçamentos de nossa rede de makers e escolha a melhor opção para você.
+* **Para Makers:** Uma plataforma para expor suas criações e se conectar com clientes. Estamos ativamente buscando artistas e estúdios 3D para expandir nosso catálogo e ajudar a divulgar seu trabalho.
+* **O que é ser um Maker?** Um maker é, em essência, um inventor da era digital. Uma pessoa curiosa e proativa que utiliza a tecnologia para criar, consertar e personalizar o mundo ao seu redor. Movidos pela paixão de aprender e pela satisfação de fazer com as próprias mãos, eles combinam ferramentas modernas, como a impressão 3D, com habilidades tradicionais.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ✨ Tecnologias Principais
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+Este projeto é uma aplicação web moderna construída com foco em performance, escalabilidade e uma ótima experiência para o desenvolvedor.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* **Framework:** React  
+* **Build Tool:** Vite  
+* **Linguagem:** TypeScript  
+* **Estilização:** Tailwind CSS  
+* **Roteamento:** React Router  
+* **Linting:** ESLint  
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚙️ Começando
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Para obter uma cópia local e executá-la, siga estes passos simples.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Pré-requisitos
+
+Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
+
+### Instalação
+
+1. Clone o repositório:
+    ```sh
+    git clone https://github.com/seu-usuario/rethink3d-r3d-sub-frontend.git
+    ```
+2. Instale os pacotes NPM:
+    ```sh
+    npm install
+    ```
+3. Inicie o servidor de desenvolvimento:
+    ```sh
+    npm run dev
+    ```
+    A aplicação estará disponível em `http://localhost:5173` (ou outra porta, se a padrão estiver em uso).
+
+### Scripts Disponíveis
+
+* `npm run dev`: Executa o aplicativo em modo de desenvolvimento.
+* `npm run build`: Compila o aplicativo para produção.
+* `npm run lint`: Executa o linter nos arquivos do projeto.
+* `npm run preview`: Serve a build de produção localmente.
+
+## 🤝 Contribuindo
+
+Estamos sempre em busca de desenvolvedores e entusiastas da impressão 3D para contribuir com a plataforma Rethink3D. Se você tem interesse em nos ajudar a crescer, sinta-se para entrar em contato.
+
+## 📧 Contato
+
+* **Email:** [rethink3dbr@gmail.com](mailto:rethink3dbr@gmail.com)  
+* **GitHub:** [Rethink3D](https://github.com/Rethink3D)  
+* **Instagram:** [@_rethink3d](https://www.instagram.com/_rethink3d/)  
+
+---
+
+<p align="center">
+  Copyright © 2025 Rethink3D. Todos os direitos reservados.
+</p>
