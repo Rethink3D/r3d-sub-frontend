@@ -1,12 +1,15 @@
 .logoText {
-  background: linear-gradient(90.53deg, #00ffff 0%, #0080ff 55.77%);
+  background: linear-gradient(90.53deg, #0080ff 0%, #00ffff 55.77%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .webText {
-  color: #7dd3fc;
+  background: linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ff9500);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-size: 1.5rem;
   font-weight: 400;
   margin-left: 0.5rem;
@@ -35,7 +38,7 @@
   bottom: -10px;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #00eeff, #ff00dd);
+  background: linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ffc700);
   border-radius: 2px;
   width: 100%;
   animation: draw-underline 0.4s ease-out forwards;

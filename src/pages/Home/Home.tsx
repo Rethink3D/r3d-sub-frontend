@@ -68,7 +68,7 @@ const HomePage: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
-            <button className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+            <button className={styles.gradientBorderButton}>
               <Link to="/quem-somos">Saiba mais &rarr;</Link>
             </button>
             <button className="bg-transparent border border-gray-600 text-texto-principal font-bold py-3 px-8 rounded-lg hover:bg-gray-800 hover:text-white transition-colors duration-300">

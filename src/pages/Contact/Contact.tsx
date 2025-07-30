@@ -58,46 +58,6 @@ const ContatoPage: React.FC = () => {
       <h1 className="text-5xl font-bold mb-10 text-center">Entre em contato</h1>
 
       <div className="grid grid-cols-1  gap-16 items-start">
-        {/* Coluna da Esquerda: Formulário 
-        <form className="flex flex-col gap-6">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-texto-secundario mb-2">Seu nome</label>
-            <input 
-              disabled
-              type="text" 
-              id="name" 
-              className="w-full bg-gray-300 dark:bg-white text-texto-secundario rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">Seu email</label>
-            <input 
-              disabled
-              type="email" 
-              id="email" 
-              className="w-full bg-gray-300 dark:bg-white text-texto-secundario rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2">Sua mensagem</label>
-            <textarea 
-              disabled
-              id="message" 
-              rows={5}
-              className="w-full bg-gray-300 dark:bg-white text-texto-secundario rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            ></textarea>
-          </div>
-          <div>
-            <button 
-              disabled
-              type="submit"
-              className="bg-transparent border border-gray-500 text-texto-principal rounded-lg py-2 px-8 hover:bg-white hover:text-black transition-colors duration-300"
-            >
-              Enviar
-            </button>
-          </div>
-        </form>
-*/}
         <div className="bg-white dark:bg-[#1a1a1a] border dark:border-gray-700 rounded-2xl p-8 flex flex-col gap-6 max-w-2xl mx-auto w-full">
           <h3 className="text-3xl font-bold text-texto-principal">
             Nossos Canais
@@ -108,25 +68,39 @@ const ContatoPage: React.FC = () => {
           </p>
           <a
             href="mailto:rethink3dbr@gmail.com"
-            className="flex items-center gap-4 text-lg text-texto-principal hover:text-blue-400 transition-colors"
+            className="
+                flex items-center gap-4 text-lg text-texto-principal
+                transition-transform duration-200 transform hover:scale-105
+                hover:text-blue-400
+              "
           >
             <MailIcon className="w-7 h-7 text-blue-400" />
             <span>rethink3dbr@gmail.com</span>
           </a>
+
           <a
             href="https://github.com/Rethink3D"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-4 text-lg text-texto-principal hover:text-gray-400 transition-colors"
+            className="
+                flex items-center gap-4 text-lg text-texto-principal
+                transition-transform duration-200 transform hover:scale-105
+                hover:text-gray-400
+              "
           >
             <GithubIcon className="w-7 h-7 text-gray-400" />
             <span>Rethink3D</span>
           </a>
+
           <a
             href="https://www.instagram.com/_rethink3d/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-4 text-lg text-texto-principal hover:text-pink-400 transition-colors"
+            className="
+                flex items-center gap-4 text-lg text-texto-principal
+                transition-transform duration-200 transform hover:scale-105
+                hover:text-pink-400
+              "
           >
             <InstagramIcon className="w-7 h-7 text-pink-400" />
             <span>_rethink3d</span>

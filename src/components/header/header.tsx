@@ -4,6 +4,13 @@ import { HashLink as Link } from "react-router-hash-link";
 import styles from "./header.module.css";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 
+export const handleNavClick = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
 const Header: React.FC = () => {
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `text-2xl font-light transition-colors duration-300 ${
@@ -14,21 +21,33 @@ const Header: React.FC = () => {
     <header className="bg-white dark:bg-[#141414] border-b border-gray-200 dark:border-gray-800 transition-colors sticky top-0 z-50">
       <div className="container mx-auto flex w-full items-center h-28 px-4">
         <div className="flex items-center gap-4 text-4xl font-semibold">
-          <NavLink to="/" className="flex items-baseline">
-            <span className={styles.logoText}>Rethink3D</span>
+          <NavLink
+            to="/"
+            className="flex items-baseline"
+            onClick={handleNavClick}
+          >
+            <span className={styles.logoText}>R3D</span>
             <span className={styles.webText}>/ Web</span>
           </NavLink>
         </div>
 
         <div className="hidden md:flex items-center ml-auto gap-10">
           <nav className="flex items-center gap-10">
-            <NavLink to="/" className={navLinkClasses}>
+            <NavLink to="/" className={navLinkClasses} onClick={handleNavClick}>
               Home
             </NavLink>
-            <NavLink to="/quem-somos" className={navLinkClasses}>
+            <NavLink
+              to="/quem-somos"
+              className={navLinkClasses}
+              onClick={handleNavClick}
+            >
               Quem Somos
             </NavLink>
-            <NavLink to="/contato" className={navLinkClasses}>
+            <NavLink
+              to="/contato"
+              className={navLinkClasses}
+              onClick={handleNavClick}
+            >
               Contato
             </NavLink>
           </nav>

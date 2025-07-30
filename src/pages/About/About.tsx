@@ -16,9 +16,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
   return (
     <div
-      className={`${styles.gradientBorder} rounded-3xl p-0 dark:p-[1px] h-full shadow-2xl 
-        dark:shadow-none 
-        transition-shadow `}
+      className={`
+        ${styles.gradientBorder}
+        rounded-3xl p-0 dark:p-[1px] h-full shadow-2xl dark:shadow-none
+        transition-shadow
+        transform transition-transform duration-200 hover:scale-105
+      `}
     >
       <div className="bg-white dark:bg-[#1a1a1a] rounded-[23px] p-8 flex flex-col items-center text-center h-full">
         <div
@@ -59,27 +62,27 @@ const QuemSomosPage: React.FC = () => {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <FeatureCard
           iconUrl="/company.png"
-          iconBgColor="#5a3a9a"
-          title="Empresa de Vendas Online"
-          text="Uma empresa focada em resolver problemas de makers que não tem uma plataforma própria de vendas online"
+          iconBgColor="#7e57c2"
+          title="Sobre a Rethink3D"
+          text="Uma startup de São Luís/MA com a missão de democratizar o acesso à impressão 3D."
         />
         <FeatureCard
-          iconUrl="goal.png"
+          iconUrl="/goal.png"
           iconBgColor="#e11d48"
-          title="Conexão entre Makers e Clientes"
-          text="Unir o desconhecido, juntar Makers3D com clientes em busca de algo personalizado ou produtos 3D"
+          title="Nosso Objetivo"
+          text="Conectar pessoas que precisam de impressão 3D com quem pode oferecer o serviço."
         />
         <FeatureCard
           iconUrl="/rocket.png"
-          iconBgColor="#5a3a9a"
-          title="Startup em São Luís"
-          text="Uma STARTUP que começou em São Luís/do Maranhão"
+          iconBgColor="#6401c4"
+          title="Como Funciona"
+          text="Através da nossa plataforma, você pode solicitar impressões 3D, encontrar makers e divulgar seus serviços."
         />
       </section>
 
       <section className="flex flex-col items-center gap-8">
         <h2 className="text-4xl font-bold text-texto-principal">
-          Veja a Plataforma em desenvolvimento em Ação
+          Veja a plataforma em desenvolvimento em ação:
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-4">
           <VideoCard
