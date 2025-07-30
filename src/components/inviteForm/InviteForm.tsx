@@ -33,16 +33,19 @@ const InviteForm: React.FC = () => {
     setMessage(null);
 
     try {
-      const response = await fetch("https://r3d-sub-backend.onrender.com/maker-invite", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nome: name,
-          email: email,
-        }),
-      });
+      const response = await fetch(
+        "https://r3d-sub-backend.onrender.com/maker-invite",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nome: name,
+            email: email,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -101,7 +104,7 @@ const InviteForm: React.FC = () => {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            disabled={isSubmitting} // Desabilita o campo durante o envio
+            disabled={isSubmitting}
           />
         </div>
 
@@ -120,11 +123,10 @@ const InviteForm: React.FC = () => {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            disabled={isSubmitting} // Desabilita o campo durante o envio
+            disabled={isSubmitting}
           />
         </div>
 
-        {/* Área para exibir mensagens de sucesso ou erro */}
         {message && (
           <div
             className={`text-center p-2 mb-4 rounded-md text-sm ${

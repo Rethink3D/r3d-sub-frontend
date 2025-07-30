@@ -1,0 +1,5 @@
+.gradientBorder {
+  border: 2px solid transparent;
+  background: linear-gradient(#1f1f2b, #1f1f2b) padding-box,
+    linear-gradient(to right, #00c6ff, #8c52ff, #f700af) border-box;
+}

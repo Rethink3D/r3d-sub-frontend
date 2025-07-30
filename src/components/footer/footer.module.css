@@ -3,5 +3,5 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  display: inline-block; /* Ajuda a garantir que o gradiente seja aplicado corretamente */
+  display: inline-block;
 }
