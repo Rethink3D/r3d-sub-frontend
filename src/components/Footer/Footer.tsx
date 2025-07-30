@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import styles from "./Footer.module.css";
-import { handleNavClick } from "../Header/Header";
 
 const Footer: React.FC = () => {
   return (
@@ -9,14 +8,15 @@ const Footer: React.FC = () => {
       <div className="container mx-auto px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
           <div className="flex items-center gap-4 text-4xl font-semibold">
-            <NavLink
+            <Link
               to="/"
               className="flex items-baseline"
-              onClick={handleNavClick}
+              onClick={() =>
+                window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <span className={styles.logoText}>R3D</span>
               <span className={styles.webText}>/ Web</span>
-            </NavLink>
+            </Link>
           </div>
 
           <div>

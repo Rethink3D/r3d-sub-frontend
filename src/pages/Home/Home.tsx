@@ -80,7 +80,7 @@ const HomePage: React.FC = () => {
                 </div>
             </section>
 
-            <section id="form-maker">
+            <section id="form-maker" className="scroll-mt-40">
                 <InviteForm />
             </section>
         </div>
