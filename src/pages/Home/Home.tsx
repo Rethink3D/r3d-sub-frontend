@@ -62,8 +62,9 @@ const HomePage: React.FC = () => {
             <strong className="font-bold">Impressão 3D.</strong>
           </h1>
           <p className="text-lg text-texto-secundario max-w-lg mx-auto lg:mx-0">
-            Conectamos suas ideias aos melhores makers do Brasil. Impressão 3D
-            personalizada, rápida e com qualidade profissional.
+            Você é maker? A hora é agora. Cadastre-se e transforme sua
+            habilidade em renda. A Rethink3D conecta você a clientes reais que
+            valorizam o seu trabalho.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
@@ -84,29 +85,6 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section className="text-center">
-        <h2 className="text-4xl font-bold text-texto-principal mb-12">
-          Simples, Rápido e Personalizado
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <HowItWorksStep
-            step={1}
-            title="Descreva a sua Ideia"
-            description="Envie os detalhes do seu projeto ou escolha um produto do nosso catálogo."
-          />
-          <HowItWorksStep
-            step={2}
-            title="Receba Orçamentos"
-            description="Os nossos makers especializados irão analisar o seu pedido e enviar propostas."
-          />
-          <HowItWorksStep
-            step={3}
-            title="Aprove e Produza"
-            description="Escolha o melhor maker para o seu projeto e acompanhe a produção até à entrega."
-          />
-        </div>
-      </section>
-
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -119,24 +97,25 @@ const HomePage: React.FC = () => {
             </div>
 
             <div className="text-center lg:text-left">
-              <h2 className="text-5xl font-bold text-texto-principal mb-6">
+              <h2 className="text-5xl font-bold text-texto-principal mb-6 text-center">
                 O que é ser um Maker?
               </h2>
-              <div className="space-y-6 text-xl text-texto-secundario leading-relaxed">
+              <div className="space-y-6 text-xl text-texto-secundario leading-relaxed text-center">
                 <p>
-                  Um maker é, em essência, um inventor da era digital. Uma
-                  pessoa curiosa e proativa que utiliza a tecnologia para criar,
-                  consertar e personalizar o mundo ao seu redor. Movidos pela
-                  paixão de aprender e pela satisfação de fazer com as próprias
-                  mãos, eles combinam ferramentas modernas, como a impressão 3D,
-                  com habilidades tradicionais.
+                  Um <strong>Maker</strong> é, em essência, um inventor da era
+                  digital. Uma pessoa curiosa e proativa que utiliza a
+                  tecnologia para criar, consertar e personalizar o mundo ao seu
+                  redor. Movidos pela paixão de aprender e pela satisfação de
+                  fazer com as próprias mãos, eles combinam ferramentas
+                  modernas, como a impressão 3D, com habilidades tradicionais.
                 </p>
                 <p>
                   Eles representam a ideia de que qualquer um pode ser um
-                  criador, solucionando problemas de forma criativa e
-                  transformando um conceito digital em um objeto físico. Cada
-                  peça que você encontra aqui nasceu desse espírito inventivo e
-                  da busca incansável por materializar grandes ideias.
+                  <strong> Maker</strong>, solucionando problemas de forma
+                  criativa e transformando um conceito digital em um objeto
+                  físico. Cada peça que você encontra aqui nasceu desse espírito
+                  inventivo e da busca incansável por materializar grandes
+                  ideias.
                 </p>
               </div>
             </div>

@@ -37,6 +37,12 @@ const Header: React.FC = () => {
             <Link
               to="/#form-maker"
               smooth
+              scroll={(el) =>
+                window.scrollTo({
+                  top: el.offsetTop - 130,
+                  behavior: "smooth",
+                })
+              }
               className={`${styles.ctaButtonWithBorder} font-semibold text-xl rounded-2xl px-7 py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}
             >
               Seja um Maker

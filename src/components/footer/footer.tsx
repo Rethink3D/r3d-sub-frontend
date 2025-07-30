@@ -3,25 +3,33 @@ import { Link } from "react-router-dom";
 import styles from "./footer.module.css";
 
 const Footer: React.FC = () => {
-  const handleServiceClick = (serviceName: string) => {
-    alert(`Você clicou em: ${serviceName}`);
-  };
-
   return (
     <footer className="bg-black dark:bg-[#141414] text-gray-400 py-12">
       <div className="container mx-auto px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10 text-center sm:text-left">
-          <div className="flex items-center gap-3 mb-4">
-            <h3 className={`${styles.logoGradient} text-4xl font-semibold`}>
-              Rethink3D
-            </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
+          <div className="flex items-center justify-center sm:justify-start gap-3 mb-4">
+            <Link
+              to="/"
+              className="hover:text-white transition-colors"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              <h3 className={`${styles.logoGradient} text-4xl font-semibold`}>
+                Rethink3D
+              </h3>
+            </Link>
           </div>
 
           <div>
             <h4 className="font-semibold text-white text-xl mb-4">Navegação</h4>
             <ul className="space-y-3 text-lg">
               <li>
-                <Link to="/" className="hover:text-white transition-colors">
+                <Link
+                  to="/"
+                  className="hover:text-white transition-colors"
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                >
                   Home
                 </Link>
               </li>
@@ -29,6 +37,9 @@ const Footer: React.FC = () => {
                 <Link
                   to="/quem-somos"
                   className="hover:text-white transition-colors"
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   Quem Somos
                 </Link>
@@ -37,30 +48,12 @@ const Footer: React.FC = () => {
                 <Link
                   to="/contato"
                   className="hover:text-white transition-colors"
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   Contato
                 </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-white text-xl mb-4">Serviços</h4>
-            <ul className="space-y-3 text-lg">
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Impressão 3D
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Projetos Personalizados
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Consultoria Técnica
-                </a>
               </li>
             </ul>
           </div>
@@ -77,8 +70,13 @@ const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  _rethink3d
+                <a
+                  href="https://www.instagram.com/_rethink3d/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
+                  @_rethink3d
                 </a>
               </li>
             </ul>

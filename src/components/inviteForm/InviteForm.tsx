@@ -55,11 +55,15 @@ const InviteForm: React.FC = () => {
       }
 
       setMessage({
-        text: "Obrigado! Seu convite foi enviado com sucesso.",
+        text: "Obrigado! Sua solicitação foi recebida, em breve entraremos em contato.",
         type: "success",
       });
       setName("");
       setEmail("");
+
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     } catch (error: any) {
       console.error("Erro ao enviar o formulário:", error);
       setMessage({
@@ -68,6 +72,10 @@ const InviteForm: React.FC = () => {
           "Falha na comunicação com o servidor. Tente novamente.",
         type: "error",
       });
+
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     } finally {
       setIsSubmitting(false);
     }
@@ -94,7 +102,7 @@ const InviteForm: React.FC = () => {
             htmlFor="name"
             className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
           >
-            Seu Nome ou Nome do Estúdio
+            Nome
           </label>
           <input
             type="text"
@@ -113,7 +121,7 @@ const InviteForm: React.FC = () => {
             htmlFor="email"
             className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
           >
-            Seu Melhor E-mail
+            Email
           </label>
           <input
             type="email"
@@ -145,7 +153,7 @@ const InviteForm: React.FC = () => {
                     bg-[conic-gradient(from_275deg,#FF00DD_10%,#FF55CC_15%,#EEEE7A_40%,#CCEEAA_45%,#00EEFF_70%,#55EEFF_75%)]
                     shadow-[0_0_5px_rgba(128,128,128,0.3)]
                     transition-all duration-300 ease-in-out
-                    hover:scale-105 hover:shadow-xl hover:shadow-[#FF00DD]/20
+                    hover:scale-105
                     disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           disabled={isSubmitting}
         >
@@ -155,7 +163,7 @@ const InviteForm: React.FC = () => {
                           transition-colors duration-300
                           group-disabled:bg-gray-600"
           >
-            {isSubmitting ? "Enviando..." : "Quero Ser um Parceiro"}
+            {isSubmitting ? "Enviando..." : "Juntar-se"}
           </span>
         </button>
       </form>
