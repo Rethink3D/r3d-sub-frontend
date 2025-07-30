@@ -20,12 +20,19 @@ const HomePage: React.FC = () => {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
-                        <button className={styles.gradientBorderButton}>
-                            <Link to="/quem-somos">Saiba mais &rarr;</Link>
-                        </button>
-                        <button className="bg-transparent border border-gray-600 text-texto-principal font-bold py-3 px-8 rounded-lg hover:bg-gray-800 hover:text-white transition-colors duration-300">
-                            <Link to="/contato">Contato</Link>
-                        </button>
+                        <Link
+                            className={styles.gradientBorderButton}
+                            to="/quem-somos"
+                        >
+                            Saiba mais &rarr;
+                        </Link>
+
+                        <Link
+                            className="bg-transparent border border-gray-600 text-texto-principal font-bold py-3 px-8 rounded-lg hover:bg-gray-800 hover:text-white transition-colors duration-300"
+                            to="/contato"
+                        >
+                            Contato
+                        </Link>
                     </div>
                 </div>
                 <div className="flex justify-center items-center">
