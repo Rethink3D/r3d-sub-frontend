@@ -68,7 +68,7 @@ const mockProducts = [
   },
 ];
 
-const CatalogoPage: React.FC = () => {
+const Catalog: React.FC = () => {
   return (
     <div className="py-10">
       <div className="flex justify-between items-center mb-8">
@@ -99,4 +99,4 @@ const CatalogoPage: React.FC = () => {
   );
 };
 
-export default CatalogoPage;
+export default Catalog;
