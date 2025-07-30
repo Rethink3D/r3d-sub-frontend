@@ -15,7 +15,7 @@ const App: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="container mx-auto flex-1 p-8">
+      <main className="container mx-auto flex-1 p-4 md:p-8">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/catalogo" element={<Catalog />} />

@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 
 const HomePage: React.FC = () => {
     return (
-        <div className="py-20 flex flex-col gap-24">
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="py-8 md:py-20 flex flex-col md:gap-24">
+            <section className="grid grid-cols-1 lg:grid-cols-2 md:gap-16 items-center">
                 <div className="flex flex-col gap-8 text-center lg:text-left">
                     <h1 className="text-5xl md:text-6xl font-light text-texto-principal leading-tight">
                         Democratizando o acesso à

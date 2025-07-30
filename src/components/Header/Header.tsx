@@ -20,7 +20,7 @@ const Header: React.FC = () => {
 
 
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
-    `text-2xl font-light transition-colors duration-300 ${
+    `text-xl lg:text-2xl font-light transition-colors duration-300 ${
       isActive
         ? styles.active
         : 'text-texto-principal hover:text-gray-500' 
@@ -44,7 +44,7 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <nav className="hidden md:flex items-center gap-10">
+          <nav className="hidden md:flex items-center gap-6 lg:gap-10">
             <NavHashLink to="/#" smooth className={navLinkClasses}>Home</NavHashLink>
             <NavHashLink to="/quem-somos#" smooth className={navLinkClasses}>Quem Somos</NavHashLink>
             <NavHashLink to="/contato#" smooth className={navLinkClasses}>Contato</NavHashLink>
@@ -55,10 +55,9 @@ const Header: React.FC = () => {
           <HashLink 
             to="/#form-maker" 
             smooth
-            className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-6 py-2 md:py-4 transition-transform duration-200 hover:scale-105 inline-block text-center`}
+            className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-4 py-2 transition-transform duration-200 hover:scale-105 inline-block text-center`}
           >
-            
-              <div className="flex flex-col items-center leading-tight md:flex-row md:gap-1.5">
+              <div className="flex flex-col items-center leading-tight whitespace-nowrap md:flex-row md:gap-1.5">
                 <span>Seja um </span>
                 <span className="font-bold">Maker</span>
               </div>
