@@ -41,8 +41,8 @@ const InviteForm: React.FC = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        nome: name,
-                        email: contactInfo,
+                        name: name,
+                        contactInfo: contactInfo,
                         checked: false,
                     }),
                 }
