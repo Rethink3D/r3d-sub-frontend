@@ -14,7 +14,7 @@ const HomePage: React.FC = () => {
                         <strong className="font-bold">Impressão 3D.</strong>
                     </h1>
                     <p className="text-lg text-texto-secundario max-w-lg mx-auto lg:mx-0">
-                        Você é maker? A hora é agora. Cadastre-se e transforme
+                        Você é Maker? A hora é agora. Cadastre-se e transforme
                         sua habilidade em renda. A Rethink3D conecta você a
                         clientes reais que valorizam o seu trabalho.
                     </p>
