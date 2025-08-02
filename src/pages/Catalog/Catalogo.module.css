@@ -1,0 +1,23 @@
+/* Estilo para a borda do botão com gradiente (fundo escuro) */
+.gradientBorderButton {
+    border: 1.5px solid transparent;
+    background: linear-gradient(#1f1f2b, #1f1f2b) padding-box,
+                linear-gradient(to right, #8c52ff, #f700af) border-box;
+  }
+  
+  /* Animação de fade-in para o grid de produtos */
+  .gridFadeIn {
+    animation: fadeIn 0.8s ease-in-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
