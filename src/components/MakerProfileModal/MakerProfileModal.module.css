@@ -1,0 +1,24 @@
+.avatarRing {
+    border-radius: 9999px;
+    background-image: linear-gradient(to top, #8c52ff, #f700af);
+  }
+  
+  .contactCard {
+    border: 1px solid #4c2b85;
+    transition: all 0.3s ease;
+  }
+  .contactCard:hover {
+    border-color: #8c52ff;
+    background-color: rgba(140, 82, 255, 0.1);
+  }
+  
+  .viewAllButton {
+      background-image: linear-gradient(to right, #eab308, #65a30d); /* Amarelo -> Verde */
+      color: #121212;
+      transition: all 0.3s ease;
+  }
+  .viewAllButton:hover {
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+      transform: scale(1.05);
+  }
+  

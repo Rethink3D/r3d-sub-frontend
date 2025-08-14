@@ -51,7 +51,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
             <div className="text-right ml-auto">
               <span className="text-xs text-gray-500 block">preço sugerido</span>
-              <p className="text-xl font-bold">R${price}</p>
+              <p className="text-green-500 text-2xl font-bold drop-shadow-md">
+  R${price}
+</p>
             </div>
           </div>
         </div>
