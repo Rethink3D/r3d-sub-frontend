@@ -7,15 +7,14 @@ const Footer: React.FC = () => {
     <footer className="bg-black dark:bg-[#141414] text-gray-400 py-12">
       <div className="container mx-auto px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
-          <div className="flex items-center gap-4 text-4xl font-semibold">
+          <div className="flex justify-center sm:justify-normal gap-4 text-4xl font-semibold">
             <Link
               to="/"
-              className="flex items-baseline"
+              className="flex items-baseline w-56 sm:w-48"
               onClick={() =>
                 window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <span className={styles.logoText}>R3D</span>
-              <span className={styles.webText}>/ Web</span>
+              <img src="/Full-name-2-thin 1.png" alt="Logo Rethink 3D" />
             </Link>
           </div>
 
