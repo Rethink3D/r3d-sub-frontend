@@ -1,6 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
-import styles from "./Footer.module.css";
+import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
   return (
@@ -11,8 +10,7 @@ const Footer: React.FC = () => {
             <Link
               to="/"
               className="flex items-baseline w-56 sm:w-48"
-              onClick={() =>
-                window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <img src="/Full-name-2-thin 1.png" alt="Logo Rethink 3D" />
             </Link>

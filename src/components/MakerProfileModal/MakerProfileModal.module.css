@@ -13,7 +13,7 @@
   }
   
   .viewAllButton {
-      background-image: linear-gradient(to right, #eab308, #65a30d); /* Amarelo -> Verde */
+      background-image: linear-gradient(to right, #eab308, #65a30d);
       color: #121212;
       transition: all 0.3s ease;
   }

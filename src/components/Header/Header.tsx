@@ -84,7 +84,6 @@ const Header: React.FC = () => {
         <nav className="flex flex-col items-center justify-center h-full gap-8">
           <NavHashLink to="/#" smooth className={navLinkClasses} onClick={toggleMenu}>Home</NavHashLink>
           <NavHashLink to="/quem-somos#" smooth className={navLinkClasses} onClick={toggleMenu}>Quem Somos</NavHashLink>
-          {/* BOTÃO ADICIONADO AQUI (MOBILE) */}
           <NavHashLink to="/catalogo" className={navLinkClasses} onClick={toggleMenu}>Catálogo</NavHashLink>
           <NavHashLink to="/contato#" smooth className={navLinkClasses} onClick={toggleMenu}>Contato</NavHashLink>
           <ThemeToggle />
