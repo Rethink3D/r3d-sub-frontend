@@ -39,18 +39,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
     >
       {/* Container principal do card com cores para os dois temas */}
       <div className="bg-white dark:bg-gray-800 h-full rounded-[14px] p-4 flex flex-col text-gray-900 dark:text-gray-50">
-        
         {/* Container da imagem */}
         <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg mb-4">
-          <img src={imageUrl} alt={title} className="w-full h-40 object-contain rounded-lg p-2" />
+          <img
+            src={imageUrl}
+            alt={title}
+            className="w-full h-40 object-contain rounded-lg p-2"
+          />
         </div>
 
         <div className="flex flex-col flex-grow">
           <h3 className="text-xl font-bold mb-2 line-clamp-2">{title}</h3>
-          
+
           {/* Descrição com cores ajustadas */}
-          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">{description}</p>
-          
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">
+            {description}
+          </p>
+
           <div className="flex justify-between items-end mt-auto pt-2">
             {isCustomizable && (
               // Tag "Personalizável" com cores ajustadas
@@ -61,7 +66,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
             <div className="text-right ml-auto">
               {/* Texto "preço sugerido" com cores ajustadas */}
-              <span className="text-xs text-gray-500 dark:text-gray-400 block">preço sugerido</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">
+                preço sugerido
+              </span>
               {/* Preço com cores ajustadas */}
               <p className="text-green-500 dark:text-green-400 text-2xl font-bold drop-shadow-md">
                 R${price}

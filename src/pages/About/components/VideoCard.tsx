@@ -1,5 +1,3 @@
-import React from "react";
-
 const VideoCard: React.FC<{ videoSrc: string; title: string }> = ({
   videoSrc,
   title,

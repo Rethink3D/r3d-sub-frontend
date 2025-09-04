@@ -1,8 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 const ChevronDownIcon = () => (
-  <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+  <svg
+    className="w-5 h-5 text-gray-400"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M19 9l-7 7-7-7"
+    />
   </svg>
 );
 
@@ -17,14 +28,21 @@ interface CustomSelectProps {
   onChange: (value: string) => void;
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({ options, value, onChange }) => {
+const CustomSelect: React.FC<CustomSelectProps> = ({
+  options,
+  value,
+  onChange,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+      if (
+        selectRef.current &&
+        !selectRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -50,7 +68,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, value, onChange })
       {isOpen && (
         <div className="absolute top-full mt-2 w-full bg-fundo-cards border border-borda rounded-lg shadow-lg z-10 overflow-hidden">
           <ul>
-            {options.map(option => (
+            {options.map((option) => (
               <li
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
