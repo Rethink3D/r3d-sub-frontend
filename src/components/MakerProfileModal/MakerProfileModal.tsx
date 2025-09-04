@@ -49,7 +49,20 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({ maker = mockMaker
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Coluna da Esquerda: Perfil do Maker */}
+          {/* Coluna da Esquerda: Produto em Destaque */}
+          <div className="bg-gray-100 dark:bg-black/30 rounded-lg p-6">
+            <h2 className="font-bold text-xl mb-4">Produto em Destaque</h2>
+            <div className="flex items-center gap-4">
+              <img src={maker.featuredProduct.imageUrl} alt={maker.featuredProduct.title} className="w-24 h-24 rounded-md object-cover" />
+              <div>
+                <h3 className="font-bold text-lg text-blue-600 dark:text-blue-400">{maker.featuredProduct.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{maker.featuredProduct.description}</p>
+                <p className="font-bold text-lg mt-1">R$ {maker.featuredProduct.price}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Coluna da Direita: Perfil do Maker */}
           <div>
             <div className="flex items-center gap-6 mb-4">
               <div className={`${styles.avatarRing} p-1`}>
@@ -68,19 +81,6 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({ maker = mockMaker
               {maker.tags.map((tag: string) => (
                 <span key={tag} className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 text-xs font-semibold px-3 py-1 rounded-full">{tag}</span>
               ))}
-            </div>
-          </div>
-
-          {/* Coluna da Direita: Produto em Destaque */}
-          <div className="bg-gray-100 dark:bg-black/30 rounded-lg p-6">
-            <h2 className="font-bold text-xl mb-4">Produto em Destaque</h2>
-            <div className="flex items-center gap-4">
-              <img src={maker.featuredProduct.imageUrl} alt={maker.featuredProduct.title} className="w-24 h-24 rounded-md object-cover" />
-              <div>
-                <h3 className="font-bold text-lg text-blue-600 dark:text-blue-400">{maker.featuredProduct.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{maker.featuredProduct.description}</p>
-                <p className="font-bold text-lg mt-1">R$ {maker.featuredProduct.price}</p>
-              </div>
             </div>
           </div>
         </div>

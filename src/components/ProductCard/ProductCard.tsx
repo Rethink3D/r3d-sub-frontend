@@ -32,28 +32,35 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick={onCardClick}
       className="p-0.5 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-500 to-sky-400 cursor-pointer transform hover:scale-105 transition-transform duration-300 h-full"
     >
-      {/* CORRIGIDO: Fundo branco para o tema claro */}
-      <div className="bg-white h-full rounded-[14px] p-4 flex flex-col text-gray-900">
-        <div className="bg-black-100 rounded-lg mb-4">
+      {/* Container principal do card com cores para os dois temas */}
+      <div className="bg-white dark:bg-gray-800 h-full rounded-[14px] p-4 flex flex-col text-gray-900 dark:text-gray-50">
+        
+        {/* Container da imagem */}
+        <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg mb-4">
           <img src={imageUrl} alt={title} className="w-full h-40 object-contain rounded-lg p-2" />
         </div>
 
         <div className="flex flex-col flex-grow">
           <h3 className="text-xl font-bold mb-2 line-clamp-2">{title}</h3>
-          {/* CORRIGIDO: Cor do texto para tema claro */}
-          <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
+          
+          {/* Descrição com cores ajustadas */}
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">{description}</p>
+          
           <div className="flex justify-between items-end mt-auto pt-2">
             {isCustomizable && (
-              <p className="flex items-center gap-1 text-purple-600 bg-purple-100 font-bold text-xs py-1 px-2 rounded-md">
+              // Tag "Personalizável" com cores ajustadas
+              <p className="flex items-center gap-1 text-purple-600 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/50 font-bold text-xs py-1 px-2 rounded-md">
                 <WandIcon />
-                Personalizável
+                Customizável
               </p>
             )}
             <div className="text-right ml-auto">
-              <span className="text-xs text-gray-500 block">preço sugerido</span>
-              <p className="text-green-500 text-2xl font-bold drop-shadow-md">
-  R${price}
-</p>
+              {/* Texto "preço sugerido" com cores ajustadas */}
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">preço sugerido</span>
+              {/* Preço com cores ajustadas */}
+              <p className="text-green-500 dark:text-green-400 text-2xl font-bold drop-shadow-md">
+                R${price}
+              </p>
             </div>
           </div>
         </div>

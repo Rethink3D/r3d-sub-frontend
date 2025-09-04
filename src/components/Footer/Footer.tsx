@@ -1,34 +1,40 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./Footer.module.css";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black dark:bg-[#141414] text-gray-400 py-12">
+    // ANTES: bg-black dark:bg-[#141414] text-gray-400
+    // AGORA: Define um fundo claro e texto escuro para o modo padrão (claro)
+    <footer className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 py-12">
       <div className="container mx-auto px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
-          <div className="flex items-center gap-4 text-4xl font-semibold">
+          
+          {/* Logo */}
+          <div className="flex items-center justify-center sm:justify-start gap-4 text-4xl font-semibold">
             <Link
               to="/"
               className="flex items-baseline"
-              onClick={() =>
-                window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <span className={styles.logoText}>R3D</span>
+              <span className={styles.logoText}>Rethink</span>
               <span className={styles.webText}>/ Web</span>
             </Link>
           </div>
 
+          {/* Navegação */}
           <div>
-            <h4 className="font-semibold text-white text-xl mb-4">Navegação</h4>
+            {/* ANTES: text-white */}
+            {/* AGORA: Define texto escuro para o modo claro e branco para o modo escuro */}
+            <h4 className="font-semibold text-gray-900 dark:text-white text-xl mb-4">Navegação</h4>
             <ul className="space-y-3 text-lg">
               <li>
                 <Link
                   to="/"
-                  className="hover:text-white transition-colors"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
+                  // ANTES: hover:text-white
+                  // AGORA: Define hover escuro para modo claro e hover claro para modo escuro
+                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 >
                   Home
                 </Link>
@@ -36,10 +42,8 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/quem-somos"
-                  className="hover:text-white transition-colors"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
+                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 >
                   Quem Somos
                 </Link>
@@ -47,10 +51,8 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/contato"
-                  className="hover:text-white transition-colors"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
+                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 >
                   Contato
                 </Link>
@@ -58,13 +60,14 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
+          {/* Contato */}
           <div>
-            <h4 className="font-semibold text-white text-xl mb-4">Contato</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-white text-xl mb-4">Contato</h4>
             <ul className="space-y-3 text-lg">
               <li>
                 <a
                   href="mailto:rethink3dbr@gmail.com"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   rethink3dbr@gmail.com
                 </a>
@@ -74,7 +77,7 @@ const Footer: React.FC = () => {
                   href="https://www.instagram.com/_rethink3d/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   @_rethink3d
                 </a>
@@ -83,7 +86,10 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 dark:border-gray-800 pt-8 text-center text-sm">
+        {/* Linha divisória e Copyright */}
+        {/* ANTES: border-gray-700 dark:border-gray-800 */}
+        {/* AGORA: Define uma borda clara para o modo claro e escura para o modo escuro */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-8 text-center text-sm">
           <p>
             Copyright {new Date().getFullYear()} Rethink3D. Todos os direitos
             reservados.

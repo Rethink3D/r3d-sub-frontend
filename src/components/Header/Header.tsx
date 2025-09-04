@@ -37,8 +37,8 @@ const Header: React.FC = () => {
 
           <div className="flex items-center text-4xl font-semibold">
             <NavHashLink to="/#" smooth className="flex items-baseline">
-              <span className={styles.logoText}>R3D</span>
-              <span className={`${styles.webText} text-sky-300`}>/ Web</span>
+              <span className={styles.logoText}>Rethink</span>
+              <span className={`${styles.webText} text-sky-300`}> / Web</span>
             </NavHashLink>
           </div>
         </div>
