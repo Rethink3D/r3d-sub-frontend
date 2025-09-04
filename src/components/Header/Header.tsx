@@ -3,8 +3,10 @@ import { HashLink } from 'react-router-hash-link';
 import { NavHashLink } from 'react-router-hash-link';
 import styles from './Header.module.css';
 import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
+import { useTheme } from '../../context/ThemeContext';
 
 const MenuIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>;
+
 const CloseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>;
 
 
@@ -26,6 +28,10 @@ const Header: React.FC = () => {
         : 'text-texto-principal hover:text-gray-500' 
     }`;
 
+  const { theme } = useTheme();
+
+  const logoSrc = theme === 'light' ? '/Full-name-2-thin black.png' : '/Full-name-2-thin 1.png';
+  
   return (
     <header className="bg-fundo-principal border-b border-borda sticky top-0 z-50 transition-colors">
       <div className="container mx-auto flex w-full items-center justify-between h-28 px-4">
@@ -35,19 +41,18 @@ const Header: React.FC = () => {
             {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
 
-          <div className="flex items-center text-4xl font-semibold">
-            <NavHashLink to="/#" smooth className="flex items-baseline">
-              <span className={styles.logoText}>Rethink</span>
-              <span className={`${styles.webText} text-sky-300`}> / Web</span>
+          <div>
+            <NavHashLink to="/#" smooth className="flex items-center">
+              <img className="w-32 sm:w-40 lg:w-52 transition-all duration-300" src={ logoSrc } alt="Logo Rethink3D" />
+              <span className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-[#ffffff]">/ Web</span>
             </NavHashLink>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <nav className="hidden md:flex items-center gap-6 lg:gap-10">
+        <div className="flex items-center gap-2 md:gap-4">
+          <nav className="hidden md:flex items-center md:gap-3 lg:gap-6 xl:gap-8">
             <NavHashLink to="/#" smooth className={navLinkClasses}>Home</NavHashLink>
             <NavHashLink to="/quem-somos#" smooth className={navLinkClasses}>Quem Somos</NavHashLink>
-            {/* BOTÃO ADICIONADO AQUI (DESKTOP) */}
             <NavHashLink to="/catalogo" className={navLinkClasses}>Catálogo</NavHashLink>
             <NavHashLink to="/contato#" smooth className={navLinkClasses}>Contato</NavHashLink>
           </nav>
@@ -57,9 +62,9 @@ const Header: React.FC = () => {
           <HashLink 
             to="/#form-maker" 
             smooth
-            className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-4 py-2 transition-transform duration-200 hover:scale-105 inline-block text-center`}
+            className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-4 py-2 md:px-2 md:py-1 lg:px-6 lg:py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}
           >
-              <div className="flex flex-col items-center leading-tight whitespace-nowrap md:flex-row md:gap-1.5">
+              <div className="flex flex-col items-center leading-tight whitespace-nowrap lg:flex-row lg:gap-1.5">
                 <span>Seja um </span>
                 <span className="font-bold">Maker</span>
               </div>
@@ -79,7 +84,6 @@ const Header: React.FC = () => {
         <nav className="flex flex-col items-center justify-center h-full gap-8">
           <NavHashLink to="/#" smooth className={navLinkClasses} onClick={toggleMenu}>Home</NavHashLink>
           <NavHashLink to="/quem-somos#" smooth className={navLinkClasses} onClick={toggleMenu}>Quem Somos</NavHashLink>
-          {/* BOTÃO ADICIONADO AQUI (MOBILE) */}
           <NavHashLink to="/catalogo" className={navLinkClasses} onClick={toggleMenu}>Catálogo</NavHashLink>
           <NavHashLink to="/contato#" smooth className={navLinkClasses} onClick={toggleMenu}>Contato</NavHashLink>
           <ThemeToggle />

@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import styles from "./Footer.module.css";
 
 const Footer: React.FC = () => {
   return (
@@ -9,16 +8,13 @@ const Footer: React.FC = () => {
     <footer className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 py-12">
       <div className="container mx-auto px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
-          
-          {/* Logo */}
-          <div className="flex items-center justify-center sm:justify-start gap-4 text-4xl font-semibold">
+          <div className="flex justify-center sm:justify-normal gap-4 text-4xl font-semibold">
             <Link
               to="/"
-              className="flex items-baseline"
+              className="flex items-baseline w-56 sm:w-48"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <span className={styles.logoText}>Rethink</span>
-              <span className={styles.webText}>/ Web</span>
+              <img src="/Full-name-2-thin 1.png" alt="Logo Rethink 3D" />
             </Link>
           </div>
 

@@ -1,5 +1,3 @@
-import React from "react";
-
 const HowItWorksStep: React.FC<{
   step: number;
   title: string;
