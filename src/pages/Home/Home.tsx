@@ -1,7 +1,7 @@
 import styles from "./Home.module.css";
-import InviteForm from "../../components/InviteForm/InviteForm";
+import InviteForm from "./components/InviteForm/InviteForm";
 import { Link } from "react-router-dom";
-import CredibilityCarousel from "../../components/CredibilityCarousel/CredibilityCarousel";
+import CredibilityCarousel from "./components/CredibilityCarousel/CredibilityCarousel";
 
 const HomePage: React.FC = () => {
   return (

@@ -8,10 +8,10 @@ import {
   deleteImage,
   getMakers,
   getCategories,
-  Maker,
-  Category,
-  Image,
 } from "../../../services/api";
+import { Category } from "../../../types/interfaces/ICategory";
+import { Image } from "../../../types/interfaces/IImage";
+import { Maker } from "../../../types/interfaces/IMaker";
 
 const ProductForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();

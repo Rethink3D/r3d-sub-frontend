@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getMakers, deleteMaker, Maker } from "../../services/api";
+import { getMakers, deleteMaker } from "../../services/api";
 import CategoryManager from "./components/CategoryManager";
+import { Maker } from "../../types/interfaces/IMaker";
 
 const Makers: React.FC = () => {
   const [makers, setMakers] = useState<Maker[]>([]);

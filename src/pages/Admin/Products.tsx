@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProducts, deleteProduct, Product } from "../../services/api";
+import { getProducts, deleteProduct } from "../../services/api";
+import { Product } from "../../types/interfaces/IProduct";
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);

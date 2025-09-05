@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import ProductCard from "../../components/ProductCard/ProductCard";
-import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import MakerProfileModal from "../../components/MakerProfileModal/MakerProfileModal";
+import ProductCard from "./components/ProductCard/ProductCard";
+import CustomSelect from "./components/CustomSelect/CustomSelect";
+import MakerProfileModal from "./components/MakerProfileModal/MakerProfileModal";
 import styles from "./Catalogo.module.css";
 
 const SearchIcon = () => (
