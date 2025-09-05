@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 py-12">
+    <footer className="bg-[oklch(20.5%_0_0)] dark:bg-[oklch(14.5%_0_0)] text-gray-300 py-12">
       <div className="container mx-auto px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
           <div className="flex justify-center sm:justify-normal gap-4 text-4xl font-semibold">
@@ -16,14 +16,12 @@ const Footer: React.FC = () => {
             </Link>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white text-xl mb-4">
-              Navegação
-            </h4>
+            <h4 className="font-semibold text-white text-xl mb-4">Navegação</h4>
             <ul className="space-y-3 text-lg">
               <li>
                 <Link
                   to="/"
-                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="hover:text-white transition-colors"
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })
                   }
@@ -34,7 +32,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/quem-somos"
-                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="hover:text-white transition-colors"
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })
                   }
@@ -45,7 +43,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/contato"
-                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="hover:text-white transition-colors"
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })
                   }
@@ -56,16 +54,13 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Contato */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white text-xl mb-4">
-              Contato
-            </h4>
+            <h4 className="font-semibold text-white text-xl mb-4">Contato</h4>
             <ul className="space-y-3 text-lg">
               <li>
                 <a
                   href="mailto:rethink3dbr@gmail.com"
-                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="hover:text-white transition-colors"
                 >
                   rethink3dbr@gmail.com
                 </a>
@@ -75,7 +70,7 @@ const Footer: React.FC = () => {
                   href="https://www.instagram.com/_rethink3d/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="hover:text-white transition-colors"
                 >
                   @_rethink3d
                 </a>
@@ -84,7 +79,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-8 text-center text-sm">
+        <div className="border-t border-gray-700 pt-8 text-center text-sm">
           <p>
             Copyright {new Date().getFullYear()} Rethink3D. Todos os direitos
             reservados.
