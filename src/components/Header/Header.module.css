@@ -38,10 +38,20 @@
   bottom: -10px;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ff00ff);
-  border-radius: 2px;
   width: 100%;
-  animation: draw-underline 0.4s ease-out forwards;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #333, #fff, #bbb, #333);
+  background-size: 300% 100%;
+  animation: shimmer-effect 4s linear infinite;
+}
+
+@keyframes shimmer-effect {
+  0% {
+    background-position: 150% 0;
+  }
+  100% {
+    background-position: -150% 0;
+  }
 }
 
 @keyframes draw-underline {
