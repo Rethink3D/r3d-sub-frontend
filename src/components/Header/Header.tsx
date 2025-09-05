@@ -133,7 +133,7 @@ const Header: React.FC = () => {
           </nav>
           <div className="hidden md:block w-px h-6 bg-borda"></div>
           <HashLink
-            to="/#form-maker"
+            to="/catalogo"
             smooth
             className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-4 py-2 md:px-2 md:py-1 lg:px-6 lg:py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}
           >

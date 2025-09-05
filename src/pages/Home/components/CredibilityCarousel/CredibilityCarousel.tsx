@@ -41,8 +41,8 @@ const slidesData: Slide[] = [
 const CredibilityCarousel: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 text-center">
-      <h2 className="text-5xl font-bold text-texto-principal mb-12">
-       Galeria de Eventos:
+      <h2 className="text-4xl md:text-5xl font-bold text-texto-principal mb-12">
+        Galeria de Eventos:
       </h2>
 
       <Swiper
@@ -58,13 +58,22 @@ const CredibilityCarousel: React.FC = () => {
           modifier: 2.5,
           slideShadows: true,
         }}
-        pagination={{ el: ".swiper-pagination", clickable: true }}
+        pagination={{
+          el: ".swiper-pagination",
+          clickable: true,
+          renderBullet: (index, className) => {
+            return `<span class="${className} w-2.5 h-2.5 rounded-full 
+        bg-gray-800 dark:bg-white opacity-50 
+        [&.swiper-pagination-bullet-active]:bg-blue-500 
+        [&.swiper-pagination-bullet-active]:opacity-100"></span>`;
+          },
+        }}
         navigation={{
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev",
         }}
         modules={[EffectCoverflow, Pagination, Navigation]}
-        className="w-full py-4 my-12"
+        className="w-full mb-5"
       >
         {slidesData.map((slide) => (
           <SwiperSlide
@@ -93,7 +102,6 @@ const CredibilityCarousel: React.FC = () => {
           </SwiperSlide>
         ))}
 
-        {/* Controles de Navegação e Paginação */}
         <div className="slider-controler relative mt-8">
           <div className="swiper-pagination"></div>
         </div>
