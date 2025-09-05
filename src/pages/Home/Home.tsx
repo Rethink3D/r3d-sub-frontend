@@ -14,14 +14,15 @@ const HomePage: React.FC = () => {
             <strong className="font-bold">Impressão 3D.</strong>
           </h1>
           <p className="text-lg text-texto-secundario max-w-lg mx-auto lg:mx-0">
-            Você é Maker? A hora é agora. Cadastre-se e transforme sua
-            habilidade em renda. A Rethink3D conecta você a clientes reais que
-            valorizam o seu trabalho.
+            Explore o catálogo da <strong>Rethink3D</strong> e descubra criações
+            únicas de <strong>Makers</strong> talentosos. Encontre projetos que
+            você ama ou solicite algo totalmente <strong>personalizado</strong>,
+            feito sob medida para <strong>você</strong>.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
-            <Link className={styles.gradientBorderButton} to="/quem-somos">
-              Saiba mais &rarr;
+            <Link className={styles.gradientBorderButton} to="/catalogo">
+              Ver Catálogo &rarr;
             </Link>
 
             <Link

@@ -45,20 +45,24 @@
   animation: shimmer-effect 4s linear infinite;
 }
 
+.activeMobile::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #333, #fff, #bbb, #333);
+  background-size: 300% 100%;
+  animation: shimmer-effect 4s linear infinite;
+}
+
 @keyframes shimmer-effect {
   0% {
     background-position: 150% 0;
   }
   100% {
     background-position: -150% 0;
-  }
-}
-
-@keyframes draw-underline {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
   }
 }
