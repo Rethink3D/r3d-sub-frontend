@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
@@ -31,13 +30,24 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/quem-somos"
+                  to="/catalogo"
                   className="hover:text-white transition-colors"
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })
                   }
                 >
-                  Quem Somos
+                  Catálogo
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/saiba-mais"
+                  className="hover:text-white transition-colors"
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                >
+                  Saiba Mais
                 </Link>
               </li>
               <li>
@@ -80,10 +90,8 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-gray-700 pt-8 text-center text-sm">
-          <p>
-            Copyright {new Date().getFullYear()} Rethink3D. Todos os direitos
-            reservados.
-          </p>
+          <p>Copyright {new Date().getFullYear()} Rethink3D.</p>
+          <p>Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

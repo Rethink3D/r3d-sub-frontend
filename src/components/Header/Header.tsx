@@ -43,7 +43,7 @@ const CloseIcon = () => (
 const navItems = [
   { path: "/", name: "Home" },
   { path: "/catalogo", name: "Catálogo" },
-  { path: "/quem-somos", name: "Saiba Mais" },
+  { path: "/saiba-mais", name: "Saiba Mais" },
   { path: "/contato", name: "Contato" },
 ];
 
