@@ -101,7 +101,7 @@ const generateMockProducts = (count) => {
     {
       name: "Ana Silva",
       storeName: "Ana Artes 3D",
-      location: "São Paulo, SP",
+      location: "São Luís",
       rating: 4.8,
       productCount: 52,
       bio: "Especialista em action figures detalhadas.",
@@ -119,7 +119,7 @@ const generateMockProducts = (count) => {
     {
       name: "Bruno Costa",
       storeName: "BC Prints",
-      location: "Rio de Janeiro, RJ",
+      location: "São Luís",
       rating: 4.9,
       productCount: 35,
       bio: "Dioramas e cenários realistas.",
@@ -135,18 +135,19 @@ const generateMockProducts = (count) => {
     {
       name: "Carla Dias",
       storeName: "Pop Collectibles",
-      location: "Belo Horizonte, MG",
+      location: "São Luís",
       rating: 4.7,
       productCount: 88,
       bio: "A maior coleção de Funkos customizados.",
       tags: ["Funko Pop", "Cultura Pop"],
-      offersCustomization: true,
+      acceptsCustomOrders: true,
       instagram: "carlapops",
       featuredProduct: {
         imageUrl: "https://placehold.co/100x100/3E3E3E/FFFFFF?text=Funko",
         title: "Funko Custom",
         description: "Seu personagem favorito.",
         price: "180.00",
+        isCustomizable: true,
       },
     },
   ];

@@ -1,4 +1,6 @@
 import styles from "./MakerProfileModal.module.css";
+import React from "react";
+
 const CloseIcon = () => (
   <svg
     className="w-8 h-8"
@@ -15,6 +17,7 @@ const CloseIcon = () => (
     ></path>
   </svg>
 );
+
 const LocationIcon = () => (
   <svg
     className="w-4 h-4"
@@ -36,15 +39,7 @@ const LocationIcon = () => (
     />
   </svg>
 );
-const StarIcon = () => (
-  <svg
-    className="w-4 h-4 text-yellow-400"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-  >
-    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-  </svg>
-);
+
 const ExternalLinkIcon = () => (
   <svg
     className="w-5 h-5"
@@ -61,29 +56,76 @@ const ExternalLinkIcon = () => (
   </svg>
 );
 
+const WandIcon = () => (
+  <svg
+    className="w-4 h-4"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"
+    />
+  </svg>
+);
+
+const InformationIcon = () => (
+  <svg
+    className="w-5 h-5"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    ></path>
+  </svg>
+);
+
+const BoxIcon = () => (
+  <svg
+    className="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7v10l8 4m0-14v10"
+    ></path>
+  </svg>
+);
+
 const mockMaker = {
   name: "Ana Souza",
   location: "São Paulo, SP",
-  rating: 4.9,
   productCount: 45,
   bio: "Designer especializada em objetos decorativos únicos com mais de 5 anos de experiência.",
   tags: ["Decoração", "Design de Interiores", "Arte Moderna"],
+  acceptsCustomOrders: true,
   featuredProduct: {
     imageUrl: "https://placehold.co/100x100/313131/FFF?text=Vaso",
     title: "Vaso Geométrico",
-    description: "Decoração criado com alta qualidade e atenção aos detalhes.",
+    description: "Decoração criada com alta qualidade e atenção aos detalhes.",
     price: "45.90",
+    isCustomizable: true,
   },
-  contacts: {
-    instagram: "ana.souza.3d",
-    whatsapp: "5511912345678",
-    email: "ana.souza@email.com",
-    mercadoLivre: "#",
-  },
+  contacts: {},
 };
 
 interface MakerProfileModalProps {
-  maker: any;
+  maker?: any;
   onClose: () => void;
 }
 
@@ -100,7 +142,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
     >
       <div
         onClick={handleModalContentClick}
-        className="relative bg-white dark:bg-[#121212] text-gray-900 dark:text-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-8 animate-fade-in-scale"
+        className="relative bg-white dark:bg-[#121212] text-gray-900 dark:text-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 animate-fade-in-scale"
       >
         <button
           onClick={onClose}
@@ -108,17 +150,91 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
         >
           <CloseIcon />
         </button>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Coluna da Esquerda: Produto em Destaque */}
-          <div className="bg-gray-100 dark:bg-black/30 rounded-lg p-6">
+        <div className="flex flex-col md:grid md:grid-cols-2 md:gap-8">
+          <div className="flex flex-col md:order-2 mb-8 md:mb-0">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
+              <div
+                className={`${styles.avatarRing} p-1 flex-shrink-0 mb-4 md:mb-0`}
+              >
+                <img
+                  src={
+                    maker.avatarUrl ||
+                    `https://ui-avatars.com/api/?name=${maker.name.replace(
+                      " ",
+                      "+"
+                    )}&background=random&color=fff`
+                  }
+                  alt={maker.name}
+                  className="w-28 h-28 rounded-full"
+                />
+              </div>
+              <div className="flex-grow">
+                <h1 className="text-3x1 font-bold">{maker.name}</h1>
+                <div className="flex flex-nowrap items-center justify-center md:justify-start gap-2 text-gray-600 dark:text-gray-400 text-sm mt-2">
+                  <span className="flex items-center gap-1">
+                    <LocationIcon /> {maker.location}
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <BoxIcon />
+                    {maker.productCount} produtos
+                  </span>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 my-4 max-w-md">
+                  {maker.bio}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center md:justify-start mt-4">
+              {maker.tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 text-xs font-semibold px-3 py-1 rounded-full"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            {maker.acceptsCustomOrders && (
+              <div className="mt-6 w-full">
+                <div
+                  className={`group relative p-2 rounded-lg flex items-center justify-center gap-3 text-center text-white ${styles.customOrderCard}`}
+                >
+                  <InformationIcon />
+                  <h3 className="font-bold text-sm">
+                    Aceita Pedidos Personalizados
+                  </h3>
+                  <div className="absolute z-20 top-full mt-2 left-1/2 -translate-x-1/2 w-64 text-center bg-gray-900 text-white text-xs rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    Este Maker aceita pedidos personalizados nas categorias em
+                    que trabalha.
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col justify-center bg-gray-100 dark:bg-black/30 rounded-lg p-6 md:order-1">
             <h2 className="font-bold text-xl mb-4">Produto em Destaque</h2>
-            <div className="flex items-center gap-4">
-              <img
-                src={maker.featuredProduct.imageUrl}
-                alt={maker.featuredProduct.title}
-                className="w-24 h-24 rounded-md object-cover"
-              />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+              <div className="flex flex-col items-center sm:items-start flex-shrink-0">
+                <img
+                  src={maker.featuredProduct.imageUrl}
+                  alt={maker.featuredProduct.title}
+                  className="w-28 h-28 rounded-md object-cover"
+                />
+                {maker.featuredProduct.isCustomizable && (
+                  <div
+                    tabIndex={0}
+                    onClick={(e) => e.stopPropagation()}
+                    className="group relative mt-2 flex items-center gap-1.5 bg-purple-600/80 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  >
+                    <WandIcon />
+                    <span>Customizável</span>
+                    <div className="absolute z-20 bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 text-center bg-gray-900 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      Este Produto pode ser personalizado!
+                    </div>
+                  </div>
+                )}
+              </div>
               <div>
                 <h3 className="font-bold text-lg text-blue-600 dark:text-blue-400">
                   {maker.featuredProduct.title}
@@ -132,51 +248,11 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
               </div>
             </div>
           </div>
-
-          {/* Coluna da Direita: Perfil do Maker */}
-          <div>
-            <div className="flex items-center gap-6 mb-4">
-              <div className={`${styles.avatarRing} p-1`}>
-                <img
-                  src={
-                    maker.avatarUrl ||
-                    `https://ui-avatars.com/api/?name=${maker.name.replace(
-                      " ",
-                      "+"
-                    )}&background=random`
-                  }
-                  alt={maker.name}
-                  className="w-24 h-24 rounded-full"
-                />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold">{maker.name}</h1>
-                <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 text-sm mt-1">
-                  <span className="flex items-center gap-1">
-                    <LocationIcon /> {maker.location}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <StarIcon /> {maker.rating} • {maker.productCount} produtos
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">{maker.bio}</p>
-            <div className="flex flex-wrap gap-2">
-              {maker.tags.map((tag: string) => (
-                <span
-                  key={tag}
-                  className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 text-xs font-semibold px-3 py-1 rounded-full"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
-
-        <div className="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800">
-          <h2 className="text-2xl font-bold mb-4">Entre em Contato</h2>
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
+            Entre em Contato
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <a
               href="#"
@@ -220,9 +296,17 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
             </a>
           </div>
         </div>
-
-        <div className="mt-10 text-center">
-          <button>Ver Todos os Produtos</button>
+        <div className="mt-8 text-center">
+          <button
+            className={`
+      ${styles.viewAllButton} 
+      font-bold py-3 px-6 rounded-lg
+      bg-gray-800 text-white
+      dark:bg-[#00c6ff] dark:text-gray-900
+    `}
+          >
+            Ver Todos os Produtos
+          </button>
         </div>
       </div>
     </div>

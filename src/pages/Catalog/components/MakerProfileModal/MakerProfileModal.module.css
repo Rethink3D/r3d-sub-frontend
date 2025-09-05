@@ -8,16 +8,24 @@
   transition: all 0.3s ease;
 }
 .contactCard:hover {
-  border-color: #8c52ff;
-  background-color: rgba(140, 82, 255, 0.1);
+  background-color: #8c52ff;
+}
+
+.customOrderCard {
+  cursor: pointer;
+  border: 1px solid transparent;
+  background-color: #8c52ff;
+  transition: all 0.3s ease;
+}
+.customOrderCard:hover {
+  box-shadow: 0 0 15px rgba(140, 82, 255, 0.4);
 }
 
 .viewAllButton {
-  background-image: linear-gradient(to right, #eab308, #65a30d);
-  color: #121212;
   transition: all 0.3s ease;
 }
+
 .viewAllButton:hover {
-  box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+  box-shadow: 0 0 20px rgba(5, 136, 154, 0.94);
   transform: scale(1.05);
 }

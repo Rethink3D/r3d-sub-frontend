@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={onCardClick}
-      className="relative hover:z-10 p-0.5 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 cursor-pointer transform hover:scale-105 transition-transform duration-300 h-full"
+      className="relative hover:z-10 p-0.5 rounded-2xl bg-gradient-to-br from-[#00c6ff] to-[#8c52ff] cursor-pointer transform hover:scale-105 transition-transform duration-300 h-full"
     >
       <div className="bg-white dark:bg-[#1a1a1a] dark:bg-opacity-100 h-full rounded-[14px] p-4 flex flex-col text-gray-900 dark:text-gray-50">
         <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg mb-4 relative">
