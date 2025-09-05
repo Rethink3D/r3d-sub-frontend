@@ -1,7 +1,5 @@
-import { Category } from "../types/interfaces/ICategory";
-import { Maker } from "../types/interfaces/IMaker";
-import { Product } from "../types/interfaces/IProduct";
-import { Image } from "../types/interfaces/IImage";
+import { Category, Image, Maker, Product } from "../types/types";
+ 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

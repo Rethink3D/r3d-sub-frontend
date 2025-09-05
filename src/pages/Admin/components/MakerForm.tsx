@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import {
   getMakerById,
@@ -8,10 +8,12 @@ import {
   uploadMakerProfileImage,
   deleteImage,
 } from "../../../services/api";
-import { Category } from "../../../types/interfaces/ICategory";
-import { Image } from "../../../types/interfaces/IImage";
-import { MakerStatusEnum } from "../../../types/enums/maker-status.enum";
-import { ContactTypeEnum } from "../../../types/enums/contact-type.enum";
+import {
+  MakerStatusEnum,
+  ContactTypeEnum,
+  Category,
+  Image,
+} from "../../../types/types";
 
 const MakerForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();

@@ -9,9 +9,7 @@ import {
   getMakers,
   getCategories,
 } from "../../../services/api";
-import { Category } from "../../../types/interfaces/ICategory";
-import { Image } from "../../../types/interfaces/IImage";
-import { Maker } from "../../../types/interfaces/IMaker";
+import { Maker, Image, Category } from "../../../types/types";
 
 const ProductForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();

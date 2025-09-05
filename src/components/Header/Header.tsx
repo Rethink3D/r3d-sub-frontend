@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { NavHashLink } from "react-router-hash-link";
@@ -42,8 +42,8 @@ const CloseIcon = () => (
 
 const navItems = [
   { path: "/", name: "Home" },
-  { path: "/quem-somos", name: "Quem Somos" },
   { path: "/catalogo", name: "Catálogo" },
+  { path: "/quem-somos", name: "Saiba Mais" },
   { path: "/contato", name: "Contato" },
 ];
 

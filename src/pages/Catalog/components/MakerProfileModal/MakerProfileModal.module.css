@@ -9,6 +9,7 @@
 }
 .contactCard:hover {
   background-color: #8c52ff;
+  border-color: #8c52ff;
 }
 
 .customOrderCard {
@@ -24,8 +25,22 @@
 .viewAllButton {
   transition: all 0.3s ease;
 }
-
 .viewAllButton:hover {
-  box-shadow: 0 0 20px rgba(5, 136, 154, 0.94);
+  box-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
   transform: scale(1.05);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.3s ease-in-out forwards;
 }
