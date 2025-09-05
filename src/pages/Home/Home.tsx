@@ -2,7 +2,7 @@ import styles from "./Home.module.css";
 import InviteForm from "./components/InviteForm/InviteForm";
 import { Link } from "react-router-dom";
 import CredibilityCarousel from "./components/CredibilityCarousel/CredibilityCarousel";
-
+import FaqAccordion from "../../components/Faq/FaqAccordion";
 const HomePage: React.FC = () => {
   return (
     <div className="py-8 md:py-20 flex flex-col md:gap-24">
@@ -84,8 +84,17 @@ const HomePage: React.FC = () => {
         <CredibilityCarousel />
       </section>
 
+
       <section id="form-maker" className="scroll-mt-40">
         <InviteForm />
+      </section>
+
+      <section className="text-center py-16">
+        <h2 className="text-5xl font-bold text-texto-principal mb-12">
+          Perguntas Frequentes
+        </h2>
+
+        <FaqAccordion />
       </section>
     </div>
   );
