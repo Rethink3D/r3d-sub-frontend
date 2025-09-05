@@ -35,10 +35,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={onCardClick}
-      className="p-0.5 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-500 to-sky-400 cursor-pointer transform hover:scale-105 transition-transform duration-300 h-full"
+      className="p-0.5 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 cursor-pointer transform hover:scale-105 transition-transform duration-300 h-full"
     >
       {/* Container principal do card com cores para os dois temas */}
-      <div className="bg-white dark:bg-gray-800 h-full rounded-[14px] p-4 flex flex-col text-gray-900 dark:text-gray-50">
+ <div className="  bg-white dark:bg-gray-800 dark:bg-opacity-100 h-full rounded-[14px] p-4 flex flex-col text-gray-900 dark:text-gray-50">
         {/* Container da imagem */}
         <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg mb-4">
           <img

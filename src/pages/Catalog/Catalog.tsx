@@ -16,7 +16,7 @@ const generateMockProducts = (count) => {
 const mockProducts = generateMockProducts(100);
 const ITEMS_PER_PAGE = 20;
 const sortOptions = [
-    { value: "popularity", label: "Em alta" }, { value: "recent", label: "Mais recentes" }, { value: "price-asc", label: "Mais baratos" }, { value: "price-desc", label: "Mais caros" },
+    { value: "popularity", label: "Em alta" }, { value: "recent", label: "Mais recentes" }, { value: "price-asc", label: "Menor preço" }, { value: "price-desc", label: "Maior Preço" },
 ];
 
 const Catalog: React.FC = () => {

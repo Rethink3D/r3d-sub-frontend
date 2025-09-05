@@ -9,45 +9,40 @@ interface Slide {
   id: number;
   image: string;
   title: string;
-  description: string;
 }
 
 const slidesData: Slide[] = [
   {
     id: 1,
     image: "/fotoevento10.jpg",
-    title: "Evento de Lançamento da Plataforma",
-    description:
-      "Participamos da feira de tecnologia local, apresentando a Rethink3D.",
+    title: "Sebrae: Transformar Juntos 2025.",
+  },
+  {
+    id: 3,
+    image: "/fazteunomeevento5.jpg",
+    title: "Sebrae: Neon 2025",
   },
   {
     id: 2,
     image: "/fotoevento1.jpg",
-    title: "Parceria com Indústria de Protótipos",
-    description:
-      "Fechamos um contrato de grande escala para fornecer protótipos rápidos.",
-  },
-  {
-    id: 3,
-    image: "/fotoevento8.jpg",
-    title: "Projeto de Peças Customizadas",
-    description:
-      "Desenvolvemos e entregamos um lote de 1.000 peças customizadas.",
+    title: "Sebrae: Faz teu nome!",
   },
   {
     id: 4,
     image: "/fotoevento5.jpg",
-    title: "Outro Grande Contrato",
-    description:
-      "Mais um exemplo de negócio bem sucedido para mostrar no carrossel.",
+    title: "Sebrae: Neon 2025",
+  },
+  {
+    id: 5,
+    image: "/eventofazteunomepedro.jpg",
+    title: "Sebrae: Faz teu nome!",
   },
 ];
-
 const CredibilityCarousel: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 text-center">
       <h2 className="text-5xl font-bold text-texto-principal mb-12">
-        Nossa Trajetória de Sucesso
+       Galeria de Eventos:
       </h2>
 
       <Swiper
@@ -92,9 +87,6 @@ const CredibilityCarousel: React.FC = () => {
                   <h3 className="text-lg sm:text-2xl font-bold">
                     {slide.title}
                   </h3>
-                  <p className="hidden sm:block text-sm sm:text-base text-gray-200 mt-1">
-                    {slide.description}
-                  </p>
                 </div>
               </div>
             )}
@@ -103,8 +95,6 @@ const CredibilityCarousel: React.FC = () => {
 
         {/* Controles de Navegação e Paginação */}
         <div className="slider-controler relative mt-8">
-          <div className="swiper-button-prev slider-arrow text-white bg-black/30 rounded-full after:!text-xl"></div>
-          <div className="swiper-button-next slider-arrow text-white bg-black/30 rounded-full after:!text-xl"></div>
           <div className="swiper-pagination"></div>
         </div>
       </Swiper>

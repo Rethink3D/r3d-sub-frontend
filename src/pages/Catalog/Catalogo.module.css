@@ -1,7 +1,7 @@
 .gradientBorderButton {
   border: 1.5px solid transparent;
   background: linear-gradient(#1f1f2b, #1f1f2b) padding-box,
-    linear-gradient(to right, #8c52ff, #f700af) border-box;
+    linear-gradient(to right, #8c52ff, #fc00b4) border-box;
 }
 
 .gridFadeIn {
