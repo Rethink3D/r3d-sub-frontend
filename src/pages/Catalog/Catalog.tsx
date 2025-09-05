@@ -5,9 +5,8 @@ import MakerProfileModal from "./components/MakerProfileModal/MakerProfileModal"
 import styles from "./Catalogo.module.css";
 
 const SearchIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}> <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /> </svg> );
-const FilterIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}> <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V19l-4 2v-6.586a1 1 0 00-.293.707L3.293 7.293A1 1 0 013 6.586V4z" /> </svg> );
+const FilterIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}> <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V19l-4 2v-6.586a1 1 M00-.293.707L3.293 7.293A1 1 0 013 6.586V4z" /> </svg> );
 const LoadingSpinner = () => ( <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> );
-const UserIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}> <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /> </svg> );
 const CloseIcon = () => (<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path></svg>);
 
 const generateMockProducts = (count) => {
@@ -22,7 +21,6 @@ const sortOptions = [
 
 const Catalog: React.FC = () => {
     const [searchInput, setSearchInput] = useState("");
-    const [makerSearchInput, setMakerSearchInput] = useState("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState("popularity");
     const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
@@ -63,7 +61,6 @@ const Catalog: React.FC = () => {
     const filteredAndSortedProducts = useMemo(() => {
         let result = [...mockProducts];
         if (searchInput) { result = result.filter((p) => p.title.toLowerCase().includes(searchInput.toLowerCase())); }
-        if (makerSearchInput) { result = result.filter((p) => p.maker.name.toLowerCase().includes(makerSearchInput.toLowerCase())); }
         if (selectedCategories.length > 0) { result = result.filter((p) => selectedCategories.includes(p.category)); }
         switch (sortBy) {
             case "popularity": result.sort((a, b) => b.popularity - a.popularity); break;
@@ -73,13 +70,13 @@ const Catalog: React.FC = () => {
             default: break;
         }
         return result;
-    }, [searchInput, makerSearchInput, selectedCategories, sortBy]);
+    }, [searchInput, selectedCategories, sortBy]);
 
     useEffect(() => {
         triggerAnimation();
         setVisibleCount(ITEMS_PER_PAGE);
         window.scrollTo({ top: 0, behavior: "smooth" });
-    }, [searchInput, makerSearchInput, selectedCategories, sortBy]);
+    }, [searchInput, selectedCategories, sortBy]);
 
     const productsToShow = filteredAndSortedProducts.slice(0, visibleCount);
 
@@ -153,24 +150,20 @@ const Catalog: React.FC = () => {
                     </aside>
 
                     <main className="lg:col-span-3">
-                        <div className="flex flex-col gap-4 mb-8">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="relative flex-grow">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <SearchIcon />
-                                    </span>
-                                    <input type="text" placeholder="Buscar produtos..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
-                                        className="bg-gray-100 dark:bg-[#1a1a1a] w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-                                </div>
-                                <div className="relative flex-grow">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                    </span>
-                                </div>
+                        <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
+                            <div className="relative w-full">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <SearchIcon />
+                                </span>
+                                <input type="text" placeholder="Buscar produtos..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
+                                    className="bg-gray-100 dark:bg-[#1a1a1a] w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-purple-500" />
                             </div>
-                            <CustomSelect options={sortOptions} value={sortBy} onChange={(value) => setSortBy(value)} />
+                            <div className="w-full sm:w-56">
+                                <CustomSelect options={sortOptions} value={sortBy} onChange={(value) => setSortBy(value)} />
+                            </div>
                         </div>
 
-                        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 ${animateGrid ? styles.gridFadeIn : ""}`}>
+                        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6 ${animateGrid ? styles.gridFadeIn : ""}`}>
                             {productsToShow.map((product, index) => {
                                 const card = (<ProductCard key={product.id} {...product} description={product.category} onCardClick={() => setSelectedMaker(product.maker)} />);
                                 if (productsToShow.length === index + 1) {
