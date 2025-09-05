@@ -3,7 +3,8 @@ import { Maker } from "../types/interfaces/IMaker";
 import { Product } from "../types/interfaces/IProduct";
 import { Image } from "../types/interfaces/IImage";
 
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 interface LoginResponse {
   access_token: string;
 }
