@@ -44,3 +44,12 @@
 .animate-fade-in-scale {
   animation: fadeInScale 0.3s ease-in-out forwards;
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

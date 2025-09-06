@@ -2,26 +2,37 @@ import { Product, Maker, Category } from "../types/types";
 import { MakerStatusEnum, ContactTypeEnum } from "../types/types";
 
 const categoriesMock: Category[] = [
-  { id: "1", name: "Action Figure" },
-  { id: "2", name: "Boneco" },
-  { id: "3", name: "Funko Pop" },
-  { id: "4", name: "Diorama" },
-  { id: "5", name: "Miniatura" },
-  { id: "6", name: "Cosplay" },
-  { id: "7", name: "Acessórios" },
+  {
+    id: "1",
+    name: "Action Figure",
+    description: "Figuras de ação colecionáveis.",
+  },
+  { id: "2", name: "Boneco", description: "Bonecos de personagens diversos." },
+  { id: "3", name: "Funko Pop", description: "Miniaturas de vinil da Funko." },
+  { id: "4", name: "Diorama", description: "Cenários em miniatura." },
+  { id: "5", name: "Miniatura", description: "Réplicas em escala de objetos." },
+  { id: "6", name: "Cosplay", description: "Acessórios e props para cosplay." },
+  { id: "7", name: "Acessórios", description: "Chaveiros e outros itens." },
 ];
 
 export const makersMock: Maker[] = [
   {
     id: "maker-1",
     name: "Ana Silva",
-    storeName: "Ana Artes 3D",
     description: "Especialista em action figures detalhadas.",
     acceptsPersonalization: true,
     status: MakerStatusEnum.ACTIVE,
     contacts: [
-      { type: ContactTypeEnum.WHATSAPP, contactInfo: "5511912345678" },
-      { type: ContactTypeEnum.INSTAGRAM, contactInfo: "anaartes3d" },
+      {
+        id: "contact-1",
+        type: ContactTypeEnum.WHATSAPP,
+        contactInfo: "5511912345678",
+      },
+      {
+        id: "contact-2",
+        type: ContactTypeEnum.INSTAGRAM,
+        contactInfo: "anaartes3d",
+      },
     ],
     categories: [categoriesMock[0], categoriesMock[1]],
     profileImage: {
@@ -29,12 +40,13 @@ export const makersMock: Maker[] = [
       filename: "ana.jpg",
       format: "jpeg",
       url: "https://placehold.co/100x100/3E3E3E/FFFFFF?text=Ana",
+      altText: "Foto de perfil de Ana Silva",
     },
     location: "São Luís",
     rating: 4.8,
     productCount: 52,
-    bio: "Especialista em action figures detalhadas.",
-    tags: ["Action Figures", "Colecionáveis"],
+    createdAt: "2025-09-01T10:00:00.000Z",
+    updatedAt: "2025-09-05T15:30:00.000Z",
   },
 ];
 
@@ -51,7 +63,7 @@ const generateMockProducts = (count: number): Product[] => {
     const randomCategory = categoriesMock[i % categoriesMock.length];
     const randomTitle = titles[i % titles.length];
     const randomMaker = makersMock[i % makersMock.length];
-    const randomPrice = parseFloat((Math.random() * 250 + 50).toFixed(2));
+    const randomPrice = (Math.random() * 250 + 50).toFixed(2);
     const randomDate = new Date(
       Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000
     );
@@ -63,7 +75,8 @@ const generateMockProducts = (count: number): Product[] => {
       isPersonalizable: Math.random() > 0.5,
       categories: [randomCategory],
       popularity: Math.floor(Math.random() * 100),
-      dateAdded: randomDate.toISOString().split("T")[0],
+      createdAt: randomDate.toISOString(),
+      deletedAt: null,
       description: `Descrição detalhada do ${randomTitle}.`,
       maker: randomMaker,
       material: "PLA",
@@ -73,6 +86,7 @@ const generateMockProducts = (count: number): Product[] => {
           filename: `prod-${i}.jpg`,
           format: "jpeg",
           url: `https://placehold.co/400x400/5E5E5E/FFFFFF?text=Produto+${i}`,
+          altText: `Imagem do produto ${randomTitle}`,
         },
       ],
     });

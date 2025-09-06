@@ -1,5 +1,11 @@
-import { Category, Image, Maker, Product } from "../types/types";
- 
+import {
+  Category,
+  Image,
+  Maker,
+  MakerPayload,
+  Product,
+  ProductPayload,
+} from "../types/types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -49,19 +55,28 @@ export const loginAdmin = (credentials: {
   });
 };
 
-export const getMakers = (): Promise<Maker[]> => request("maker");
+export const getMakers = async (): Promise<Maker[]> => {
+  const makers = await request<Maker[]>("maker");
+  return makers.map((maker) => ({
+    ...maker,
+    location: "São Luís",
+  }));
+};
 
-export const getMakerById = (id: string): Promise<Maker> =>
-  request(`maker/${id}`);
+export const getMakerById = async (id: string): Promise<Maker> => {
+  const maker = await request<Maker>(`maker/${id}`);
+  return {
+    ...maker,
+    location: "São Luís",
+  };
+};
 
-export const createMaker = (
-  data: Omit<Maker, "id" | "categories"> & { categoryIds?: string[] }
-): Promise<Maker> =>
+export const createMaker = (data: MakerPayload): Promise<Maker> =>
   request("maker", { method: "POST", body: JSON.stringify(data) });
 
 export const updateMaker = (
   id: string,
-  data: Partial<Omit<Maker, "id" | "categories"> & { categoryIds?: string[] }>
+  data: Partial<MakerPayload>
 ): Promise<Maker> =>
   request(`maker/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 
@@ -73,22 +88,12 @@ export const getProducts = (): Promise<Product[]> => request("product");
 export const getProductById = (id: string): Promise<Product> =>
   request(`product/${id}`);
 
-export const createProduct = (
-  data: Omit<Product, "id" | "maker" | "categories"> & {
-    makerId: string;
-    categoryIds?: string[];
-  }
-): Promise<Product> =>
+export const createProduct = (data: ProductPayload): Promise<Product> =>
   request("product", { method: "POST", body: JSON.stringify(data) });
 
 export const updateProduct = (
   id: string,
-  data: Partial<
-    Omit<Product, "id" | "maker" | "categories"> & {
-      makerId?: string;
-      categoryIds?: string[];
-    }
-  >
+  data: Partial<ProductPayload>
 ): Promise<Product> =>
   request(`product/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 

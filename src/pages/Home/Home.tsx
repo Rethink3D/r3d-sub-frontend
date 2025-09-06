@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import CredibilityCarousel from "./components/CredibilityCarousel/CredibilityCarousel";
 import FaqAccordion from "../../components/Faq/FaqAccordion";
 import ScrollToHash from "../../components/ScrollToHash/ScrollToHash";
+
 const HomePage: React.FC = () => {
   return (
     <div className="py-8 md:py-20 flex flex-col md:gap-24">
@@ -91,8 +92,8 @@ const HomePage: React.FC = () => {
         <InviteForm />
       </section>
 
-      <section className="text-center py-16" id="faq">
-        <h2 className="text-5xl font-bold text-texto-principal mb-12">
+      <section className="text-center py-8" id="faq">
+        <h2 className="text-2xl sm:text-5xl font-bold text-texto-principal mb-12">
           Perguntas Frequentes
         </h2>
 

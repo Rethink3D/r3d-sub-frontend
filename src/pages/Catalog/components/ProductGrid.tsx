@@ -30,7 +30,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
             key={product.id}
             imageUrl={product.images?.[0]?.url || ""}
             title={product.name}
-            price={product.price.toFixed(2)}
+            price={product.price}
             isCustomizable={product.isPersonalizable}
             description={product.categories.map((c) => c.name).join(", ")}
             onCardClick={() => onCardClick(product)}

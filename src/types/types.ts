@@ -17,17 +17,24 @@ export enum MakerStatusEnum {
   DEACTIVATED = "DEACTIVATED",
 }
 
-export interface Category {
+export interface Contact {
   id: string;
-  name: string;
+  type: ContactTypeEnum;
+  contactInfo: string;
 }
 
 export interface Image {
   id: string;
   filename: string;
   format: string;
-  url?: string;
-  altText?: string;
+  url: string;
+  altText: string | null;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface Maker {
@@ -36,18 +43,14 @@ export interface Maker {
   description: string;
   acceptsPersonalization: boolean;
   status: MakerStatusEnum;
-  contacts: { type: string; contactInfo: string }[];
+  contacts: Contact[];
+  profileImage: Image;
   categories: Category[];
-  profileImage?: Image;
-  storeName?: string;
-  location?: string;
+  createdAt: string;
+  updatedAt: string;
+  location: string;
   rating?: number;
   productCount?: number;
-  bio?: string;
-  tags?: string[];
-  whatsapp?: string;
-  instagram?: string;
-  featuredProduct?: any;
 }
 
 export interface Product {
@@ -55,11 +58,34 @@ export interface Product {
   name: string;
   description: string;
   material: string;
-  price: number;
+  price: string;
   isPersonalizable: boolean;
   maker: Maker;
-  images?: Image[];
+  images: Image[];
   categories: Category[];
+  createdAt: string;
+  deletedAt: string | null;
   popularity?: number;
-  dateAdded?: string;
+}
+
+export interface MakerPayload {
+  name: string;
+  description: string;
+  acceptsPersonalization: boolean;
+  status: MakerStatusEnum;
+  contacts: {
+    type: string;
+    contactInfo: string;
+  }[];
+  categoryIds?: string[];
+}
+
+export interface ProductPayload {
+  name: string;
+  description: string;
+  material: string;
+  price: string;
+  isPersonalizable: boolean;
+  makerId: string;
+  categoryIds?: string[];
 }

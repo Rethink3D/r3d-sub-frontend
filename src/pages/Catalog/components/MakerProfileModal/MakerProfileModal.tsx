@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./MakerProfileModal.module.css";
 import { Maker, Product } from "../../../../types/types";
 import {
@@ -10,6 +10,7 @@ import {
   ExternalLinkIcon,
   LoadingSpinner,
 } from "../Icons";
+import FeaturedProductCarousel from "./FeaturedProductCarousel";
 
 interface MakerProfileModalProps {
   maker: Maker;
@@ -25,6 +26,9 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
   isLoading,
 }) => {
   const handleModalContentClick = (e: React.MouseEvent) => e.stopPropagation();
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const isLongDescription = maker.description.length > 200;
 
   const contactDetails: {
     [key: string]: { label: string; urlPrefix: string; actionText: string };
@@ -57,8 +61,9 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
       className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 p-4"
     >
       <div
+        id="maker-modal-scroll-container"
         onClick={handleModalContentClick}
-        className={`${styles["animate-fade-in-scale"]} relative bg-white dark:bg-[#121212] text-gray-900 dark:text-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 sm:p-8`}
+        className={`${styles["animate-fade-in-scale"]} ${styles["no-scrollbar"]} relative bg-white dark:bg-[#121212] text-gray-900 dark:text-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 sm:p-8`}
       >
         <button
           onClick={onClose}
@@ -110,19 +115,39 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                         </span>
                       ) : null}
                     </div>
-                    <p className="text-gray-700 dark:text-gray-300 my-4 max-w-md">
-                      {maker.bio || maker.description}
-                    </p>
                   </div>
                 </div>
-                {maker.tags && maker.tags.length > 0 && (
+
+                <div className="mt-6 text-center md:text-left">
+                  <p
+                    className={`text-gray-700 dark:text-gray-300 transition-all duration-300 ${
+                      !isDescriptionExpanded && isLongDescription
+                        ? "line-clamp-3"
+                        : ""
+                    }`}
+                  >
+                    {maker.description}
+                  </p>
+                  {isLongDescription && (
+                    <button
+                      onClick={() =>
+                        setIsDescriptionExpanded(!isDescriptionExpanded)
+                      }
+                      className="text-blue-500 hover:text-blue-400 font-semibold text-sm mt-2"
+                    >
+                      {isDescriptionExpanded ? "Ver menos" : "Ver mais"}
+                    </button>
+                  )}
+                </div>
+
+                {maker.categories && maker.categories.length > 0 && (
                   <div className="flex flex-wrap gap-2 justify-center md:justify-start mt-4">
-                    {maker.tags.map((tag: string) => (
+                    {maker.categories.map((category) => (
                       <span
-                        key={tag}
+                        key={category.id}
                         className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 text-xs font-semibold px-3 py-1 rounded-full"
                       >
-                        {tag}
+                        {category.name}
                       </span>
                     ))}
                   </div>
@@ -145,39 +170,11 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                 )}
               </div>
 
-              <div className="flex flex-col justify-center bg-gray-100 dark:bg-black/30 rounded-lg p-6 md:order-1">
-                <h2 className="font-bold text-xl mb-4">Produto em Destaque</h2>
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-                  <div className="flex flex-col items-center sm:items-start flex-shrink-0">
-                    <img
-                      src={featuredProduct.images?.[0]?.url}
-                      alt={featuredProduct.name}
-                      className="w-28 h-28 rounded-md object-cover"
-                    />
-                    {featuredProduct.isPersonalizable && (
-                      <div
-                        tabIndex={0}
-                        className="group relative mt-2 flex items-center gap-1.5 bg-purple-600/80 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-full cursor-pointer"
-                      >
-                        <WandIcon /> <span>Customizável</span>
-                        <div className="absolute z-20 bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 text-center bg-gray-900 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                          Este Produto pode ser personalizado!
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-blue-600 dark:text-blue-400">
-                      {featuredProduct.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {featuredProduct.description}
-                    </p>
-                    <p className="font-bold text-lg mt-1">
-                      R$ {featuredProduct.price.toFixed(2)}
-                    </p>
-                  </div>
-                </div>
+              <div className="flex flex-col bg-gray-100 dark:bg-black/30 rounded-lg p-6 md:order-1">
+                <h2 className="font-bold text-xl mb-4 text-center sm:text-left">
+                  Produto em Destaque
+                </h2>
+                <FeaturedProductCarousel product={featuredProduct} />
               </div>
             </div>
 
@@ -191,7 +188,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                   if (!detail) return null;
                   return (
                     <a
-                      key={contact.type}
+                      key={contact.id}
                       href={`${detail.urlPrefix}${contact.contactInfo}`}
                       target="_blank"
                       rel="noopener noreferrer"

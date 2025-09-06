@@ -1,8 +1,6 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { Product, Category, Maker } from "../../../types/types";
-
-//import { getProducts, getCategories, getMakers } from "../services/apiService";
-import { makersMock, mockProducts } from "../../../utils/mockData";
+import { getProducts, getCategories, getMakers } from "../../../services/api";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -21,53 +19,35 @@ export const useCatalog = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // ==========================================================
-      // === BLOCO DE DADOS VINDOS DA API (COMENTADO POR AGORA) ===
-      // ==========================================================
-      /*
       try {
-        console.log("Buscando dados da API...");
-        // Busca todos os dados necessários em paralelo para mais eficiência
-        const [productsData, categoriesData, makersData] = await Promise.all([
+        const [productsData, makersData] = await Promise.all([
           getProducts(),
-          getCategories(),
-          getMakers() 
+          getMakers(),
         ]);
 
-        setProducts(productsData);
-        setAllCategories(categoriesData);
-        setAllMakers(makersData);
+        const categoriesFromProducts = new Map<string, Category>();
+        productsData.forEach((product) => {
+          product.categories.forEach((category) => {
+            categoriesFromProducts.set(category.id, category);
+          });
+        });
 
+        const uniqueCategories = Array.from(categoriesFromProducts.values());
+        uniqueCategories.sort((a, b) => a.name.localeCompare(b.name));
+
+        setProducts(productsData);
+        setAllMakers(makersData);
+        setAllCategories(uniqueCategories);
       } catch (err: any) {
         console.error("Erro ao buscar dados do catálogo:", err);
         setError(err.message || "Não foi possível carregar o catálogo.");
       } finally {
-        // Garante que o estado de loading seja desativado, com ou sem erro
         setIsLoading(false);
       }
-      */
-
-      // ========================================================
-      // === BLOCO DE DADOS MOCKADOS (ATIVO ATUALMENTE) ========
-      // ========================================================
-
-      console.log("Usando dados mockados para desenvolvimento...");
-      setTimeout(() => {
-        setProducts(mockProducts);
-        setAllMakers(makersMock);
-        const categoriesFromProducts = new Map<string, Category>();
-        mockProducts.forEach((p) =>
-          p.categories.forEach((c) => categoriesFromProducts.set(c.id, c))
-        );
-        setAllCategories(Array.from(categoriesFromProducts.values()));
-
-        setIsLoading(false);
-      }, 1000);
     };
 
     fetchData();
   }, []);
-
   const categoryCounts = useMemo(() => {
     const counts: { [key: string]: number } = { Todos: products.length };
     products.forEach((p) => {
@@ -80,32 +60,25 @@ export const useCatalog = () => {
 
   const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
+
     if (searchInput) {
       result = result.filter((p) =>
         p.name.toLowerCase().includes(searchInput.toLowerCase())
       );
     }
+
     if (selectedCategoryIds.length > 0) {
       result = result.filter((p) =>
         p.categories.some((cat) => selectedCategoryIds.includes(cat.id))
       );
     }
+
     switch (sortBy) {
-      case "popularity":
-        result.sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0));
-        break;
-      case "recent":
-        result.sort(
-          (a, b) =>
-            new Date(b.dateAdded ?? 0).getTime() -
-            new Date(a.dateAdded ?? 0).getTime()
-        );
-        break;
       case "price-asc":
-        result.sort((a, b) => a.price - b.price);
+        result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
         break;
       case "price-desc":
-        result.sort((a, b) => b.price - a.price);
+        result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
         break;
     }
     return result;
@@ -124,6 +97,7 @@ export const useCatalog = () => {
         : [...prev, categoryId]
     );
   };
+
   const loadMoreProducts = useCallback(() => {
     if (isLoadingMore || visibleCount >= filteredAndSortedProducts.length) {
       return;
@@ -134,8 +108,8 @@ export const useCatalog = () => {
       setIsLoadingMore(false);
     }, 500);
   }, [isLoadingMore, visibleCount, filteredAndSortedProducts.length]);
-  const observer = useRef<IntersectionObserver>();
 
+  const observer = useRef<IntersectionObserver>();
   const lastProductElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (isLoadingMore) return;

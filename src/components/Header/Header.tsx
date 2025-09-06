@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { NavHashLink } from "react-router-hash-link";
@@ -51,6 +51,7 @@ const navItems = [
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const currentPageName =
     navItems.find((item) => location.pathname === item.path)?.name ||
@@ -71,6 +72,22 @@ const Header: React.FC = () => {
     }
     return () => {
       document.body.style.overflow = "unset";
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMenuOpen]);
 
@@ -156,6 +173,7 @@ const Header: React.FC = () => {
       </div>
 
       <div
+        ref={menuRef}
         className={`fixed top-0 left-0 h-full w-full max-w-xs bg-gray-100 dark:bg-black shadow-lg transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
