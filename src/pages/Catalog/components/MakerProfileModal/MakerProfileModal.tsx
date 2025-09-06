@@ -35,7 +35,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
   } = {
     INSTAGRAM: {
       label: "Instagram",
-      urlPrefix: "https://instagram.com/",
+      urlPrefix: "",
       actionText: "Ver perfil",
     },
     WHATSAPP: {

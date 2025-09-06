@@ -84,7 +84,7 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section>
+      <section id="main-scroll-container">
         <CredibilityCarousel />
       </section>
 
