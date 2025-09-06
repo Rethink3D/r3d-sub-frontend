@@ -3,9 +3,11 @@ import InviteForm from "./components/InviteForm/InviteForm";
 import { Link } from "react-router-dom";
 import CredibilityCarousel from "./components/CredibilityCarousel/CredibilityCarousel";
 import FaqAccordion from "../../components/Faq/FaqAccordion";
+import ScrollToHash from "../../components/ScrollToHash/ScrollToHash";
 const HomePage: React.FC = () => {
   return (
     <div className="py-8 md:py-20 flex flex-col md:gap-24">
+      <ScrollToHash />
       <section className="grid grid-cols-1 lg:grid-cols-2 md:gap-16 items-center">
         <div className="flex flex-col gap-8 text-center lg:text-left">
           <h1 className="text-5xl md:text-6xl font-light text-texto-principal leading-tight">
@@ -44,7 +46,7 @@ const HomePage: React.FC = () => {
 
       <section className="py-5">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
             <div className="flex justify-center">
               <img
                 src="https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
@@ -54,9 +56,10 @@ const HomePage: React.FC = () => {
             </div>
 
             <div className="text-center lg:text-left">
-              <h2 className="text-5xl font-bold text-texto-principal mb-6 text-center">
+              <h2 className="text-4xl md:text-5xl font-bold text-texto-principal mb-6 text-center">
                 O que é ser um Maker?
               </h2>
+
               <div className="space-y-6 text-xl text-texto-secundario leading-relaxed text-center">
                 <p>
                   Um <strong>Maker</strong> é, em essência, um inventor da era
@@ -84,12 +87,11 @@ const HomePage: React.FC = () => {
         <CredibilityCarousel />
       </section>
 
-
       <section id="form-maker" className="scroll-mt-40">
         <InviteForm />
       </section>
 
-      <section className="text-center py-16">
+      <section className="text-center py-16" id="faq">
         <h2 className="text-5xl font-bold text-texto-principal mb-12">
           Perguntas Frequentes
         </h2>

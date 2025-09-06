@@ -45,6 +45,7 @@ const navItems = [
   { path: "/catalogo", name: "Catálogo" },
   { path: "/saiba-mais", name: "Saiba Mais" },
   { path: "/contato", name: "Contato" },
+  { path: "/#faq", name: "FAQ" },
 ];
 
 const Header: React.FC = () => {
@@ -73,10 +74,17 @@ const Header: React.FC = () => {
     };
   }, [isMenuOpen]);
 
-  const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
-    `text-xl lg:text-2xl font-light transition-colors duration-300 ${
+  const navLinkClasses = (itemPath: string) => {
+    if (itemPath === "/#faq") {
+      return "text-xl lg:text-2xl font-light text-texto-principal hover:text-gray-500 transition-colors duration-300";
+    }
+
+    const isActive = location.pathname === itemPath;
+
+    return `text-xl lg:text-2xl font-light transition-colors duration-300 ${
       isActive ? styles.active : "text-texto-principal hover:text-gray-500"
     }`;
+  };
 
   const { theme } = useTheme();
 
@@ -123,9 +131,9 @@ const Header: React.FC = () => {
             {navItems.map((item) => (
               <NavHashLink
                 key={item.path}
-                to={item.path === "/" ? "/#" : `${item.path}#`}
+                to={item.path === "/" ? "/#" : `${item.path}`}
                 smooth
-                className={navLinkClasses}
+                className={navLinkClasses(item.path)}
               >
                 {item.name}
               </NavHashLink>
@@ -174,14 +182,15 @@ const Header: React.FC = () => {
             {navItems.map((item) => (
               <NavHashLink
                 key={item.path}
-                to={item.path === "/" ? "/#" : `${item.path}#`}
+                to={item.path}
                 smooth
-                className={navLinkClasses}
+                className={navLinkClasses(item.path)}
                 onClick={toggleMenu}
               >
                 {item.name}
               </NavHashLink>
             ))}
+
             <ThemeToggle />
           </nav>
         </div>

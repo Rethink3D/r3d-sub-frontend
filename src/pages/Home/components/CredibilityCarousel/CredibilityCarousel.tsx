@@ -15,27 +15,27 @@ const slidesData: Slide[] = [
   {
     id: 1,
     image: "/fotoevento10.jpg",
-    title: "Sebrae: Transformar Juntos 2025.",
+    title: "Transformar Juntos 2025.",
   },
   {
     id: 3,
     image: "/fazteunomeevento5.jpg",
-    title: "Sebrae: Neon 2025",
+    title: "Neon 2025",
   },
   {
     id: 2,
     image: "/fotoevento1.jpg",
-    title: "Sebrae: Faz teu nome!",
+    title: "Faz teu nome!",
   },
   {
     id: 4,
     image: "/fotoevento5.jpg",
-    title: "Sebrae: Neon 2025",
+    title: "Neon 2025",
   },
   {
     id: 5,
     image: "/eventofazteunomepedro.jpg",
-    title: "Sebrae: Faz teu nome!",
+    title: "Faz teu nome!",
   },
 ];
 const CredibilityCarousel: React.FC = () => {
