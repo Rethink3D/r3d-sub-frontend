@@ -1,12 +1,12 @@
 .logoText {
-  background: linear-gradient(90.53deg, #0080ff 0%, #00ffff 55.77%);
+  background: linear-gradient(90.53deg, #0080ff 0%, #0080ff 55.77%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .webText {
-  background: linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ff9500);
+  background: linear-gradient(90deg, #0080ff, #0080ff, #ff00ff, #ff00ff);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

@@ -1,101 +1,146 @@
-import React from "react";
-import ProductCard from "../../components/ProductCard/ProductCard";
-
-const mockProducts = [
-  {
-    id: 1,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Pidgey",
-    title: "Pikachu",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-  {
-    id: 2,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Pidgeotto",
-    title: "Passaro",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-  {
-    id: 3,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Pikachu",
-    title: "Rato",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-  {
-    id: 4,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Ninetales",
-    title: "Rato com calda",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-  {
-    id: 5,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Jigglypuff",
-    title: "Bixo da nintendo",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-  {
-    id: 6,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Zubat",
-    title: "Batasa",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-  {
-    id: 7,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Machamp",
-    title: "Pikachu",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-  {
-    id: 8,
-    imageUrl: "https://placehold.co/200x200/FFFFFF/000000?text=Abra",
-    title: "Pikachu",
-    description:
-      "Descrição bacana sobre o Pikachu, ele é muito incrível e fica muito bonito com esse protótipo.",
-    price: "190,00",
-  },
-];
+import { useState, useEffect } from "react";
+import { Product, Maker } from "../../types/types";
+import { useCatalog } from "./Hook/useCatalog";
+import { sortOptions } from "../../utils/mockData";
+import { FilterIcon, LoadingSpinner } from "./components/Icons";
+import CategorySidebar from "./components/CategorySideBar";
+import CatalogHeader from "./components/CatalogHeader";
+import ProductGrid from "./components/ProductGrid";
+import MobileFilterDrawer from "./components/MobileFilterDrawer";
+import MakerProfileModal from "./components/MakerProfileModal/MakerProfileModal";
 
 const Catalog: React.FC = () => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [fullMakerProfile, setFullMakerProfile] = useState<Maker | null>(null);
+  const [isModalLoading, setIsModalLoading] = useState(false);
+
+  const {
+    isLoading,
+    error,
+    productsToShow,
+    allCategories,
+    allMakers,
+    categoryCounts,
+    searchInput,
+    sortBy,
+    selectedCategoryIds,
+    isLoadingMore,
+    animateGrid,
+    setSearchInput,
+    setSortBy,
+    handleCategoryClick,
+    lastProductElementRef,
+  } = useCatalog();
+
+  useEffect(() => {
+    if (selectedProduct) {
+      setIsModalLoading(true);
+      setFullMakerProfile(null);
+
+      setTimeout(() => {
+        const foundMaker = allMakers.find(
+          (m) => m.id === selectedProduct.maker.id
+        );
+
+        if (foundMaker) {
+          setFullMakerProfile(foundMaker);
+        } else {
+          console.warn(
+            "Perfil completo do maker não encontrado na lista 'allMakers'."
+          );
+        }
+        setIsModalLoading(false);
+      }, 500);
+    }
+  }, [selectedProduct, allMakers]);
+
+  useEffect(() => {
+    const shouldLockScroll = !!selectedProduct || isMobileFiltersOpen;
+    document.body.style.overflow = shouldLockScroll ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [selectedProduct, isMobileFiltersOpen]);
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+    setFullMakerProfile(null);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-white dark:bg-[#121212]">
+        <LoadingSpinner className="h-16 w-16" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-white dark:bg-[#121212] text-red-500 px-4 text-center">
+        <p>Erro ao carregar o catálogo: {error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="py-10">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-5xl font-bold text-white">
-          Explore nosso catálogo 🛒
-        </h1>
-        <div className="relative">
-          <select className="bg-[#2a2a3a] border border-gray-700 text-white rounded-lg py-2 px-4 appearance-none">
-            <option>Mais Recentes</option>
-            <option>Menor Preço</option>
-            <option>Maior Preço</option>
-          </select>
+    <>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-2">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <aside className="hidden lg:block lg:col-span-1">
+            <CategorySidebar
+              allCategories={allCategories}
+              categoryCounts={categoryCounts}
+              selectedCategoryIds={selectedCategoryIds}
+              onCategoryClick={handleCategoryClick}
+            />
+          </aside>
+
+          <main className="lg:col-span-3">
+            <CatalogHeader
+              searchInput={searchInput}
+              onSearchChange={setSearchInput}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              sortOptions={sortOptions}
+            />
+            <ProductGrid
+              products={productsToShow}
+              onCardClick={setSelectedProduct}
+              lastProductElementRef={lastProductElementRef}
+              isLoadingMore={isLoadingMore}
+              animate={animateGrid}
+            />
+          </main>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-        {mockProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            imageUrl={product.imageUrl}
-            title={product.title}
-            description={product.description}
-            price={product.price}
-          />
-        ))}
-      </div>
-    </div>
+      <MobileFilterDrawer
+        isOpen={isMobileFiltersOpen}
+        onClose={() => setIsMobileFiltersOpen(false)}
+        allCategories={allCategories}
+        categoryCounts={categoryCounts}
+        selectedCategoryIds={selectedCategoryIds}
+        onCategoryClick={handleCategoryClick}
+      />
+
+      <button
+        onClick={() => setIsMobileFiltersOpen(true)}
+        className="lg:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg z-30"
+      >
+        <FilterIcon />
+      </button>
+
+      {selectedProduct && (
+        <MakerProfileModal
+          featuredProduct={selectedProduct}
+          maker={fullMakerProfile || selectedProduct.maker}
+          isLoading={isModalLoading}
+          onClose={handleCloseModal}
+        />
+      )}
+    </>
   );
 };
 

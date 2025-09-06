@@ -1,12 +1,12 @@
 .logoText {
-  background: linear-gradient(90.53deg, #0080ff 0%, #00ffff 55.77%);
+  background: linear-gradient(90.53deg, #0080ff 0%, #0080ff 55.77%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .webText {
-  background: linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ff9500);
+  background: linear-gradient(90deg, #0080ff, #0080ff, #ff00ff, #ff00ff);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -38,17 +38,31 @@
   bottom: -10px;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ffc700);
-  border-radius: 2px;
   width: 100%;
-  animation: draw-underline 0.4s ease-out forwards;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #333, #fff, #bbb, #333);
+  background-size: 300% 100%;
+  animation: shimmer-effect 4s linear infinite;
 }
 
-@keyframes draw-underline {
-  from {
-    width: 0%;
+.activeMobile::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #333, #fff, #bbb, #333);
+  background-size: 300% 100%;
+  animation: shimmer-effect 4s linear infinite;
+}
+
+@keyframes shimmer-effect {
+  0% {
+    background-position: 150% 0;
   }
-  to {
-    width: 100%;
+  100% {
+    background-position: -150% 0;
   }
 }

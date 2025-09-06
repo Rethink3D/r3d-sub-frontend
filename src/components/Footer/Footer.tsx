@@ -1,93 +1,96 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
-import styles from "./Footer.module.css";
+import { Link } from "react-router-dom";
+import {
+  FaHome,
+  FaInfoCircle,
+  FaQuestionCircle,
+  FaEnvelope,
+  FaInstagram,
+  FaPhoneAlt,
+} from "react-icons/fa";
+import { IoCubeOutline } from "react-icons/io5";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black dark:bg-[#141414] text-gray-400 py-12">
+    <footer className="bg-[oklch(20.5%_0_0)] dark:bg-[oklch(14.5%_0_0)] text-gray-300 py-12">
       <div className="container mx-auto px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
-          <div className="flex items-center gap-4 text-4xl font-semibold">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-10">
+          <div className="flex justify-center lg:justify-start">
             <Link
               to="/"
-              className="flex items-baseline"
-              onClick={() =>
-                window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="flex items-center w-48"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <span className={styles.logoText}>R3D</span>
-              <span className={styles.webText}>/ Web</span>
+              <img src="/Full-name-2-thin 1.png" alt="Logo Rethink 3D" />
             </Link>
           </div>
 
-          <div>
-            <h4 className="font-semibold text-white text-xl mb-4">Navegação</h4>
-            <ul className="space-y-3 text-lg">
-              <li>
-                <Link
-                  to="/"
-                  className="hover:text-white transition-colors"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/quem-somos"
-                  className="hover:text-white transition-colors"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                >
-                  Quem Somos
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/contato"
-                  className="hover:text-white transition-colors"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                >
-                  Contato
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <div className="lg:col-span-2 flex justify-center sm:justify-start">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+              <div className="text-center sm:text-left">
+                <h4 className="font-semibold text-white text-xl mb-4">
+                  Navegação
+                </h4>
+                <ul className="space-y-3 text-lg">
+                  <li>
+                    <Link to="/" className="flex items-center gap-3">
+                      <FaHome /> <span>Home</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/catalogo" className="flex items-center gap-3">
+                      <IoCubeOutline /> <span>Catálogo</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/saiba-mais" className="flex items-center gap-3">
+                      <FaInfoCircle /> <span>Saiba Mais</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/contato" className="flex items-center gap-3">
+                      <FaPhoneAlt /> <span>Contato</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/#faq" className="flex items-center gap-3">
+                      <FaQuestionCircle /> <span>FAQ</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
 
-          <div>
-            <h4 className="font-semibold text-white text-xl mb-4">Contato</h4>
-            <ul className="space-y-3 text-lg">
-              <li>
-                <a
-                  href="mailto:rethink3dbr@gmail.com"
-                  className="hover:text-white transition-colors"
-                >
-                  rethink3dbr@gmail.com
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.instagram.com/_rethink3d/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
-                >
-                  @_rethink3d
-                </a>
-              </li>
-            </ul>
+              <div className="text-center sm:text-left">
+                <h4 className="font-semibold text-white text-xl mb-4">
+                  Contato
+                </h4>
+                <ul className="space-y-3 text-lg">
+                  <li>
+                    <a
+                      href="mailto:rethink3dbr@gmail.com"
+                      className="flex items-center gap-3"
+                    >
+                      <FaEnvelope /> <span>rethink3dbr@gmail.com</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.instagram.com/_rethink3d/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3"
+                    >
+                      <FaInstagram /> <span>@_rethink3d</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 dark:border-gray-800 pt-8 text-center text-sm">
-          <p>
-            Copyright {new Date().getFullYear()} Rethink3D. Todos os direitos
-            reservados.
-          </p>
+        <div className="border-t border-gray-700 pt-8 text-center text-sm">
+          <p>Copyright {new Date().getFullYear()} Rethink3D.</p>
+          <p>Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
