@@ -31,6 +31,7 @@ const Catalog: React.FC = () => {
     setSortBy,
     handleCategoryClick,
     lastProductElementRef,
+    handleMakerSearch,
   } = useCatalog();
 
   useEffect(() => {
@@ -132,12 +133,13 @@ const Catalog: React.FC = () => {
         <FilterIcon />
       </button>
 
-      {selectedProduct && (
+      {fullMakerProfile && selectedProduct && (
         <MakerProfileModal
           featuredProduct={selectedProduct}
-          maker={fullMakerProfile || selectedProduct.maker}
+          maker={fullMakerProfile}
           isLoading={isModalLoading}
           onClose={handleCloseModal}
+          onViewAllProducts={handleMakerSearch}
         />
       )}
     </>

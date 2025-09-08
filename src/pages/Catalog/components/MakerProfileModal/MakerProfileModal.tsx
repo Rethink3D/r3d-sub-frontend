@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./MakerProfileModal.module.css";
 import { Maker, Product } from "../../../../types/types";
 import {
   CloseIcon,
   LocationIcon,
   BoxIcon,
-  WandIcon,
   InformationIcon,
   ExternalLinkIcon,
   LoadingSpinner,
@@ -17,6 +16,7 @@ interface MakerProfileModalProps {
   featuredProduct: Product;
   onClose: () => void;
   isLoading?: boolean;
+  onViewAllProducts: (makerName: string) => void;
 }
 
 const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
@@ -24,9 +24,27 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
   featuredProduct,
   onClose,
   isLoading,
+  onViewAllProducts,
 }) => {
   const handleModalContentClick = (e: React.MouseEvent) => e.stopPropagation();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [onClose]);
+
+  const handleViewAllClick = () => {
+    onViewAllProducts(maker.name);
+    onClose();
+  };
 
   const isLongDescription = maker.description.length > 200;
 
@@ -35,7 +53,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
   } = {
     INSTAGRAM: {
       label: "Instagram",
-      urlPrefix: "",
+      urlPrefix: "https://ig.me/m/",
       actionText: "Ver perfil",
     },
     WHATSAPP: {
@@ -54,6 +72,29 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
       actionText: "Enviar mensagem",
     },
   };
+
+  const whatsappMessage = `Oi, vim pela Rethink3D. Você é o Maker ${maker.name}? Prazer em te conhecer, gostaria de saber sobre seus produtos e serviços.`;
+  const encodedWhatsappMessage = encodeURIComponent(whatsappMessage);
+
+  if (isLoading || !maker) {
+    return (
+      <div
+        onClick={onClose}
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+      >
+        <div
+          id="maker-modal-scroll-container"
+          onClick={(e) => e.stopPropagation()}
+          className={`${styles["animate-fade-in-scale"]} relative bg-white dark:bg-[#121212] rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] p-6 sm:p-8`}
+        >
+          <div className="flex flex-col justify-center items-center min-h-[400px] gap-4">
+            <LoadingSpinner className="w-12 h-12" />
+            <p className="text-gray-400">Carregando perfil do maker...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -99,21 +140,22 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                   </div>
                   <div className="flex-grow">
                     <h1 className="text-3xl font-bold">{maker.name}</h1>
-                    <div className="flex flex-nowrap items-center justify-center md:justify-start gap-2 text-gray-600 dark:text-gray-400 text-sm mt-2">
+                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-gray-600 dark:text-gray-400 text-sm mt-2">
                       {maker.location && (
                         <span className="flex items-center gap-1">
                           <LocationIcon /> {maker.location}
                         </span>
                       )}
-                      {maker.location && maker.productCount ? (
-                        <span>•</span>
-                      ) : null}
-                      {maker.productCount ? (
+                      {maker.location && maker.productCount > 0 && (
+                        <span className="hidden sm:inline">•</span>
+                      )}
+                      {maker.productCount > 0 && (
                         <span className="flex items-center gap-1">
                           <BoxIcon />
-                          {maker.productCount} produtos
+                          {maker.productCount}{" "}
+                          {maker.productCount === 1 ? "produto" : "produtos"}
                         </span>
-                      ) : null}
+                      )}
                     </div>
                   </div>
                 </div>
@@ -154,16 +196,14 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                 )}
                 {maker.acceptsPersonalization && (
                   <div className="mt-6 w-full">
-                    <div
-                      className={`group relative p-2 rounded-lg flex items-center justify-center gap-3 text-center text-white ${styles.customOrderCard}`}
-                    >
-                      <InformationIcon />
-                      <h3 className="font-bold text-sm">
-                        Aceita Pedidos Personalizados
+                    <div className="group relative flex items-center justify-center gap-2 text-cyan-600 dark:text-cyan-400">
+                      <InformationIcon className="flex-shrink-0 w-5 h-5" />
+                      <h3 className="font-semibold text-sm">
+                        Aceita Pedidos Sob Demanda
                       </h3>
                       <div className="absolute z-20 top-full mt-2 left-1/2 -translate-x-1/2 w-64 text-center bg-gray-900 text-white text-xs rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        Este Maker aceita pedidos personalizados nas categorias
-                        em que trabalha.
+                        Este Maker aceita pedidos sob demanda nas categorias em
+                        que trabalha.
                       </div>
                     </div>
                   </div>
@@ -186,10 +226,16 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                 {maker.contacts.map((contact) => {
                   const detail = contactDetails[contact.type];
                   if (!detail) return null;
+
+                  let href = `${detail.urlPrefix}${contact.contactInfo}`;
+                  if (contact.type === "WHATSAPP") {
+                    href = `${detail.urlPrefix}${contact.contactInfo}?text=${encodedWhatsappMessage}`;
+                  }
+
                   return (
                     <a
                       key={contact.id}
-                      href={`${detail.urlPrefix}${contact.contactInfo}`}
+                      href={href}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`${styles.contactCard} flex justify-between items-center p-4 rounded-lg`}
@@ -207,9 +253,10 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
 
             <div className="mt-8 text-center">
               <button
+                onClick={handleViewAllClick}
                 className={`${styles.viewAllButton} font-bold py-3 px-6 rounded-lg bg-gray-800 text-white dark:bg-[#00c6ff] dark:text-gray-900`}
               >
-                Ver Todos os Produtos
+                Ver Todos os Produtos de {maker.name}
               </button>
             </div>
           </>

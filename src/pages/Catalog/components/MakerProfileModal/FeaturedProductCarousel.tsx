@@ -85,7 +85,7 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
             <img
               src={image.url}
               alt={image.altText || product.name}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
             />
           </SwiperSlide>
         ))}
@@ -103,7 +103,7 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
           {product.isPersonalizable && (
             <div tabIndex={0} className="group relative">
               <div className="flex items-center gap-1.5 bg-purple-600/80 text-white text-xs font-semibold px-2 py-1 rounded-full cursor-pointer">
-                <WandIcon /> <span>Customizável</span>
+                <WandIcon /> <span>Personalizável</span>
               </div>
               <div className="absolute z-10 bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 text-center bg-gray-900 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity pointer-events-none">
                 Este produto pode ser personalizado!

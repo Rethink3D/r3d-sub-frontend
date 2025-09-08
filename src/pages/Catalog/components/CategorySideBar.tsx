@@ -39,7 +39,11 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
         </button>
       )}
     </div>
-    <ul className={`space-y-2 ${inDrawer ? "p-4" : ""}`}>
+    <ul
+      className={`custom-scrollbar space-y-2 overflow-y-auto max-h-[calc(100vh-18rem)] ${
+        inDrawer ? "p-4" : ""
+      }`}
+    >
       <li>
         <button
           onClick={() => {
