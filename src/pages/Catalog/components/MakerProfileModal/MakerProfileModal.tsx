@@ -49,27 +49,36 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
   const isLongDescription = maker.description.length > 200;
 
   const contactDetails: {
-    [key: string]: { label: string; urlPrefix: string; actionText: string };
+    [key: string]: {
+      label: string;
+      urlPrefix: string;
+      actionText: string;
+      icon: string;
+    };
   } = {
     INSTAGRAM: {
       label: "Instagram",
       urlPrefix: "https://ig.me/m/",
       actionText: "Ver perfil",
+      icon: "/InstagramIcon.png",
     },
     WHATSAPP: {
       label: "WhatsApp",
       urlPrefix: "https://wa.me/",
       actionText: "Conversar agora",
+      icon: "/WhatsappIcon.png",
     },
     MERCADO_LIVRE: {
       label: "Mercado Livre",
       urlPrefix: "",
       actionText: "Ver loja",
+      icon: "/MercadoLivreIcon.png",
     },
     EMAIL: {
       label: "Email",
       urlPrefix: "mailto:",
       actionText: "Enviar mensagem",
+      icon: "/EmailIcon.png",
     },
   };
 
@@ -208,6 +217,14 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                     </div>
                   </div>
                 )}
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={handleViewAllClick}
+                    className={`${styles.viewAllButton} font-bold py-3 px-6 rounded-lg bg-gray-800 text-white dark:bg-[#00c6ff] dark:text-gray-900`}
+                  >
+                    Ver Todos os Produtos de {maker.name}
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-col bg-gray-100 dark:bg-black/30 rounded-lg p-6 md:order-1">
@@ -240,24 +257,22 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                       rel="noopener noreferrer"
                       className={`${styles.contactCard} flex justify-between items-center p-4 rounded-lg`}
                     >
-                      <div>
-                        <p className="font-bold">{detail.label}</p>
-                        <p className="text-sm">{detail.actionText}</p>
+                      <div className="flex items-center">
+                        <img
+                          src={detail.icon}
+                          alt={`${detail.label} icon`}
+                          className="w-10 h-10 mr-4"
+                        />
+                        <div>
+                          <p className="font-bold">{detail.label}</p>
+                          <p className="text-sm">{detail.actionText}</p>
+                        </div>
                       </div>
                       <ExternalLinkIcon />
                     </a>
                   );
                 })}
               </div>
-            </div>
-
-            <div className="mt-8 text-center">
-              <button
-                onClick={handleViewAllClick}
-                className={`${styles.viewAllButton} font-bold py-3 px-6 rounded-lg bg-gray-800 text-white dark:bg-[#00c6ff] dark:text-gray-900`}
-              >
-                Ver Todos os Produtos de {maker.name}
-              </button>
             </div>
           </>
         )}
