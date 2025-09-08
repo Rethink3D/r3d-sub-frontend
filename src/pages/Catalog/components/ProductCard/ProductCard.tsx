@@ -2,7 +2,7 @@ import React from "react";
 
 const WandIcon = () => (
   <svg
-    className="w-4 h-4"
+    className="w-3 h-3"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
@@ -44,25 +44,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <img
             src={imageUrl}
             alt={title}
-            className="w-full h-40 object-contain rounded-lg p-2"
+            className="w-full h-40 object-cover rounded-lg p-2"
           />
 
           {isCustomizable && (
             <div
               tabIndex={0}
               onClick={(e) => e.stopPropagation()}
-              className="group absolute bottom-2 right-2 flex items-center gap-1.5 bg-purple-600/80 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="group absolute bottom-1.5 right-1.5 flex items-center gap-1 bg-purple-600/80 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-0.5 rounded-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-400"
             >
               <WandIcon />
-              <span>Custom</span>
+              <span>Personalizável</span>
               <div
                 className="
-                  absolute z-20 bottom-full mb-2 left-1/2 -translate-x-1/2 
-                  w-32 text-center       
-                  bg-gray-900 text-white text-xs rounded-md px-2 py-1
-                  opacity-0 group-hover:opacity-100 group-focus:opacity-100
-                  transition-opacity duration-300 pointer-events-none 
-                "
+        absolute z-20 bottom-full mb-1.5 left-1/2 -translate-x-1/2 
+        w-20 text-center       
+        bg-gray-900 text-white text-[10px] rounded-md px-1.5 py-0.5
+        opacity-0 group-hover:opacity-100 group-focus:opacity-100
+        transition-opacity duration-300 pointer-events-none 
+      "
               >
                 Este produto pode ser personalizado!
               </div>
@@ -72,7 +72,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className="flex flex-col flex-grow">
           <h3 className="text-xl font-bold mb-2 line-clamp-2">{title}</h3>
-          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow line-clamp-3">
             {description}
           </p>
           <div className="flex justify-between items-end mt-auto pt-2">

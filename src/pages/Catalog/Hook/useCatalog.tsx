@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Product, Category, Maker } from "../../../types/types";
-import { getProducts, getCategories, getMakers } from "../../../services/api";
+import { getProducts, getMakers } from "../../../services/api";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -10,12 +11,14 @@ export const useCatalog = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [allMakers, setAllMakers] = useState<Maker[]>([]);
-  const [searchInput, setSearchInput] = useState("");
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("price-asc");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [animateGrid, setAnimateGrid] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const makerQueryParam = searchParams.get("maker");
+  const [searchInput, setSearchInput] = useState(makerQueryParam || "");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +27,18 @@ export const useCatalog = () => {
           getProducts(),
           getMakers(),
         ]);
+
+        const productCountsByMakerId = new Map<string, number>();
+        productsData.forEach((product) => {
+          const makerId = product.maker.id;
+          const currentCount = productCountsByMakerId.get(makerId) || 0;
+          productCountsByMakerId.set(makerId, currentCount + 1);
+        });
+
+        const makersWithProductCount = makersData.map((maker) => ({
+          ...maker,
+          productCount: productCountsByMakerId.get(maker.id) || 0,
+        }));
 
         const categoriesFromProducts = new Map<string, Category>();
         productsData.forEach((product) => {
@@ -36,7 +51,7 @@ export const useCatalog = () => {
         uniqueCategories.sort((a, b) => a.name.localeCompare(b.name));
 
         setProducts(productsData);
-        setAllMakers(makersData);
+        setAllMakers(makersWithProductCount);
         setAllCategories(uniqueCategories);
       } catch (err: any) {
         console.error("Erro ao buscar dados do catálogo:", err);
@@ -48,6 +63,7 @@ export const useCatalog = () => {
 
     fetchData();
   }, []);
+
   const categoryCounts = useMemo(() => {
     const counts: { [key: string]: number } = { Todos: products.length };
     products.forEach((p) => {
@@ -62,8 +78,11 @@ export const useCatalog = () => {
     let result = [...products];
 
     if (searchInput) {
-      result = result.filter((p) =>
-        p.name.toLowerCase().includes(searchInput.toLowerCase())
+      const lowercasedInput = searchInput.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(lowercasedInput) ||
+          p.maker.name.toLowerCase().includes(lowercasedInput)
       );
     }
 
@@ -134,6 +153,12 @@ export const useCatalog = () => {
     ]
   );
 
+  const handleMakerSearch = (makerName: string) => {
+    setSearchInput(makerName);
+    setSelectedCategoryIds([]);
+    setSearchParams({ maker: makerName });
+  };
+
   useEffect(() => {
     setAnimateGrid(false);
     setTimeout(() => setAnimateGrid(true), 50);
@@ -160,5 +185,6 @@ export const useCatalog = () => {
     handleCategoryClick,
     lastProductElementRef,
     hasMoreProducts: productsToShow.length < filteredAndSortedProducts.length,
+    handleMakerSearch,
   };
 };
