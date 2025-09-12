@@ -78,7 +78,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex justify-between items-end mt-auto pt-2">
             <div className="text-right ml-auto">
               <span className="text-xs text-gray-500 dark:text-gray-400 block">
-                preço sugerido
+                a partir de
               </span>
               <p className="text-green-500 dark:text-green-400 text-2xl font-bold drop-shadow-md">
                 R${price}
