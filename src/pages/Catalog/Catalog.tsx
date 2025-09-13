@@ -9,7 +9,11 @@ import ProductGrid from "./components/ProductGrid";
 import MobileFilterDrawer from "./components/MobileFilterDrawer";
 import MakerProfileModal from "./components/MakerProfileModal/MakerProfileModal";
 
-const Catalog: React.FC = () => {
+interface CatalogProps {
+  onOpenRequestDrawer: () => void;
+}
+
+const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [fullMakerProfile, setFullMakerProfile] = useState<Maker | null>(null);
@@ -112,6 +116,7 @@ const Catalog: React.FC = () => {
               lastProductElementRef={lastProductElementRef}
               isLoadingMore={isLoadingMore}
               animate={animateGrid}
+              onOpenRequestDrawer={onOpenRequestDrawer}
             />
           </main>
         </div>
