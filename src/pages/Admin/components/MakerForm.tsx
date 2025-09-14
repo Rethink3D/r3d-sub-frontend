@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import {
   getMakerById,
@@ -7,11 +7,13 @@ import {
   getCategories,
   uploadMakerProfileImage,
   deleteImage,
-  Category,
-  ContactType,
-  MakerStatus,
-  Image,
 } from "../../../services/api";
+import {
+  MakerStatusEnum,
+  ContactTypeEnum,
+  Category,
+  Image,
+} from "../../../types/types";
 
 const MakerForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +22,7 @@ const MakerForm: React.FC = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [acceptsPersonalization, setAcceptsPersonalization] = useState(false);
-  const [status, setStatus] = useState<MakerStatus>(MakerStatus.ACTIVE);
+  const [status, setStatus] = useState<MakerStatusEnum>(MakerStatusEnum.ACTIVE);
   const [contacts, setContacts] = useState<
     { type: string; contactInfo: string }[]
   >([{ type: "EMAIL", contactInfo: "" }]);
@@ -233,7 +235,7 @@ const MakerForm: React.FC = () => {
                     }
                     className="border rounded-lg px-3 py-2 text-gray-900"
                   >
-                    {Object.values(ContactType).map((type) => (
+                    {Object.values(ContactTypeEnum).map((type) => (
                       <option key={type} value={type}>
                         {type}
                       </option>
@@ -349,10 +351,10 @@ const MakerForm: React.FC = () => {
               <select
                 id="status"
                 value={status}
-                onChange={(e) => setStatus(e.target.value as MakerStatus)}
+                onChange={(e) => setStatus(e.target.value as MakerStatusEnum)}
                 className="w-auto px-3 py-2 border rounded-lg text-gray-900 bg-white"
               >
-                {Object.values(MakerStatus).map((s) => (
+                {Object.values(MakerStatusEnum).map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>

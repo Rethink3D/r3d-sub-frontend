@@ -15,6 +15,7 @@ import Products from "./pages/Admin/Products";
 import MakerProducts from "./pages/Admin/MakerProducts";
 import MakerForm from "./pages/Admin/components/MakerForm";
 import ProductForm from "./pages/Admin/components/ProductForm";
+import NotFound from "./pages/NotFound/NotFound";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -36,8 +37,9 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/catalogo" element={<Catalog />} />
-          <Route path="/quem-somos" element={<About />} />
+          <Route path="/saiba-mais" element={<About />} />
           <Route path="/contato" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
 
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route element={<ProtectedRoute />}>

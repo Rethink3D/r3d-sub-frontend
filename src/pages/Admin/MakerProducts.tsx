@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getProducts, getMakerById, Product, Maker } from "../../services/api";
+import { getProducts, getMakerById } from "../../services/api";
+import { Product, Maker } from "../../types/types";
 
 const MakerProducts: React.FC = () => {
   const { makerId } = useParams<{ makerId: string }>();

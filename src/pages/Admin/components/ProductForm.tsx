@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import {
   getProductById,
@@ -8,10 +8,8 @@ import {
   deleteImage,
   getMakers,
   getCategories,
-  Maker,
-  Category,
-  Image,
 } from "../../../services/api";
+import { Maker, Image, Category } from "../../../types/types";
 
 const ProductForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -137,7 +135,7 @@ const ProductForm: React.FC = () => {
           name,
           description,
           material,
-          price: parseFloat(price),
+          price: price,
           isPersonalizable,
           makerId,
           categoryIds: Array.from(selectedCategories),
@@ -149,7 +147,7 @@ const ProductForm: React.FC = () => {
           name,
           description,
           material,
-          price: parseFloat(price),
+          price: price,
           isPersonalizable,
           makerId,
           categoryIds: Array.from(selectedCategories),
