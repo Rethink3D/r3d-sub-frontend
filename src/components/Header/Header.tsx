@@ -138,22 +138,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
                             <MenuIcon />
                         </button>
 
-                        <div className="hidden md:flex items-center">
-                            <NavHashLink
-                                to="/#"
-                                smooth
-                                className="flex items-center"
-                            >
-                                <img
-                                    className="w-32 sm:w-40 lg:w-52 transition-all duration-300"
-                                    src={logoSrc}
-                                    alt="Logo Rethink3D"
-                                />
-                                <span className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-[#ffffff]">
-                                    / Web
-                                </span>
-                            </NavHashLink>
-                        </div>
+    const { theme } = useTheme();
 
                         <div
                             className={`md:hidden relative ${styles.activeMobile}`}
