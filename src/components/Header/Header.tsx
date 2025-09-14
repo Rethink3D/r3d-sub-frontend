@@ -103,7 +103,7 @@ const Header: React.FC = () => {
     }`;
   };
 
-    const { theme } = useTheme();
+  const { theme } = useTheme();
 
   const logoSrc =
     theme === "light"

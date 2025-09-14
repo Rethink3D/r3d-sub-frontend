@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useState } from "react";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -16,10 +17,12 @@ import MakerProducts from "./pages/Admin/MakerProducts";
 import MakerForm from "./pages/Admin/components/MakerForm";
 import ProductForm from "./pages/Admin/components/ProductForm";
 import NotFound from "./pages/NotFound/NotFound";
+import RequestPrintDrawer from "./pages/Catalog/components/RequestPrintDrawer";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const [isRequestPanelOpen, setIsRequestPanelOpen] = useState(false);
 
   return (
     <div
@@ -27,7 +30,7 @@ const AppContent: React.FC = () => {
         isAdminRoute ? "bg-gray-100" : ""
       }`}
     >
-      {!isAdminRoute && <Header />}
+      {!isAdminRoute && <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />}
 
       <main
         className={
@@ -36,7 +39,7 @@ const AppContent: React.FC = () => {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/catalogo" element={<Catalog />} />
+          <Route path="/catalogo" element={<Catalog onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />} />
           <Route path="/saiba-mais" element={<About />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
@@ -61,6 +64,11 @@ const AppContent: React.FC = () => {
       </main>
 
       {!isAdminRoute && <Footer />}
+
+      <RequestPrintDrawer
+        isOpen={isRequestPanelOpen}
+        onClose={() => setIsRequestPanelOpen(false)}
+      />
     </div>
   );
 };

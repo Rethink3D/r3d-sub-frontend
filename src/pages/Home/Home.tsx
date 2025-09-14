@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import CredibilityCarousel from "./components/CredibilityCarousel/CredibilityCarousel";
 import FaqAccordion from "../../components/Faq/FaqAccordion";
 import ScrollToHash from "../../components/ScrollToHash/ScrollToHash";
+import ProductSlider from "./components/ProductSlider/ProductSlider";
 
 const HomePage: React.FC = () => {
   return (
@@ -82,6 +83,13 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      <section>
+        <h2 className="text-4xl md:text-5xl font-bold text-texto-principal mb-6 text-center">
+                Tipos de produtos:
+              </h2>
+        <ProductSlider />
       </section>
 
       <section id="main-scroll-container">
