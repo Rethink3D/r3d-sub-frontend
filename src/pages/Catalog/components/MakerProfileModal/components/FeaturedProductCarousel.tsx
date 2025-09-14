@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Product } from "../../../../types/types";
+import { Product } from "../../../../../types/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { Autoplay, Pagination } from "swiper/modules";
-import { CloseIcon, WandIcon } from "../Icons";
+import { CloseIcon, WandIcon } from "../../Icons";
 import "swiper/css";
 import "swiper/css/pagination";
 

@@ -1,12 +1,15 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { Maker, Product } from "./types/types";
+import { CatalogProvider } from "./context/CatalogProvider";
+import { useCatalogContext } from "./context/CatalogContext";
+
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
 import Catalog from "./pages/Catalog/Catalog";
 import About from "./pages/About/About";
 import Contact from "./pages/Contact/Contact";
-
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import ProtectedRoute from "./pages/Admin/ProtectedRoute";
@@ -18,11 +21,36 @@ import MakerForm from "./pages/Admin/components/MakerForm";
 import ProductForm from "./pages/Admin/components/ProductForm";
 import NotFound from "./pages/NotFound/NotFound";
 import RequestPrintDrawer from "./pages/Catalog/components/RequestPrintDrawer";
+import MakerProfileModal from "./pages/Catalog/components/MakerProfileModal/MakerProfileModal";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const { allMakers, handleMakerSearch } = useCatalogContext();
+
   const [isRequestPanelOpen, setIsRequestPanelOpen] = useState(false);
+  const [selectedMakerForModal, setSelectedMakerForModal] =
+    useState<Maker | null>(null);
+  const [selectedProductForModal, setSelectedProductForModal] =
+    useState<Product | null>(null);
+
+  const handleMakerSelect = (makerFromDrawer: Maker) => {
+    const fullMakerProfile = allMakers.find((m) => m.id === makerFromDrawer.id);
+    setSelectedMakerForModal(fullMakerProfile || makerFromDrawer);
+    setSelectedProductForModal(null);
+    setIsRequestPanelOpen(false);
+  };
+
+  const handleProductSelect = (product: Product) => {
+    const fullMakerProfile = allMakers.find((m) => m.id === product.maker.id);
+    setSelectedProductForModal(product);
+    setSelectedMakerForModal(fullMakerProfile || product.maker);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMakerForModal(null);
+    setSelectedProductForModal(null);
+  };
 
   return (
     <div
@@ -30,7 +58,9 @@ const AppContent: React.FC = () => {
         isAdminRoute ? "bg-gray-100" : ""
       }`}
     >
-      {!isAdminRoute && <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />}
+      {!isAdminRoute && (
+        <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />
+      )}
 
       <main
         className={
@@ -39,7 +69,15 @@ const AppContent: React.FC = () => {
       >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/catalogo" element={<Catalog onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />} />
+          <Route
+            path="/catalogo"
+            element={
+              <Catalog
+                onOpenRequestDrawer={() => setIsRequestPanelOpen(true)}
+                onProductCardClick={handleProductSelect}
+              />
+            }
+          />
           <Route path="/saiba-mais" element={<About />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
@@ -68,13 +106,27 @@ const AppContent: React.FC = () => {
       <RequestPrintDrawer
         isOpen={isRequestPanelOpen}
         onClose={() => setIsRequestPanelOpen(false)}
+        onMakerSelect={handleMakerSelect}
       />
+
+      {selectedMakerForModal && (
+        <MakerProfileModal
+          maker={selectedMakerForModal}
+          featuredProduct={selectedProductForModal || undefined}
+          onClose={handleCloseModal}
+          onViewAllProducts={handleMakerSearch}
+        />
+      )}
     </div>
   );
 };
 
 const App: React.FC = () => {
-  return <AppContent />;
+  return (
+    <CatalogProvider>
+      <AppContent />
+    </CatalogProvider>
+  );
 };
 
 export default App;
