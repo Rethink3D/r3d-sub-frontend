@@ -1,14 +1,11 @@
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules"; 
-
 import "swiper/css";
 import "swiper/css/pagination";
-
 import roboBranco from "/icone-1.png";
 import roboColorido from "/icone-2.png";
 import roboPensante from "/icone-3.png";
-import TypeCard from "../TypeCard"; 
+import TypeCard from "../TypeCard";
 
 interface ProductTypeData {
   image: string;
@@ -45,7 +42,7 @@ const productTypesData: ProductTypeData[] = [
 
 const ProductTypes: React.FC = () => {
   return (
-    <div className="mx-auto my-16 max-w-7xl px-4 font-sans">
+    <div className="mx-auto mt-8 max-w-7xl px-4 font-sans">
       <Swiper
         modules={[Autoplay, Pagination]}
         loop={true}
