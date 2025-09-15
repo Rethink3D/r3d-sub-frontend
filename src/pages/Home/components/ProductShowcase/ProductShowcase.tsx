@@ -73,6 +73,10 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
     );
   }
 
+  if (showcasedProducts.length < 3) {
+    return null;
+  }
+  
   return (
     <div className={styles.showcaseContainer}>
       <button
@@ -122,6 +126,12 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
               spaceBetween: -80,
             },
             1024: {
+              effect: "slide",
+              slidesPerView: 2,
+              spaceBetween: 30,
+              centeredSlides: false,
+            },
+            1536: {
               effect: "slide",
               slidesPerView: 3,
               spaceBetween: 30,
