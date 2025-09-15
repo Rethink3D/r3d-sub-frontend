@@ -135,3 +135,4 @@ export const uploadMakerProfileImage = (
 export const deleteImage = (imageId: string): Promise<void> => {
   return request(`image/${imageId}`, { method: "DELETE" });
 };
+

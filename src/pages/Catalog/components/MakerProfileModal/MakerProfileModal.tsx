@@ -10,6 +10,7 @@ import {
   LoadingSpinner,
 } from "../Icons";
 import FeaturedProductCarousel from "./FeaturedProductCarousel";
+import { trackEvent } from "../../../../utils/analytics";
 
 interface MakerProfileModalProps {
   maker: Maker;
@@ -28,6 +29,12 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
 }) => {
   const handleModalContentClick = (e: React.MouseEvent) => e.stopPropagation();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  
+  useEffect(() => {
+    trackEvent('Visualização de Produto (Modal)', {
+      'label': `productId:${featuredProduct.id}|makerId:${maker.id}`
+    });
+  }, []);
 
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
@@ -166,6 +173,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                         </span>
                       )}
                     </div>
+                    
                   </div>
                 </div>
 
@@ -255,6 +263,9 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackEvent('Clique no Contato', {
+                        'label': `makerId:${maker.id}|contactType:${contact.type}`
+                      })}
                       className={`${styles.contactCard} flex justify-between items-center p-4 rounded-lg`}
                     >
                       <div className="flex items-center">

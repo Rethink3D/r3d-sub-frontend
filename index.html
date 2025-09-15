@@ -1,14 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&display=swap" rel="stylesheet">
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/Logo-2-thin 1.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rethink3D - Web</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&display=swap"
+            rel="stylesheet"
+        />
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/png" href="/Logo-2-thin 1.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Rethink3D - Web</title>
+
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-GT580F9JPR"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-GT580F9JPR");
+        </script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
 </html>
