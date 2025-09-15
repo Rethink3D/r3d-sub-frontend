@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Home.module.css";
 import InviteForm from "./components/InviteForm/InviteForm";
@@ -10,11 +10,14 @@ import ProductShowcase from "./components/ProductShowcase/ProductShowcase";
 import { Product } from "../../types/types";
 import MakerProfileModal from "../Catalog/components/MakerProfileModal/MakerProfileModal";
 import { useCatalogContext } from "../../context/CatalogContext";
+import { useDebounce } from "../../hooks/useDebounce";
 
 const HomePage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const { setSearchInput } = useCatalogContext();
+  const { setSearchInput: setContextSearchInput } = useCatalogContext();
   const navigate = useNavigate();
+  const [homeSearchInput, setHomeSearchInput] = useState("");
+  const debouncedHomeSearch = useDebounce(homeSearchInput, 1000);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -26,9 +29,16 @@ const HomePage: React.FC = () => {
 
   const handleViewAllProducts = (makerName: string) => {
     handleCloseModal();
-    setSearchInput(makerName);
+    setContextSearchInput(makerName);
     navigate("/catalogo");
   };
+
+  useEffect(() => {
+    if (debouncedHomeSearch) {
+      setContextSearchInput(debouncedHomeSearch);
+      navigate("/catalogo");
+    }
+  }, [debouncedHomeSearch, setContextSearchInput, navigate]);
 
   return (
     <>
@@ -45,8 +55,7 @@ const HomePage: React.FC = () => {
               Explore o catálogo da <strong>Rethink3D</strong> e descubra
               criações únicas de <strong>Makers</strong> talentosos. Encontre
               projetos que você ama ou solicite algo totalmente{" "}
-              <strong>personalizado</strong>, feito sob medida para{" "}
-              <strong>você</strong>.
+              <strong>personalizado</strong>.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
               <Link className={styles.gradientBorderButton} to="/catalogo">
@@ -60,8 +69,13 @@ const HomePage: React.FC = () => {
               </Link>
             </div>
           </div>
+
           <div className="lg:col-span-3 flex justify-center items-center min-h-[480px]">
-            <ProductShowcase onProductCardClick={handleProductClick} />
+            <ProductShowcase
+              onProductCardClick={handleProductClick}
+              searchInput={homeSearchInput}
+              onSearchChange={setHomeSearchInput}
+            />
           </div>
         </section>
 
@@ -84,17 +98,13 @@ const HomePage: React.FC = () => {
                     Um <strong>Maker</strong> é, em essência, um inventor da era
                     digital. Uma pessoa curiosa e proativa que utiliza a
                     tecnologia para criar, consertar e personalizar o mundo ao
-                    seu redor. Movidos pela paixão de aprender e pela satisfação
-                    de fazer com as próprias mãos, eles combinam ferramentas
-                    modernas, como a impressão 3D, com habilidades tradicionais.
+                    seu redor.
                   </p>
                   <p>
                     Eles representam a ideia de que qualquer um pode ser um
                     <strong> Maker</strong>, solucionando problemas de forma
                     criativa e transformando um conceito digital em um objeto
-                    físico. Cada peça que você encontra aqui nasceu desse
-                    espírito inventivo e da busca incansável por materializar
-                    grandes ideias.
+                    físico.
                   </p>
                 </div>
               </div>

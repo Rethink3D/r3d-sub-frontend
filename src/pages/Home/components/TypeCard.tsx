@@ -1,5 +1,3 @@
-import React from "react";
-
 interface TypeCardProps {
   image: string;
   title: string;
@@ -18,7 +16,7 @@ const TypeCard: React.FC<TypeCardProps> = ({
       <img
         src={image}
         alt={title}
-        className="w-32 h-32 object-contain mb-6 rounded-xl" 
+        className="w-32 h-32 object-contain mb-6 rounded-xl"
       />
       <div className="flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">

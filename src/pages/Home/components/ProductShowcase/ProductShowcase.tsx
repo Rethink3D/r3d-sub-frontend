@@ -8,6 +8,7 @@ import { useCatalogContext } from "../../../../context/CatalogContext";
 import { Product } from "../../../../types/types";
 import ProductCard from "../../../../components/ProductCard/ProductCard";
 import styles from "./ProductShowcase.module.css";
+import HomeSearch from "./HomeSearch";
 
 const ChevronLeftIcon = () => (
   <svg
@@ -45,10 +46,14 @@ const ChevronRightIcon = () => (
 
 interface ProductShowcaseProps {
   onProductCardClick: (product: Product) => void;
+  searchInput: string;
+  onSearchChange: (value: string) => void;
 }
 
 const ProductShowcase: React.FC<ProductShowcaseProps> = ({
   onProductCardClick,
+  searchInput,
+  onSearchChange,
 }) => {
   const { productsToShow, isLoading } = useCatalogContext();
   const [showcasedProducts, setShowcasedProducts] = useState<Product[]>([]);
@@ -76,73 +81,88 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
 
   return (
     <div className={styles.showcaseContainer}>
-      <Swiper
-        modules={[EffectCoverflow, Navigation, Autoplay]}
-        effect={"coverflow"}
-        grabCursor={true}
-        centeredSlides={true}
-        loop={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        navigation={{
-          prevEl: swiperNavPrevRef.current,
-          nextEl: swiperNavNextRef.current,
-        }}
-        onBeforeInit={(swiper: any) => {
-          swiper.params.navigation.prevEl = swiperNavPrevRef.current;
-          swiper.params.navigation.nextEl = swiperNavNextRef.current;
-        }}
-        coverflowEffect={{
-          rotate: 0,
-          stretch: 0,
-          depth: 200,
-          modifier: 1.5,
-          slideShadows: false,
-        }}
-        breakpoints={{
-          320: {
-            slidesPerView: 1.5,
-            spaceBetween: 0,
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: -80,
-          },
-          1024: {
-            effect: "slide",
-            slidesPerView: 3,
-            spaceBetween: 30,
-            centeredSlides: false,
-          },
-        }}
-        className={styles.swiperContainer}
+      <button
+        ref={swiperNavPrevRef}
+        className={`${styles.navButton} ${styles.navButtonPrev}`}
       >
-        {showcasedProducts.map((product) => (
-          <SwiperSlide key={product.id} className={styles.swiperSlide}>
-            <ProductCard
-              title={product.name}
-              description={product.description}
-              price={product.price}
-              imageUrl={
-                product.images[0]?.url || "https://via.placeholder.com/300"
-              }
-              isCustomizable={product.isPersonalizable}
-              onCardClick={() => onProductCardClick(product)}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <div className={styles.navigationWrapper}>
-        <button ref={swiperNavPrevRef} className={styles.navButton}>
-          <ChevronLeftIcon />
-        </button>
-        <button ref={swiperNavNextRef} className={styles.navButton}>
-          <ChevronRightIcon />
-        </button>
+        <ChevronLeftIcon />
+      </button>
+
+      <div className={styles.carouselWrapper}>
+        <div className="w-full px-4 mb-4">
+          <HomeSearch
+            searchInput={searchInput}
+            onSearchChange={onSearchChange}
+          />
+        </div>
+
+        <Swiper
+          modules={[EffectCoverflow, Navigation, Autoplay]}
+          effect={"coverflow"}
+          grabCursor={true}
+          centeredSlides={true}
+          loop={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
+          navigation={{
+            prevEl: swiperNavPrevRef.current,
+            nextEl: swiperNavNextRef.current,
+          }}
+          onBeforeInit={(swiper: any) => {
+            swiper.params.navigation.prevEl = swiperNavPrevRef.current;
+            swiper.params.navigation.nextEl = swiperNavNextRef.current;
+          }}
+          coverflowEffect={{
+            rotate: 0,
+            stretch: 0,
+            depth: 200,
+            modifier: 1.5,
+            slideShadows: false,
+          }}
+          breakpoints={{
+            320: {
+              slidesPerView: 1.5,
+              spaceBetween: 0,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: -80,
+            },
+            1024: {
+              effect: "slide",
+              slidesPerView: 3,
+              spaceBetween: 30,
+              centeredSlides: false,
+            },
+          }}
+          className={styles.swiperContainer}
+        >
+          {showcasedProducts.map((product) => (
+            <SwiperSlide key={product.id} className={styles.swiperSlide}>
+              <ProductCard
+                title={product.name}
+                description={product.description}
+                price={product.price}
+                imageUrl={
+                  product.images[0]?.url || "https://via.placeholder.com/300"
+                }
+                isCustomizable={product.isPersonalizable}
+                onCardClick={() => onProductCardClick(product)}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
+
+      <button
+        ref={swiperNavNextRef}
+        className={`${styles.navButton} ${styles.navButtonNext}`}
+      >
+        <ChevronRightIcon />
+      </button>
     </div>
   );
 };

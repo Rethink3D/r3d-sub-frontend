@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Product } from "../../types/types";
 import { useCatalogContext } from "../../context/CatalogContext";
 import { sortOptions } from "../../utils/mockData";
@@ -7,6 +7,7 @@ import CategorySidebar from "./components/CategorySideBar";
 import CatalogHeader from "./components/CatalogHeader";
 import ProductGrid from "./components/ProductGrid";
 import MobileFilterDrawer from "./components/MobileFilterDrawer";
+import { useDebounce } from "../../hooks/useDebounce";
 
 interface CatalogProps {
   onOpenRequestDrawer: () => void;
@@ -24,7 +25,7 @@ const Catalog: React.FC<CatalogProps> = ({
     productsToShow,
     allCategories,
     categoryCounts,
-    searchInput,
+    searchInput: contextSearchInput,
     sortBy,
     selectedCategoryIds,
     isLoadingMore,
@@ -34,6 +35,25 @@ const Catalog: React.FC<CatalogProps> = ({
     handleCategoryClick,
     lastProductElementRef,
   } = useCatalogContext();
+
+  const [localSearchInput, setLocalSearchInput] = useState(contextSearchInput);
+  const debouncedSearchTerm = useDebounce(localSearchInput, 1000);
+
+  useEffect(() => {
+    if (debouncedSearchTerm !== contextSearchInput) {
+      setSearchInput(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, setSearchInput, contextSearchInput]);
+
+  useEffect(() => {
+    setLocalSearchInput(contextSearchInput);
+  }, [contextSearchInput]);
+
+  useEffect(() => {
+    return () => {
+      setSearchInput("");
+    };
+  }, [setSearchInput]);
 
   if (isLoading) {
     return (
@@ -66,8 +86,8 @@ const Catalog: React.FC<CatalogProps> = ({
 
           <main className="lg:col-span-3">
             <CatalogHeader
-              searchInput={searchInput}
-              onSearchChange={setSearchInput}
+              searchInput={localSearchInput}
+              onSearchChange={setLocalSearchInput}
               sortBy={sortBy}
               onSortChange={setSortBy}
               sortOptions={sortOptions}

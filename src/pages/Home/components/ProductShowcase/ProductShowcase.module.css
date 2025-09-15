@@ -9,6 +9,13 @@
   min-height: 480px;
 }
 
+.carouselWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .placeholder {
   background-color: #333;
   border-radius: 1rem;
@@ -55,20 +62,18 @@
 }
 
 @media (min-width: 1024px) {
-  .showcaseContainer {
-    padding: 0 4rem;
+  .carouselWrapper {
+    max-width: calc(100% - 8rem);
   }
 }
 
-.navigationWrapper {
-  display: none;
+@media (max-width: 1023px) {
+  .navButton {
+    display: none;
+  }
 }
 
 @media (min-width: 1024px) {
-  .navigationWrapper {
-    display: block;
-  }
-
   .navButton {
     position: absolute;
     top: 50%;
@@ -92,11 +97,11 @@
     transform: translateY(-50%) scale(1.1);
   }
 
-  .navButton:first-child {
+  .navButtonPrev {
     left: 0rem;
   }
 
-  .navButton:last-child {
+  .navButtonNext {
     right: 0rem;
   }
 
