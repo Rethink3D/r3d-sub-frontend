@@ -1,32 +1,31 @@
 import { useState, useEffect } from "react";
-import { Product, Maker } from "../../types/types";
-import { useCatalog } from "./Hook/useCatalog";
+import { Product } from "../../types/types";
+import { useCatalogContext } from "../../context/CatalogContext";
 import { sortOptions } from "../../utils/mockData";
 import { FilterIcon, LoadingSpinner } from "./components/Icons";
 import CategorySidebar from "./components/CategorySideBar";
 import CatalogHeader from "./components/CatalogHeader";
 import ProductGrid from "./components/ProductGrid";
 import MobileFilterDrawer from "./components/MobileFilterDrawer";
-import MakerProfileModal from "./components/MakerProfileModal/MakerProfileModal";
+import { useDebounce } from "../../hooks/useDebounce";
 
 interface CatalogProps {
   onOpenRequestDrawer: () => void;
+  onProductCardClick: (product: Product) => void;
 }
 
-const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+const Catalog: React.FC<CatalogProps> = ({
+  onOpenRequestDrawer,
+  onProductCardClick,
+}) => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  const [fullMakerProfile, setFullMakerProfile] = useState<Maker | null>(null);
-  const [isModalLoading, setIsModalLoading] = useState(false);
-
   const {
     isLoading,
     error,
     productsToShow,
     allCategories,
-    allMakers,
     categoryCounts,
-    searchInput,
+    searchInput: contextSearchInput,
     sortBy,
     selectedCategoryIds,
     isLoadingMore,
@@ -35,43 +34,26 @@ const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
     setSortBy,
     handleCategoryClick,
     lastProductElementRef,
-    handleMakerSearch,
-  } = useCatalog();
+  } = useCatalogContext();
+
+  const [localSearchInput, setLocalSearchInput] = useState(contextSearchInput);
+  const debouncedSearchTerm = useDebounce(localSearchInput, 1000);
 
   useEffect(() => {
-    if (selectedProduct) {
-      setIsModalLoading(true);
-      setFullMakerProfile(null);
-
-      setTimeout(() => {
-        const foundMaker = allMakers.find(
-          (m) => m.id === selectedProduct.maker.id
-        );
-
-        if (foundMaker) {
-          setFullMakerProfile(foundMaker);
-        } else {
-          console.warn(
-            "Perfil completo do maker não encontrado na lista 'allMakers'."
-          );
-        }
-        setIsModalLoading(false);
-      }, 500);
+    if (debouncedSearchTerm !== contextSearchInput) {
+      setSearchInput(debouncedSearchTerm);
     }
-  }, [selectedProduct, allMakers]);
+  }, [debouncedSearchTerm, setSearchInput, contextSearchInput]);
 
   useEffect(() => {
-    const shouldLockScroll = !!selectedProduct || isMobileFiltersOpen;
-    document.body.style.overflow = shouldLockScroll ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [selectedProduct, isMobileFiltersOpen]);
+    setLocalSearchInput(contextSearchInput);
+  }, [contextSearchInput]);
 
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-    setFullMakerProfile(null);
-  };
+  useEffect(() => {
+    return () => {
+      setSearchInput("");
+    };
+  }, [setSearchInput]);
 
   if (isLoading) {
     return (
@@ -104,15 +86,15 @@ const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
 
           <main className="lg:col-span-3">
             <CatalogHeader
-              searchInput={searchInput}
-              onSearchChange={setSearchInput}
+              searchInput={localSearchInput}
+              onSearchChange={setLocalSearchInput}
               sortBy={sortBy}
               onSortChange={setSortBy}
               sortOptions={sortOptions}
             />
             <ProductGrid
               products={productsToShow}
-              onCardClick={setSelectedProduct}
+              onCardClick={onProductCardClick}
               lastProductElementRef={lastProductElementRef}
               isLoadingMore={isLoadingMore}
               animate={animateGrid}
@@ -137,16 +119,6 @@ const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
       >
         <FilterIcon />
       </button>
-
-      {fullMakerProfile && selectedProduct && (
-        <MakerProfileModal
-          featuredProduct={selectedProduct}
-          maker={fullMakerProfile}
-          isLoading={isModalLoading}
-          onClose={handleCloseModal}
-          onViewAllProducts={handleMakerSearch}
-        />
-      )}
     </>
   );
 };
