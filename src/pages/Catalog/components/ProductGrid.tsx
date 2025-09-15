@@ -1,4 +1,4 @@
-import ProductCard from "./ProductCard/ProductCard";
+import ProductCard from "../../../components/ProductCard/ProductCard";
 import { LoadingSpinner } from "./Icons";
 import { Product } from "../../../types/types";
 import styles from "../Catalogo.module.css";
@@ -9,6 +9,7 @@ interface ProductGridProps {
   lastProductElementRef: (node: HTMLDivElement) => void;
   isLoadingMore: boolean;
   animate: boolean;
+  onOpenRequestDrawer: () => void;
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -17,6 +18,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   lastProductElementRef,
   isLoadingMore,
   animate,
+  onOpenRequestDrawer
 }) => (
   <>
     <div
@@ -53,6 +55,12 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         <p className="text-xl text-gray-500 dark:text-gray-400">
           Nenhum produto encontrado.
         </p>
+        <button
+          onClick={onOpenRequestDrawer}
+          className="font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          Não encontrou o que queria? Solicite uma impressão sob demanda.
+        </button>
       </div>
     )}
     {isLoadingMore && (
