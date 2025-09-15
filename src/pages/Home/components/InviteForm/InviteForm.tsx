@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createMakerInvite } from "../../../../services/api";
 
 const CubeIcon = () => (
   <svg
@@ -33,27 +34,11 @@ const InviteForm: React.FC = () => {
     setMessage(null);
 
     try {
-      const response = await fetch(
-        "https://r3d-sub-backend.onrender.com/maker-invite",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: name,
-            contactInfo: contactInfo,
-            checked: false,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Ocorreu um erro ao enviar seu convite."
-        );
-      }
+        await createMakerInvite({
+        name: name,
+        contactInfo: contactInfo,
+        checked: false,
+      });
 
       setMessage({
         text: "Obrigado! Sua solicitação foi recebida, em breve entraremos em contato.",

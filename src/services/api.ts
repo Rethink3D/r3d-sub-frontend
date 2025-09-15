@@ -13,6 +13,12 @@ interface LoginResponse {
   access_token: string;
 }
 
+interface MakerInvitePayload {
+  name: string;
+  contactInfo: string;
+  checked: boolean;
+}
+
 async function request<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -136,3 +142,9 @@ export const deleteImage = (imageId: string): Promise<void> => {
   return request(`image/${imageId}`, { method: "DELETE" });
 };
 
+export const createMakerInvite = (data: MakerInvitePayload): Promise<void> => {
+  return request<void>("maker-invite", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+};
