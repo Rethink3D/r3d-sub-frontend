@@ -1,7 +1,7 @@
 import styles from "./MakerProfileModal.module.css";
 import { Maker, Product } from "../../../../types/types";
 import { CloseIcon, LoadingSpinner } from "../Icons";
-import FeaturedProductCarousel from "./components/FeaturedProductCarousel";
+import FeaturedProductCarousel from "./components/FeatuedProductCarousel/FeaturedProductCarousel";
 import { useEscapeKey } from "./hook/useEscapeKey";
 import MakerHeader from "./components/MakerHeader";
 import MakerDescription from "./components/MakerDescription";
@@ -46,7 +46,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
       <div className="flex flex-col md:grid md:grid-cols-2 md:gap-8">
         <div className="flex flex-col mb-8 md:mb-0">
           <MakerHeader maker={maker} />
-          <MakerCategories maker={maker} /> {/* <-- ADICIONADO AQUI */}
+          <MakerCategories maker={maker} />
           <MakerDescription description={maker.description} />
           <div className="mt-auto pt-4 text-center">
             <button
@@ -72,13 +72,11 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
     <>
       <div className="flex flex-col items-center md:items-start text-center md:text-left">
         <MakerHeader maker={maker} />
-        <MakerCategories maker={maker} /> {/* <-- USANDO O COMPONENTE AQUI */}
+        <MakerCategories maker={maker} />
       </div>
-
       <div className="my-6">
         <MakerDescription description={maker.description} />
       </div>
-
       <div className="text-center mb-6">
         <button
           onClick={handleViewAllClick}
@@ -87,7 +85,6 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
           Ver Todos os Produtos de {maker.name}
         </button>
       </div>
-
       <ContactList maker={maker} />
     </>
   );
@@ -98,6 +95,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
       className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 p-4"
     >
       <div
+        id="maker-modal-scroll-container"
         onClick={handleModalContentClick}
         className={`${styles["animate-fade-in-scale"]} ${styles["no-scrollbar"]} relative bg-white dark:bg-[#121212] text-gray-900 dark:text-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 sm:p-8`}
       >
