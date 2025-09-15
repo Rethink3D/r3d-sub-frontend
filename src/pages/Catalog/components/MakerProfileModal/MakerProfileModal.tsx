@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./MakerProfileModal.module.css";
-import { Maker, Product } from "../../../../types/types";
+import { Maker, Product, MakerAnalytics } from "../../../../types/types";
+import { getMakerAnalytics } from "../../../../services/api";
 import {
   CloseIcon,
   LocationIcon,
@@ -8,6 +9,8 @@ import {
   InformationIcon,
   ExternalLinkIcon,
   LoadingSpinner,
+  EyeIcon,
+  CursorClickIcon,
 } from "../Icons";
 import FeaturedProductCarousel from "./FeaturedProductCarousel";
 
@@ -28,7 +31,30 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
 }) => {
   const handleModalContentClick = (e: React.MouseEvent) => e.stopPropagation();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [analytics, setAnalytics] = useState<Omit<MakerAnalytics, 'makerId'> | null>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      if (!maker?.id) return;
+      try {
+        setAnalyticsLoading(true);
+        const data = await getMakerAnalytics(maker.id);
+        setAnalytics({
+          totalProductViews: data.totalProductViews,
+          totalContactClicks: data.totalContactClicks,
+        });
+      } catch (error) {
+        console.error("Erro ao buscar analytics do maker:", error);
+        setAnalytics(null);
+      } finally {
+        setAnalyticsLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, [maker?.id]);
+  
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -166,6 +192,24 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
                         </span>
                       )}
                     </div>
+                    <div className="h-5 mt-2"> 
+                    {analyticsLoading ? (
+                      <div className="flex justify-center md:justify-start gap-4">
+                        <div className="bg-gray-200 dark:bg-gray-700 h-4 w-24 rounded-md animate-pulse"></div>
+                        <div className="bg-gray-200 dark:bg-gray-700 h-4 w-20 rounded-md animate-pulse"></div>
+                      </div>
+                    ) : analytics && (
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-gray-600 dark:text-gray-400 text-sm">
+                        <span className="flex items-center gap-1.5" title="Visualizações dos produtos">
+                          <EyeIcon /> {analytics.totalProductViews} Visualizações
+                        </span>
+                        <span className="hidden sm:inline">・</span>
+                        <span className="flex items-center gap-1.5" title="Cliques nos contatos">
+                          <CursorClickIcon /> {analytics.totalContactClicks} Solicitações de contato
+                        </span>
+                      </div>
+                    )}
+                  </div>
                   </div>
                 </div>
 
