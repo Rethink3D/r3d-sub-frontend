@@ -57,8 +57,6 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
 }) => {
   const { productsToShow, isLoading } = useCatalogContext();
   const [showcasedProducts, setShowcasedProducts] = useState<Product[]>([]);
-  const swiperNavPrevRef = useRef<HTMLButtonElement>(null);
-  const swiperNavNextRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (productsToShow && productsToShow.length > 0) {
@@ -75,15 +73,10 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
     );
   }
 
-  if (showcasedProducts.length < 3) {
-    return null;
-  }
-
   return (
     <div className={styles.showcaseContainer}>
       <button
-        ref={swiperNavPrevRef}
-        className={`${styles.navButton} ${styles.navButtonPrev}`}
+        className={`swiper-button-prev-showcase ${styles.navButton} ${styles.navButtonPrev}`}
       >
         <ChevronLeftIcon />
       </button>
@@ -108,13 +101,10 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
             pauseOnMouseEnter: true,
           }}
           navigation={{
-            prevEl: swiperNavPrevRef.current,
-            nextEl: swiperNavNextRef.current,
+            prevEl: ".swiper-button-prev-showcase",
+            nextEl: ".swiper-button-next-showcase",
           }}
-          onBeforeInit={(swiper: any) => {
-            swiper.params.navigation.prevEl = swiperNavPrevRef.current;
-            swiper.params.navigation.nextEl = swiperNavNextRef.current;
-          }}
+          
           coverflowEffect={{
             rotate: 0,
             stretch: 0,
@@ -158,8 +148,7 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
       </div>
 
       <button
-        ref={swiperNavNextRef}
-        className={`${styles.navButton} ${styles.navButtonNext}`}
+        className={`swiper-button-next-showcase ${styles.navButton} ${styles.navButtonNext}`}
       >
         <ChevronRightIcon />
       </button>
