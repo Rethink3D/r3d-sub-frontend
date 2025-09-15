@@ -128,7 +128,7 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
             1024: {
               effect: "slide",
               slidesPerView: 3,
-              spaceBetween: 30,
+              spaceBetween: 20,
               centeredSlides: false,
             },
           }}
