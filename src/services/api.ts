@@ -5,7 +5,6 @@ import {
   MakerPayload,
   Product,
   ProductPayload,
-  MakerAnalytics
 } from "../types/types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -137,6 +136,3 @@ export const deleteImage = (imageId: string): Promise<void> => {
   return request(`image/${imageId}`, { method: "DELETE" });
 };
 
-export const getMakerAnalytics = (makerId: string): Promise<MakerAnalytics> => {
-  return request<MakerAnalytics>(`analytics/maker/${makerId}`);
-};

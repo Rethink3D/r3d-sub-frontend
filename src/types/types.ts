@@ -89,9 +89,3 @@ export interface ProductPayload {
   makerId: string;
   categoryIds?: string[];
 }
-
-export interface MakerAnalytics {
-  makerId: string;
-  totalProductViews: number;
-  totalContactClicks: number;
-}
