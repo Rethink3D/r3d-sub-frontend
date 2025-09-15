@@ -1,4 +1,4 @@
-import ProductCard from "./ProductCard/ProductCard";
+import ProductCard from "../../../components/ProductCard/ProductCard";
 import { LoadingSpinner } from "./Icons";
 import { Product } from "../../../types/types";
 import styles from "../Catalogo.module.css";

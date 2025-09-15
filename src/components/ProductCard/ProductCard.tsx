@@ -1,5 +1,3 @@
-import React from "react";
-
 const WandIcon = () => (
   <svg
     className="w-3 h-3"
@@ -37,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={onCardClick}
-      className="relative hover:z-10 p-0.5 rounded-2xl bg-gradient-to-br from-[#00c6ff] to-[#8c52ff] cursor-pointer transform hover:scale-105 transition-transform duration-300 h-full"
+      className="relative hover:z-30 p-0.5 rounded-2xl bg-gradient-to-br from-[#00c6ff] to-[#8c52ff] cursor-pointer h-full w-full transform-gpu transition-transform duration-300 hover:scale-[1.03]"
     >
       <div className="bg-white dark:bg-[#1a1a1a] dark:bg-opacity-100 h-full rounded-[14px] p-4 flex flex-col text-gray-900 dark:text-gray-50">
         <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg mb-4 relative">
@@ -51,18 +49,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <div
               tabIndex={0}
               onClick={(e) => e.stopPropagation()}
-              className="group absolute bottom-1.5 right-1.5 flex items-center gap-1 bg-purple-600/80 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-0.5 rounded-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-400"
+              className="group absolute bottom-1.5 right-1.5 flex items-center gap-1 bg-purple-600/80 text-white text-[10px] font-medium px-2 py-0.5 rounded-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-400"
             >
               <WandIcon />
               <span>Personalizável</span>
               <div
                 className="
-        absolute z-20 bottom-full mb-1.5 left-1/2 -translate-x-1/2 
-        w-20 text-center       
-        bg-gray-900 text-white text-[10px] rounded-md px-1.5 py-0.5
-        opacity-0 group-hover:opacity-100 group-focus:opacity-100
-        transition-opacity duration-300 pointer-events-none 
-      "
+                  absolute z-20 bottom-full mb-1.5 left-1/2 -translate-x-1/2 
+                  w-20 text-center     
+                  bg-gray-900 text-white text-[10px] rounded-md px-1.5 py-0.5
+                  opacity-0 group-hover:opacity-100 group-focus:opacity-100
+                  transition-opacity duration-300 pointer-events-none 
+                "
               >
                 Este produto pode ser personalizado!
               </div>
