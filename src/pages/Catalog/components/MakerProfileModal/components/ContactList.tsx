@@ -2,6 +2,7 @@ import { Maker } from "../../../../../types/types";
 import { ExternalLinkIcon } from "../../Icons";
 import { contactDetailsMap, generateWhatsappLink } from "../utils";
 import styles from "../MakerProfileModal.module.css";
+import { trackEvent } from "../../../../../utils/analytics";
 
 interface ContactListProps {
   maker: Maker;
@@ -29,6 +30,9 @@ const ContactList: React.FC<ContactListProps> = ({ maker }) => (
             href={href}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('Clique no Contato', {
+              'label': `makerId:${maker.id}|contactType:${contact.type}`
+            })}
             className={`${styles.contactCard} flex justify-between items-center p-4 rounded-lg`}
           >
             <div className="flex items-center">

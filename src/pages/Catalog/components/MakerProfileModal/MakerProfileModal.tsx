@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styles from "./MakerProfileModal.module.css";
 import { Maker, Product } from "../../../../types/types";
 import { CloseIcon, LoadingSpinner } from "../Icons";
@@ -7,6 +8,7 @@ import MakerHeader from "./components/MakerHeader";
 import MakerDescription from "./components/MakerDescription";
 import ContactList from "./components/ContactList";
 import MakerCategories from "./components/MakerCategories";
+import { trackEvent } from "../../../../utils/analytics";
 
 interface MakerProfileModalProps {
   maker: Maker;
@@ -25,6 +27,14 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
 }) => {
   useEscapeKey(onClose);
 
+  useEffect(() => {
+    if (featuredProduct) {
+      trackEvent('Visualização de Produto (Modal)', {
+        'label': `productId:${featuredProduct.id}|makerId:${maker.id}`
+      });
+    }
+  }, [featuredProduct, maker.id]);
+  
   const handleModalContentClick = (e: React.MouseEvent) => e.stopPropagation();
 
   const handleViewAllClick = () => {
