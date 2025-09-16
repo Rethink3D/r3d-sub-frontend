@@ -7,7 +7,6 @@ import CategorySidebar from "./components/CategorySideBar";
 import CatalogHeader from "./components/CatalogHeader";
 import ProductGrid from "./components/ProductGrid";
 import MobileFilterDrawer from "./components/MobileFilterDrawer";
-import { useDebounce } from "../../hooks/useDebounce";
 
 interface CatalogProps {
   onOpenRequestDrawer: () => void;
@@ -37,23 +36,16 @@ const Catalog: React.FC<CatalogProps> = ({
   } = useCatalogContext();
 
   const [localSearchInput, setLocalSearchInput] = useState(contextSearchInput);
-  const debouncedSearchTerm = useDebounce(localSearchInput, 1000);
 
   useEffect(() => {
-    if (debouncedSearchTerm !== contextSearchInput) {
-      setSearchInput(debouncedSearchTerm);
+    if (contextSearchInput !== localSearchInput) {
+      setLocalSearchInput(contextSearchInput);
     }
-  }, [debouncedSearchTerm, setSearchInput, contextSearchInput]);
-
-  useEffect(() => {
-    setLocalSearchInput(contextSearchInput);
   }, [contextSearchInput]);
 
-  useEffect(() => {
-    return () => {
-      setSearchInput("");
-    };
-  }, [setSearchInput]);
+  const handleSearchSubmit = () => {
+    setSearchInput(localSearchInput);
+  };
 
   if (isLoading) {
     return (
@@ -88,6 +80,7 @@ const Catalog: React.FC<CatalogProps> = ({
             <CatalogHeader
               searchInput={localSearchInput}
               onSearchChange={setLocalSearchInput}
+              onSearchSubmit={handleSearchSubmit}
               sortBy={sortBy}
               onSortChange={setSortBy}
               sortOptions={sortOptions}

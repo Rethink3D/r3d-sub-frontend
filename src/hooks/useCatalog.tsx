@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
-import { Product, Category, Maker } from "../../../types/types";
-import { getProducts, getMakers } from "../../../services/api";
+import { useSearchParams, useLocation } from "react-router-dom";
+import { Product, Category, Maker } from "../types/types";
+import { getProducts, getMakers } from "../services/api";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -17,8 +17,20 @@ export const useCatalog = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [animateGrid, setAnimateGrid] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const makerQueryParam = searchParams.get("maker");
-  const [searchInput, setSearchInput] = useState(makerQueryParam || "");
+  const location = useLocation();
+
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    const makerParam = searchParams.get("maker");
+    if (makerParam && location.pathname === "/catalogo") {
+      const decodedMakerName = decodeURIComponent(
+        makerParam.replace(/\+/g, " ")
+      );
+      setSearchInput(decodedMakerName);
+      setSelectedCategoryIds([]);
+    }
+  }, [searchParams, location.pathname]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +60,7 @@ export const useCatalog = () => {
         });
 
         const uniqueCategories = Array.from(categoriesFromProducts.values());
-        uniqueCategories.sort((a, b) => a.name.localeCompare(b.name));
+        // uniqueCategories.sort((a, b) => a.name.localeCompare(b.name))
 
         setProducts(productsData);
         setAllMakers(makersWithProductCount);
@@ -77,6 +89,10 @@ export const useCatalog = () => {
   const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
 
+    if (!searchInput && selectedCategoryIds.length === 0) {
+      result = result.sort(() => Math.random() - 0.5);
+    }
+
     if (searchInput) {
       const lowercasedInput = searchInput.toLowerCase();
       result = result.filter(
@@ -94,10 +110,14 @@ export const useCatalog = () => {
 
     switch (sortBy) {
       case "price-asc":
-        result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        result.sort(
+          (a, b) => Number.parseFloat(a.price) - Number.parseFloat(b.price)
+        );
         break;
       case "price-desc":
-        result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        result.sort(
+          (a, b) => Number.parseFloat(b.price) - Number.parseFloat(a.price)
+        );
         break;
     }
     return result;
@@ -105,7 +125,7 @@ export const useCatalog = () => {
 
   const productsToShow = filteredAndSortedProducts.slice(0, visibleCount);
 
-  const handleCategoryClick = (categoryId: string) => {
+  const handleCategoryClick = useCallback((categoryId: string) => {
     if (categoryId === "Todos") {
       setSelectedCategoryIds([]);
       return;
@@ -115,7 +135,7 @@ export const useCatalog = () => {
         ? prev.filter((id) => id !== categoryId)
         : [...prev, categoryId]
     );
-  };
+  }, []);
 
   const loadMoreProducts = useCallback(() => {
     if (isLoadingMore || visibleCount >= filteredAndSortedProducts.length) {
@@ -153,11 +173,20 @@ export const useCatalog = () => {
     ]
   );
 
-  const handleMakerSearch = (makerName: string) => {
-    setSearchInput(makerName);
+  const handleMakerSearch = useCallback(
+    (makerName: string) => {
+      setSearchInput(makerName);
+      setSelectedCategoryIds([]);
+      setSearchParams({ maker: makerName });
+    },
+    [setSearchParams]
+  );
+
+  const clearAllFilters = useCallback(() => {
+    setSearchInput("");
     setSelectedCategoryIds([]);
-    setSearchParams({ maker: makerName });
-  };
+    setSearchParams({});
+  }, [setSearchParams]);
 
   useEffect(() => {
     setAnimateGrid(false);
@@ -168,6 +197,14 @@ export const useCatalog = () => {
     }
   }, [searchInput, selectedCategoryIds, sortBy]);
 
+  const sortedCategoriesByCount = useMemo(() => {
+    return allCategories.sort((a, b) => {
+      const countA = categoryCounts[a.id] || 0;
+      const countB = categoryCounts[b.id] || 0;
+      return countB - countA;
+    });
+  }, [allCategories, categoryCounts]);
+
   return {
     isLoading,
     error,
@@ -175,7 +212,7 @@ export const useCatalog = () => {
     sortBy,
     selectedCategoryIds,
     productsToShow,
-    allCategories,
+    allCategories: sortedCategoriesByCount,
     allMakers,
     categoryCounts,
     isLoadingMore,
@@ -186,5 +223,6 @@ export const useCatalog = () => {
     lastProductElementRef,
     hasMoreProducts: productsToShow.length < filteredAndSortedProducts.length,
     handleMakerSearch,
+    clearAllFilters,
   };
 };

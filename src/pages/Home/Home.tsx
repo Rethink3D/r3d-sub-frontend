@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Home.module.css";
 import InviteForm from "./components/InviteForm/InviteForm";
@@ -10,14 +10,17 @@ import ProductShowcase from "./components/ProductShowcase/ProductShowcase";
 import { Product } from "../../types/types";
 import MakerProfileModal from "../Catalog/components/MakerProfileModal/MakerProfileModal";
 import { useCatalogContext } from "../../context/CatalogContext";
-import { useDebounce } from "../../hooks/useDebounce";
+import { useHomeProducts } from "../../hooks/useHomeProducts";
 
 const HomePage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const { setSearchInput: setContextSearchInput } = useCatalogContext();
+  const { handleMakerSearch } = useCatalogContext();
   const navigate = useNavigate();
-  const [homeSearchInput, setHomeSearchInput] = useState("");
-  const debouncedHomeSearch = useDebounce(homeSearchInput, 1000);
+  const {
+    products: homeProducts,
+    allMakers: homeMakers,
+    isLoading: homeLoading,
+  } = useHomeProducts();
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -29,16 +32,16 @@ const HomePage: React.FC = () => {
 
   const handleViewAllProducts = (makerName: string) => {
     handleCloseModal();
-    setContextSearchInput(makerName);
+    handleMakerSearch(makerName);
     navigate("/catalogo");
   };
 
-  useEffect(() => {
-    if (debouncedHomeSearch) {
-      setContextSearchInput(debouncedHomeSearch);
+  const handleHomeSearch = (searchTerm: string) => {
+    if (searchTerm.trim()) {
+      handleMakerSearch(searchTerm);
       navigate("/catalogo");
     }
-  }, [debouncedHomeSearch, setContextSearchInput, navigate]);
+  };
 
   return (
     <>
@@ -72,9 +75,10 @@ const HomePage: React.FC = () => {
 
           <div className="lg:col-span-3 flex justify-center items-center min-h-[480px]">
             <ProductShowcase
+              products={homeProducts}
+              isLoading={homeLoading}
               onProductCardClick={handleProductClick}
-              searchInput={homeSearchInput}
-              onSearchChange={setHomeSearchInput}
+              onSearch={handleHomeSearch}
             />
           </div>
         </section>
