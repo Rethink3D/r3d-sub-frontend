@@ -19,6 +19,7 @@ export interface CatalogContextType {
   handleCategoryClick: (categoryId: string) => void;
   lastProductElementRef: (node: HTMLDivElement) => void;
   handleMakerSearch: (makerName: string) => void;
+  clearAllFilters: () => void;
 }
 
 export const CatalogContext = createContext<CatalogContextType | null>(null);

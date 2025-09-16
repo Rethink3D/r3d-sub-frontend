@@ -1,4 +1,4 @@
-import { useCatalog } from "../pages/Catalog/Hook/useCatalog";
+import { useCatalog } from "../hooks/useCatalog";
 import { CatalogContext } from "./CatalogContext";
 
 interface CatalogProviderProps {

@@ -1,10 +1,8 @@
-import { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
-import { useCatalogContext } from "../../../../context/CatalogContext";
 import { Product } from "../../../../types/types";
 import ProductCard from "../../../../components/ProductCard/ProductCard";
 import styles from "./ProductShowcase.module.css";
@@ -45,26 +43,18 @@ const ChevronRightIcon = () => (
 );
 
 interface ProductShowcaseProps {
+  products: Product[];
+  isLoading: boolean;
   onProductCardClick: (product: Product) => void;
-  searchInput: string;
-  onSearchChange: (value: string) => void;
+  onSearch: (searchTerm: string) => void;
 }
 
 const ProductShowcase: React.FC<ProductShowcaseProps> = ({
+  products,
+  isLoading,
   onProductCardClick,
-  searchInput,
-  onSearchChange,
+  onSearch,
 }) => {
-  const { productsToShow, isLoading } = useCatalogContext();
-  const [showcasedProducts, setShowcasedProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    if (productsToShow && productsToShow.length > 0) {
-      const shuffled = [...productsToShow].sort(() => 0.5 - Math.random());
-      setShowcasedProducts(shuffled.slice(0, Math.min(shuffled.length, 20)));
-    }
-  }, [productsToShow]);
-
   if (isLoading) {
     return (
       <div
@@ -73,10 +63,10 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
     );
   }
 
-  if (showcasedProducts.length < 3) {
+  if (products.length < 3) {
     return null;
   }
-  
+
   return (
     <div className={styles.showcaseContainer}>
       <button
@@ -87,10 +77,7 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
 
       <div className={styles.carouselWrapper}>
         <div className="w-full px-4 mb-4">
-          <HomeSearch
-            searchInput={searchInput}
-            onSearchChange={onSearchChange}
-          />
+          <HomeSearch onSearch={onSearch} />
         </div>
 
         <Swiper
@@ -108,7 +95,6 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
             prevEl: ".swiper-button-prev-showcase",
             nextEl: ".swiper-button-next-showcase",
           }}
-          
           coverflowEffect={{
             rotate: 0,
             stretch: 0,
@@ -134,7 +120,7 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
           }}
           className={styles.swiperContainer}
         >
-          {showcasedProducts.map((product) => (
+          {products.map((product) => (
             <SwiperSlide key={product.id} className={styles.swiperSlide}>
               <ProductCard
                 title={product.name}

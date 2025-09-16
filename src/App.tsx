@@ -1,9 +1,8 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Maker, Product } from "./types/types";
+import type { Maker, Product } from "./types/types";
 import { CatalogProvider } from "./context/CatalogProvider";
 import { useCatalogContext } from "./context/CatalogContext";
-
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -27,7 +26,7 @@ const AppContent: React.FC = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const { allMakers, handleMakerSearch } = useCatalogContext();
-
+  const navigate = useNavigate();
   const [isRequestPanelOpen, setIsRequestPanelOpen] = useState(false);
   const [selectedMakerForModal, setSelectedMakerForModal] =
     useState<Maker | null>(null);
@@ -39,6 +38,13 @@ const AppContent: React.FC = () => {
     setSelectedMakerForModal(fullMakerProfile || makerFromDrawer);
     setSelectedProductForModal(null);
     setIsRequestPanelOpen(false);
+  };
+
+  const handleViewAllFromModal = (makerName: string) => {
+    handleMakerSearch(makerName);
+    if (location.pathname !== "/catalogo") {
+      navigate("/catalogo");
+    }
   };
 
   const handleProductSelect = (product: Product) => {
@@ -81,7 +87,6 @@ const AppContent: React.FC = () => {
           <Route path="/saiba-mais" element={<About />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
-
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
@@ -114,7 +119,7 @@ const AppContent: React.FC = () => {
           maker={selectedMakerForModal}
           featuredProduct={selectedProductForModal || undefined}
           onClose={handleCloseModal}
-          onViewAllProducts={handleMakerSearch}
+          onViewAllProducts={handleViewAllFromModal}
         />
       )}
     </div>
