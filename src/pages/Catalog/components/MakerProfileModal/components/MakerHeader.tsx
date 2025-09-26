@@ -11,7 +11,8 @@ const MakerHeader: React.FC<MakerHeaderProps> = ({ maker }) => (
     <div className={`${styles.avatarRing} p-1 flex-shrink-0 mb-4 md:mb-0`}>
       <img
         src={
-          maker.profileImage?.url ||
+          maker.profileImage?.urlThumbnail ||
+          maker.profileImage?.urlDisplay ||
           `https://ui-avatars.com/api/?name=${maker.name.replace(
             " ",
             "+"

@@ -276,7 +276,7 @@ const MakerForm: React.FC = () => {
             {isEditing && profileImage && (
               <div className="mb-4 relative w-40 h-40 group">
                 <img
-                  src={profileImage.url}
+                  src={profileImage.urlThumbnail}
                   alt="Perfil do Maker"
                   className="w-40 h-40 object-cover rounded-full"
                 />

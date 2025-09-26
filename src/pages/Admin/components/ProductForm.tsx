@@ -1,20 +1,89 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import {
     getProductById,
     createProduct,
     updateProduct,
     uploadProductImage,
-    deleteImage,
     getMakers,
     getCategories,
+    CropData,
 } from "../../../services/api";
 import { Maker, Image, Category } from "../../../types/types";
+
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from "@dnd-kit/core";
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    rectSortingStrategy,
+} from "@dnd-kit/sortable";
+
+import ReactCrop, {
+    type Crop,
+    centerCrop,
+    makeAspectCrop,
+} from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
+
+import { SortableImage, DisplayImage } from "./SortableImage";
+
+function getCroppedPreview(
+    image: HTMLImageElement,
+    crop: Crop
+): Promise<string> {
+    return new Promise((resolve) => {
+        const canvas = document.createElement("canvas");
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+
+        canvas.width = crop.width;
+        canvas.height = crop.height;
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+            throw new Error("No 2d context");
+        }
+
+        ctx.drawImage(
+            image,
+            crop.x * scaleX,
+            crop.y * scaleY,
+            crop.width * scaleX,
+            crop.height * scaleY,
+            0,
+            0,
+            crop.width,
+            crop.height
+        );
+
+        canvas.toBlob(
+            (blob) => {
+                if (!blob) {
+                    console.error("Canvas is empty");
+                    return;
+                }
+                const previewUrl = window.URL.createObjectURL(blob);
+                resolve(previewUrl);
+            },
+            "image/webp",
+            0.9
+        );
+    });
+}
 
 const ProductForm: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const isEditing = Boolean(id);
+
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [material, setMaterial] = useState("");
@@ -24,36 +93,32 @@ const ProductForm: React.FC = () => {
     const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
         new Set()
     );
+
     const [availableMakers, setAvailableMakers] = useState<Maker[]>([]);
     const [availableCategories, setAvailableCategories] = useState<Category[]>(
         []
     );
-    const [productImages, setProductImages] = useState<Image[]>([]);
-    const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const [displayImages, setDisplayImages] = useState<DisplayImage[]>([]);
     const [imagesToDelete, setImagesToDelete] = useState<Set<string>>(
         new Set()
     );
+
+    const [croppingFile, setCroppingFile] = useState<DisplayImage | null>(null);
+    const [crop, setCrop] = useState<Crop>();
+
+    const imgRef = useRef<HTMLImageElement>(null);
+
+    const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
 
-    const fetchProductData = async (productId: string) => {
-        try {
-            const productData = await getProductById(productId);
-            setName(productData.name);
-            setDescription(productData.description);
-            setMaterial(productData.material);
-            setPrice(String(productData.price));
-            setIsPersonalizable(productData.isPersonalizable);
-            setMakerId(productData.maker?.id || "");
-            setSelectedCategories(
-                new Set(productData.categories.map((cat) => cat.id))
-            );
-            setProductImages(productData.images || []);
-        } catch (err: any) {
-            setError("Erro ao recarregar dados do produto: " + err.message);
-        }
-    };
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -67,7 +132,21 @@ const ProductForm: React.FC = () => {
                 setAvailableCategories(categoriesData);
 
                 if (isEditing && id) {
-                    await fetchProductData(id);
+                    const productData = await getProductById(id);
+                    setName(productData.name);
+                    setDescription(productData.description);
+                    setMaterial(productData.material);
+                    setPrice(String(productData.price));
+                    setIsPersonalizable(productData.isPersonalizable);
+                    setMakerId(productData.maker?.id || "");
+                    setSelectedCategories(
+                        new Set(productData.categories.map((cat) => cat.id))
+                    );
+                    setDisplayImages(
+                        productData.images.sort(
+                            (a, b) => (a.position ?? 0) - (b.position ?? 0)
+                        ) || []
+                    );
                 }
             } catch (err: any) {
                 setError("Erro ao carregar dados. " + err.message);
@@ -80,37 +159,176 @@ const ProductForm: React.FC = () => {
 
     const handleCategoryToggle = (categoryId: string) => {
         const newSelection = new Set(selectedCategories);
-        if (newSelection.has(categoryId)) {
-            newSelection.delete(categoryId);
-        } else {
-            newSelection.add(categoryId);
-        }
+        newSelection.has(categoryId)
+            ? newSelection.delete(categoryId)
+            : newSelection.add(categoryId);
         setSelectedCategories(newSelection);
     };
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            setFilesToUpload(Array.from(event.target.files));
+            const newFiles = Array.from(event.target.files);
+            const newDisplayImages: DisplayImage[] = newFiles.map((file) => ({
+                id: `${file.name}-${Date.now()}`,
+                originalUrl: URL.createObjectURL(file), // MUDANÇA AQUI
+                file,
+                isNew: true,
+            }));
+            setDisplayImages((prevImages) => [
+                ...prevImages,
+                ...newDisplayImages,
+            ]);
         }
     };
 
-    const handleRemoveQueuedFile = (fileToRemove: File) => {
-        setFilesToUpload(filesToUpload.filter((file) => file !== fileToRemove));
-    };
-
-    const handleImageDelete = (imageId: string) => {
-        if (window.confirm("Tem certeza que deseja excluir esta imagem?")) {
-            setImagesToDelete((prev) => new Set(prev).add(imageId));
+    const handleDragEnd = (event: any) => {
+        const { active, over } = event;
+        if (active.id !== over.id) {
+            setDisplayImages((items) => {
+                const oldIndex = items.findIndex(
+                    (item) => item.id === active.id
+                );
+                const newIndex = items.findIndex((item) => item.id === over.id);
+                return arrayMove(items, oldIndex, newIndex);
+            });
         }
     };
 
-    const handleUndoImageDelete = (imageId: string) => {
-        setImagesToDelete((prev) => {
-            const next = new Set(prev);
-            next.delete(imageId);
-            return next;
-        });
+    const handleImageDelete = (imageToDelete: DisplayImage) => {
+        if (window.confirm("Tem certeza que deseja remover esta imagem?")) {
+            if (imageToDelete.isNew) {
+                setDisplayImages((prev) =>
+                    prev.filter((img) => img.id !== imageToDelete.id)
+                );
+            } else {
+                setImagesToDelete((prev) =>
+                    new Set(prev).add(imageToDelete.id)
+                );
+                setDisplayImages((prev) =>
+                    prev.filter((img) => img.id !== imageToDelete.id)
+                );
+            }
+        }
     };
+
+    const openCropModal = (imageToCrop: DisplayImage) => {
+        setCrop(undefined);
+        setCroppingFile(imageToCrop);
+    };
+
+    // const handleSaveCrop = async (completedCrop: Crop) => {
+    //     if (
+    //         croppingFile &&
+    //         completedCrop?.width &&
+    //         completedCrop?.height &&
+    //         imgRef.current
+    //     ) {
+    //         try {
+    //             const croppedPreviewUrl = await getCroppedPreview(
+    //                 imgRef.current,
+    //                 completedCrop
+    //             );
+
+    //             const scaleX =
+    //                 imgRef.current.naturalWidth / imgRef.current.width;
+    //             const scaleY =
+    //                 imgRef.current.naturalHeight / imgRef.current.height;
+
+    //             const finalCropData: CropData = {
+    //                 x: completedCrop.x * scaleX,
+    //                 y: completedCrop.y * scaleY,
+    //                 width: completedCrop.width * scaleX,
+    //                 height: completedCrop.height * scaleY,
+    //             };
+
+    //             setDisplayImages((prev) =>
+    //                 prev.map((img) => {
+    //                     if (img.id !== croppingFile.id) {
+    //                         return img;
+    //                     }
+    //                     if (img.isNew) {
+    //                         return {
+    //                             ...img,
+    //                             cropData: finalCropData,
+    //                             croppedUrl: croppedPreviewUrl,
+    //                         };
+    //                     }
+    //                     return { ...img, cropData: finalCropData };
+    //                 })
+    //             );
+    //         } catch (error) {
+    //             console.error(
+    //                 "Erro ao gerar preview da imagem cortada:",
+    //                 error
+    //             );
+    //         }
+    //     }
+    // };
+
+    const handleSaveCrop = async (cropToSave: Crop) => {
+        if (
+            !croppingFile ||
+            !cropToSave?.width ||
+            !cropToSave?.height ||
+            !imgRef.current
+        ) {
+            return;
+        }
+
+        try {
+            const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
+            const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
+            const finalCropData: CropData = {
+                x: cropToSave.x * scaleX,
+                y: cropToSave.y * scaleY,
+                width: cropToSave.width * scaleX,
+                height: cropToSave.height * scaleY,
+            };
+
+            const croppedPreviewUrl = await getCroppedPreview(
+                imgRef.current,
+                cropToSave
+            );
+
+            setDisplayImages((prev) =>
+                prev.map((img) => {
+                    if (img.id !== croppingFile.id) {
+                        return img;
+                    }
+
+                    if (img.isNew) {
+                        return {
+                            ...img,
+                            cropData: finalCropData,
+                            croppedUrl: croppedPreviewUrl,
+                        };
+                    }
+
+                    return {
+                        ...img,
+                        cropData: finalCropData,
+                        urlThumbnail: croppedPreviewUrl,
+                        needsRecrop: true,
+                    };
+                })
+            );
+        } catch (error) {
+            console.error("Erro ao gerar preview do corte:", error);
+            setError("Falha ao gerar preview do corte.");
+        } finally {
+            setCroppingFile(null);
+        }
+    };
+
+    function onImageLoadInModal(e: React.SyntheticEvent<HTMLImageElement>) {
+        const { width, height } = e.currentTarget;
+        const newCrop = centerCrop(
+            makeAspectCrop({ unit: "%", width: 90 }, 1 / 1, width, height),
+            width,
+            height
+        );
+        setCrop(newCrop);
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -122,48 +340,82 @@ const ProductForm: React.FC = () => {
         setError("");
 
         try {
+            const newQueuedFiles = displayImages.filter(
+                (img): img is Extract<DisplayImage, { isNew: true }> =>
+                    img.isNew
+            );
+            const existingImages = displayImages.filter(
+                (img) => !img.isNew
+            ) as Image[];
+
             if (isEditing && id) {
+                const imageOrderPayload = existingImages.map(
+                    (image, index) => ({
+                        id: image.id,
+                        position: index,
+                    })
+                );
+                const imagesToRecropPayload = displayImages
+                    .filter((img) => img.needsRecrop && img.cropData)
+                    .map((img) => ({
+                        id: img.id,
+                        ...img.cropData,
+                    }));
+
                 const productData = {
                     name,
                     description,
                     material,
-                    price: price,
+                    price,
                     isPersonalizable,
                     makerId,
                     categoryIds: Array.from(selectedCategories),
                     imageIdsToDelete: Array.from(imagesToDelete),
+                    imageOrder: imageOrderPayload,
+                    imagesToRecrop: imagesToRecropPayload,
                 };
-                await updateProduct(id, productData);
+                await updateProduct(id, productData as any);
 
-                if (filesToUpload.length > 0) {
-                    const uploadPromises = filesToUpload.map((file) =>
-                        uploadProductImage(id, file)
+                if (newQueuedFiles.length > 0) {
+                    const uploadPromises = newQueuedFiles.map((qf, index) =>
+                        uploadProductImage(id, qf.file, qf.cropData, index)
                     );
                     await Promise.all(uploadPromises);
                 }
-
-                navigate("/admin/products");
             } else {
                 const newProductData = {
                     name,
                     description,
                     material,
-                    price: price,
+                    price,
                     isPersonalizable,
                     makerId,
                     categoryIds: Array.from(selectedCategories),
                 };
                 const newProduct = await createProduct(newProductData);
 
-                if (filesToUpload.length > 0) {
-                    const uploadPromises = filesToUpload.map((file) =>
-                        uploadProductImage(newProduct.id, file)
-                    );
+                const newQueuedFiles = displayImages.filter(
+                    (img): img is Extract<DisplayImage, { isNew: true }> =>
+                        img.isNew
+                );
+
+                if (newQueuedFiles.length > 0) {
+                    const uploadPromises = newQueuedFiles.map((qf) => {
+                        const finalPosition = displayImages.findIndex(
+                            (item) => item.id === qf.id
+                        );
+                        return uploadProductImage(
+                            newProduct.id,
+                            qf.file,
+                            qf.cropData,
+                            finalPosition
+                        );
+                    });
+
                     await Promise.all(uploadPromises);
                 }
-
-                navigate("/admin/products");
             }
+            navigate("/admin/products");
         } catch (err: any) {
             setError("Erro ao salvar o produto: " + err.message);
         } finally {
@@ -326,15 +578,15 @@ const ProductForm: React.FC = () => {
 
                     <section>
                         <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
-                            Imagens do Produto
+                            Imagens do Produto (Arraste para reordenar)
                         </h2>
                         <div>
                             <label
-                                className="block text-gray-700 font-bold mb-2"
                                 htmlFor="images"
+                                className="block text-gray-700 font-bold mb-2"
                             >
                                 {isEditing
-                                    ? "Carregar Nova Imagem"
+                                    ? "Carregar Novas Imagens"
                                     : "Carregar Imagens"}
                             </label>
                             <input
@@ -346,102 +598,49 @@ const ProductForm: React.FC = () => {
                                 className="w-full text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                             />
                         </div>
-                        {isEditing && productImages.length > 0 && (
-                            <div className="mt-6">
-                                <p className="text-sm font-bold text-gray-700 mb-2">
-                                    Imagens existentes:
-                                </p>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                    {productImages.map((img) => {
-                                        const isMarkedForDeletion =
-                                            imagesToDelete.has(img.id);
-                                        return (
-                                            <div
-                                                key={img.id}
-                                                className="relative group"
-                                            >
-                                                <img
-                                                    src={img.url}
-                                                    alt={
-                                                        img.altText ||
-                                                        "Imagem do produto"
+
+                        {displayImages.length > 0 && (
+                            <DndContext
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <div className="mt-6">
+                                    <SortableContext
+                                        items={displayImages}
+                                        strategy={rectSortingStrategy}
+                                    >
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                            {displayImages.map((img) => (
+                                                <SortableImage
+                                                    key={img.id}
+                                                    image={img}
+                                                    onDelete={() =>
+                                                        handleImageDelete(img)
                                                     }
-                                                    className={`w-full h-32 object-cover rounded-md border transition-opacity ${
-                                                        isMarkedForDeletion
-                                                            ? "opacity-40"
-                                                            : "opacity-100"
-                                                    }`}
+                                                    onCrop={() =>
+                                                        openCropModal(img)
+                                                    }
                                                 />
-                                                {isMarkedForDeletion ? (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            handleUndoImageDelete(
-                                                                img.id
-                                                            )
-                                                        }
-                                                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white px-2 py-1 rounded-md text-xs font-semibold"
-                                                    >
-                                                        Desfazer
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            handleImageDelete(
-                                                                img.id
-                                                            )
-                                                        }
-                                                        className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        aria-label="Marcar para excluir"
-                                                    >
-                                                        X
-                                                    </button>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
-                        {filesToUpload.length > 0 && (
-                            <div className="mt-4">
-                                <p className="text-sm font-bold text-gray-700 mb-2">
-                                    Imagens na fila:
-                                </p>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
-                                    {filesToUpload.map((file, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative group"
-                                        >
-                                            <img
-                                                src={URL.createObjectURL(file)}
-                                                alt="Preview"
-                                                className="w-full h-32 object-cover rounded-md"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleRemoveQueuedFile(file)
-                                                }
-                                                className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                X
-                                            </button>
+                                            ))}
                                         </div>
-                                    ))}
+                                    </SortableContext>
                                 </div>
-                            </div>
+                            </DndContext>
                         )}
                     </section>
 
                     <div className="flex items-center gap-4 pt-4 border-t">
                         <button
                             type="submit"
-                            className="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors"
+                            disabled={isSubmitting}
+                            className="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
                         >
-                            {isEditing ? "Salvar Alterações" : "Criar Produto"}
+                            {isSubmitting
+                                ? "Salvando..."
+                                : isEditing
+                                ? "Salvar Alterações"
+                                : "Criar Produto"}
                         </button>
                         <Link
                             to="/admin/products"
@@ -452,6 +651,54 @@ const ProductForm: React.FC = () => {
                     </div>
                 </form>
             </div>
+
+            {croppingFile && (
+                <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white p-4 rounded-lg max-w-lg w-full">
+                        <h3 className="font-bold mb-4 text-black">
+                            Ajuste a Imagem do Produto
+                        </h3>
+                        <ReactCrop
+                            crop={crop}
+                            onChange={(c) => setCrop(c)}
+                            aspect={1 / 1}
+                        >
+                            <img
+                                ref={imgRef}
+                                src={
+                                    "originalUrl" in croppingFile
+                                        ? croppingFile.originalUrl
+                                        : croppingFile.urlDisplay
+                                }
+                                alt="Crop Preview"
+                                style={{ maxHeight: "70vh" }}
+                                onLoad={onImageLoadInModal}
+                                crossOrigin="anonymous"
+                            />
+                        </ReactCrop>
+                        <div className="flex justify-end gap-4 mt-4">
+                            <button
+                                type="button"
+                                onClick={() => setCroppingFile(null)}
+                                className="text-gray-600 hover:underline"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (crop) {
+                                        handleSaveCrop(crop);
+                                    }
+                                }}
+                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700"
+                            >
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

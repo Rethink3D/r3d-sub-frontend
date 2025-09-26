@@ -6,6 +6,7 @@ import {
   Product,
   ProductPayload,
 } from "../types/types";
+import { Crop } from "react-image-crop";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,6 +18,13 @@ interface MakerInvitePayload {
   name: string;
   contactInfo: string;
   checked: boolean;
+}
+
+export interface CropData {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 async function request<T>(
@@ -116,10 +124,24 @@ export const createCategory = (data: {
 
 export const uploadProductImage = (
   productId: string,
-  file: File
+  file: File,
+  cropData?: CropData,
+  position?: number,
 ): Promise<Image> => {
   const formData = new FormData();
   formData.append("file", file);
+
+  if (cropData) {
+    formData.append('x', String(cropData.x));
+    formData.append('y', String(cropData.y));
+    formData.append('width', String(cropData.width));
+    formData.append('height', String(cropData.height));
+  }
+
+  if (position !== undefined) {
+    formData.append('position', String(position));
+  }
+  
   return request(`image/product/${productId}`, {
     method: "POST",
     body: formData,
@@ -128,10 +150,19 @@ export const uploadProductImage = (
 
 export const uploadMakerProfileImage = (
   makerId: string,
-  file: File
+  file: File,
+  cropData?: CropData,
 ): Promise<Image> => {
   const formData = new FormData();
   formData.append("file", file);
+
+  if (cropData) {
+    formData.append('x', String(cropData.x));
+    formData.append('y', String(cropData.y));
+    formData.append('width', String(cropData.width));
+    formData.append('height', String(cropData.height));
+  }
+
   return request(`image/maker/${makerId}/profile`, {
     method: "POST",
     body: formData,

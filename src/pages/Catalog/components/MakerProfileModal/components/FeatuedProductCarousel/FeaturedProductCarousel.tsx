@@ -100,7 +100,7 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
               {product.images.map((image) => (
                 <SwiperSlide key={image.id}>
                   <img
-                    src={image.url}
+                    src={image.urlThumbnail || image.urlDisplay}
                     alt={image.altText || product.name}
                     className="w-full h-full object-cover"
                   />

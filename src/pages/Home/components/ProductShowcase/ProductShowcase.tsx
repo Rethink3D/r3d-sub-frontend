@@ -147,7 +147,9 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
                 description={product.description}
                 price={product.price}
                 imageUrl={
-                  product.images[0]?.url || "https://via.placeholder.com/300"
+                  product.images[0]?.urlThumbnail || 
+                  product.images[0]?.urlDisplay || 
+                  "https://via.placeholder.com/300"
                 }
                 isCustomizable={product.isPersonalizable}
                 onCardClick={() => onProductCardClick(product)}

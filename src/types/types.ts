@@ -27,7 +27,9 @@ export interface Image {
   id: string;
   filename: string;
   format: string;
-  url: string;
+  urlThumbnail?: string;
+  urlDisplay?: string;
+  position?: number;
   altText: string | null;
 }
 

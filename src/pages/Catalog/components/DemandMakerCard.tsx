@@ -17,7 +17,8 @@ const DemandMakerCard: React.FC<DemandMakerCardProps> = ({
       <div className="flex items-start gap-4">
         <img
           src={
-            maker.profileImage?.url ||
+            maker.profileImage?.urlThumbnail ||
+            maker.profileImage?.urlDisplay ||
             `https://ui-avatars.com/api/?name=${maker.name.replace(
               " ",
               "+"

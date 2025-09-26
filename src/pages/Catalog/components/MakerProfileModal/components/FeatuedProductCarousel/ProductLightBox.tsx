@@ -69,7 +69,7 @@ const ProductLightbox: React.FC<LightboxProps> = ({
             <SwiperSlide key={image.id}>
               <div className="w-full h-full flex items-center justify-center">
                 <img
-                  src={image.url}
+                  src={image.urlDisplay || image.urlThumbnail}
                   alt={image.altText || productName}
                   className="max-w-full max-h-full object-contain"
                 />
@@ -105,7 +105,7 @@ const ProductLightbox: React.FC<LightboxProps> = ({
               className="!w-24 h-full rounded-md overflow-hidden cursor-pointer opacity-50 transition-opacity [&.swiper-slide-thumb-active]:opacity-100 [&.swiper-slide-thumb-active]:border-2 [&.swiper-slide-thumb-active]:border-white"
             >
               <img
-                src={image.url}
+                src={image.urlThumbnail || image.urlDisplay}
                 alt={image.altText || productName}
                 className="w-full h-full object-cover"
               />
