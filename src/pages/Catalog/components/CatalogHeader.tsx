@@ -33,11 +33,11 @@ const CatalogHeader: React.FC<CatalogHeaderProps> = ({
           value={searchInput}
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="bg-gray-100 dark:bg-[#1a1a1a] w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg py-2.5 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-gray-100 dark:bg-[#1a1a1a] w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg py-2.5 pl-4 pr-10 focus:outline-none focus:border-[#00c6ff] hover:shadow-[0_0_15px_rgba(0,198,255,0.5)] focus:shadow-[0_0_15px_rgba(0,198,255,0.5)] transition-all duration-300"
         />
         <button
           onClick={onSearchSubmit}
-          className="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+          className="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-[#00c6ff] transition-colors"
           aria-label="Buscar"
         >
           <SearchIcon />

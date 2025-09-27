@@ -15,25 +15,22 @@ const HomeSearch: React.FC<HomeSearchProps> = ({ onSearch }) => {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit(e);
-    }
-  };
-
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
-      <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-        <SearchIcon />
-      </span>
       <input
         type="text"
         placeholder="Busque por produtos ou makers..."
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
-        onKeyPress={handleKeyPress}
-        className="bg-gray-100 dark:bg-[#1a1a1a] w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+        className="bg-gray-100 dark:bg-[#1a1a1a] w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg py-3 pl-4 pr-10 focus:outline-none focus:border-[#00c6ff] hover:shadow-[0_0_15px_rgba(0,198,255,0.5)] focus:shadow-[0_0_15px_rgba(0,198,255,0.5)] transition-all duration-300"
       />
+      <button
+        type="submit"
+        aria-label="Buscar"
+        className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-[#00c6ff] transition-colors"
+      >
+        <SearchIcon />
+      </button>
     </form>
   );
 };

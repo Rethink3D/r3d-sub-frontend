@@ -74,7 +74,10 @@ const AppContent: React.FC = () => {
         }
       >
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={<Home onProductCardClick={handleProductSelect} />}
+          />
           <Route
             path="/catalogo"
             element={

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Home.module.css";
 import InviteForm from "./components/InviteForm/InviteForm";
@@ -8,33 +7,17 @@ import ScrollToHash from "../../components/ScrollToHash/ScrollToHash";
 import ProductSlider from "./components/ProductSlider/ProductSlider";
 import ProductShowcase from "./components/ProductShowcase/ProductShowcase";
 import { Product } from "../../types/types";
-import MakerProfileModal from "../Catalog/components/MakerProfileModal/MakerProfileModal";
 import { useCatalogContext } from "../../context/CatalogContext";
 import { useHomeProducts } from "../../hooks/useHomeProducts";
 
-const HomePage: React.FC = () => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+interface HomePageProps {
+  onProductCardClick: (product: Product) => void;
+}
+
+const HomePage: React.FC<HomePageProps> = ({ onProductCardClick }) => {
   const { handleMakerSearch } = useCatalogContext();
   const navigate = useNavigate();
-  const {
-    products: homeProducts,
-    allMakers: homeMakers,
-    isLoading: homeLoading,
-  } = useHomeProducts();
-
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-  };
-
-  const handleViewAllProducts = (makerName: string) => {
-    handleCloseModal();
-    handleMakerSearch(makerName);
-    navigate("/catalogo");
-  };
+  const { products: homeProducts, isLoading: homeLoading } = useHomeProducts();
 
   const handleHomeSearch = (searchTerm: string) => {
     if (searchTerm.trim()) {
@@ -77,7 +60,7 @@ const HomePage: React.FC = () => {
             <ProductShowcase
               products={homeProducts}
               isLoading={homeLoading}
-              onProductCardClick={handleProductClick}
+              onProductCardClick={onProductCardClick}
               onSearch={handleHomeSearch}
             />
           </div>
@@ -138,17 +121,6 @@ const HomePage: React.FC = () => {
           <FaqAccordion />
         </section>
       </div>
-
-      {selectedProduct && (
-        <MakerProfileModal
-          maker={selectedProduct.maker}
-          featuredProduct={selectedProduct}
-          onClose={handleCloseModal}
-          onViewAllProducts={() =>
-            handleViewAllProducts(selectedProduct.maker.name)
-          }
-        />
-      )}
     </>
   );
 };
