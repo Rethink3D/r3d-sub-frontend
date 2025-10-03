@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Product } from "../../types/types";
 import { useCatalogContext } from "../../context/CatalogContext";
 import { sortOptions } from "../../utils/mockData";
 import { FilterIcon, LoadingSpinner } from "./components/Icons";
@@ -10,13 +9,9 @@ import MobileFilterDrawer from "./components/MobileFilterDrawer";
 
 interface CatalogProps {
   onOpenRequestDrawer: () => void;
-  onProductCardClick: (product: Product) => void;
 }
 
-const Catalog: React.FC<CatalogProps> = ({
-  onOpenRequestDrawer,
-  onProductCardClick,
-}) => {
+const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const {
     isLoading,
@@ -87,7 +82,6 @@ const Catalog: React.FC<CatalogProps> = ({
             />
             <ProductGrid
               products={productsToShow}
-              onCardClick={onProductCardClick}
               lastProductElementRef={lastProductElementRef}
               isLoadingMore={isLoadingMore}
               animate={animateGrid}

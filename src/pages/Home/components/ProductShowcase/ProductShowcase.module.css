@@ -40,8 +40,7 @@
 .swiperSlide {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: auto;
+  align-items: stretch;
   transition: transform 0.4s ease-in-out;
 }
 
