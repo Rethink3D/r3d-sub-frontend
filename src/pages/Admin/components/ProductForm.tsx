@@ -661,7 +661,7 @@ const ProductForm: React.FC = () => {
                         <ReactCrop
                             crop={crop}
                             onChange={(c) => setCrop(c)}
-                            aspect={1 / 1}
+                            aspect={4 / 3}
                         >
                             <img
                                 ref={imgRef}

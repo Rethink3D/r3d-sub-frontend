@@ -42,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <img
             src={imageUrl}
             alt={title}
-            className="w-full h-40 object-cover rounded-lg p-2"
+            className="w-full h-40 object-contain rounded-lg"
           />
 
           {isCustomizable && (
