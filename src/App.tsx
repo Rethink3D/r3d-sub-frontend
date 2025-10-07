@@ -1,8 +1,10 @@
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import type { Maker, Product } from "./types/types";
+import type { Maker } from "./types/types";
 import { CatalogProvider } from "./context/CatalogProvider";
 import { useCatalogContext } from "./context/CatalogContext";
+import { useProductModal } from "./hooks/useProductModal";
+import { useMakerModal } from "./hooks/useMakerModal";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -24,38 +26,36 @@ import MakerProfileModal from "./pages/Catalog/components/MakerProfileModal/Make
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/admin");
-  const { allMakers, handleMakerSearch } = useCatalogContext();
   const navigate = useNavigate();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const { handleMakerSearch } = useCatalogContext();
+
+  const {
+    maker: productMaker,
+    product,
+    isLoading: isProductLoading,
+    handleCloseModal: closeProductModal,
+  } = useProductModal();
+  const {
+    maker: directMaker,
+    isLoading: isMakerLoading,
+    handleCloseModal: closeMakerModal,
+  } = useMakerModal();
+
   const [isRequestPanelOpen, setIsRequestPanelOpen] = useState(false);
-  const [selectedMakerForModal, setSelectedMakerForModal] =
-    useState<Maker | null>(null);
-  const [selectedProductForModal, setSelectedProductForModal] =
-    useState<Product | null>(null);
+
+  const makerToShow = productMaker || directMaker;
+  const isLoading = isProductLoading || isMakerLoading;
+  const handleClose = productMaker ? closeProductModal : closeMakerModal;
 
   const handleMakerSelect = (makerFromDrawer: Maker) => {
-    const fullMakerProfile = allMakers.find((m) => m.id === makerFromDrawer.id);
-    setSelectedMakerForModal(fullMakerProfile || makerFromDrawer);
-    setSelectedProductForModal(null);
+    navigate(`/catalogo/maker/${makerFromDrawer.id}`);
     setIsRequestPanelOpen(false);
   };
 
   const handleViewAllFromModal = (makerName: string) => {
     handleMakerSearch(makerName);
-    if (location.pathname !== "/catalogo") {
-      navigate("/catalogo");
-    }
-  };
-
-  const handleProductSelect = (product: Product) => {
-    const fullMakerProfile = allMakers.find((m) => m.id === product.maker.id);
-    setSelectedProductForModal(product);
-    setSelectedMakerForModal(fullMakerProfile || product.maker);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedMakerForModal(null);
-    setSelectedProductForModal(null);
+    handleClose();
   };
 
   return (
@@ -74,16 +74,28 @@ const AppContent: React.FC = () => {
         }
       >
         <Routes>
-          <Route
-            path="/"
-            element={<Home onProductCardClick={handleProductSelect} />}
-          />
+          <Route path="/" element={<Home />} />
           <Route
             path="/catalogo"
             element={
               <Catalog
                 onOpenRequestDrawer={() => setIsRequestPanelOpen(true)}
-                onProductCardClick={handleProductSelect}
+              />
+            }
+          />
+          <Route
+            path="/catalogo/produto/:productId"
+            element={
+              <Catalog
+                onOpenRequestDrawer={() => setIsRequestPanelOpen(true)}
+              />
+            }
+          />
+          <Route
+            path="/catalogo/maker/:makerId"
+            element={
+              <Catalog
+                onOpenRequestDrawer={() => setIsRequestPanelOpen(true)}
               />
             }
           />
@@ -117,11 +129,12 @@ const AppContent: React.FC = () => {
         onMakerSelect={handleMakerSelect}
       />
 
-      {selectedMakerForModal && (
+      {makerToShow && (
         <MakerProfileModal
-          maker={selectedMakerForModal}
-          featuredProduct={selectedProductForModal || undefined}
-          onClose={handleCloseModal}
+          maker={makerToShow}
+          featuredProduct={product || undefined}
+          onClose={handleClose}
+          isLoading={isLoading}
           onViewAllProducts={handleViewAllFromModal}
         />
       )}

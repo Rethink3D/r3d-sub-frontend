@@ -1,4 +1,4 @@
-import { Maker } from "../../../../../types/types";
+import { Maker, Product } from "../../../../../types/types";
 import { ExternalLinkIcon } from "../../Icons";
 import { contactDetailsMap, generateWhatsappLink } from "../utils";
 import styles from "../MakerProfileModal.module.css";
@@ -6,9 +6,10 @@ import { trackEvent } from "../../../../../utils/analytics";
 
 interface ContactListProps {
   maker: Maker;
+  product?: Product;
 }
 
-const ContactList: React.FC<ContactListProps> = ({ maker }) => (
+const ContactList: React.FC<ContactListProps> = ({ maker, product }) => (
   <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
     <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
       Entre em Contato
@@ -21,7 +22,7 @@ const ContactList: React.FC<ContactListProps> = ({ maker }) => (
 
         const href =
           contact.type === "WHATSAPP"
-            ? generateWhatsappLink(maker.name, contact.contactInfo)
+            ? generateWhatsappLink(maker.name, contact.contactInfo, product)
             : `${detail.urlPrefix}${contact.contactInfo}`;
 
         return (
@@ -30,9 +31,11 @@ const ContactList: React.FC<ContactListProps> = ({ maker }) => (
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackEvent('Clique no Contato', {
-              'label': `makerId:${maker.id}|contactType:${contact.type}`
-            })}
+            onClick={() =>
+              trackEvent("Clique no Contato", {
+                label: `makerId:${maker.id}|contactType:${contact.type}`,
+              })
+            }
             className={`${styles.contactCard} flex justify-between items-center p-4 rounded-lg`}
           >
             <div className="flex items-center">
