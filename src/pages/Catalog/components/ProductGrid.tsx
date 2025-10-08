@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import ProductCard from "../../../components/ProductCard/ProductCard";
 import { LoadingSpinner } from "./Icons";
 import { Product } from "../../../types/types";
@@ -5,7 +6,6 @@ import styles from "../Catalogo.module.css";
 
 interface ProductGridProps {
   products: Product[];
-  onCardClick: (product: Product) => void;
   lastProductElementRef: (node: HTMLDivElement) => void;
   isLoadingMore: boolean;
   animate: boolean;
@@ -14,11 +14,10 @@ interface ProductGridProps {
 
 const ProductGrid: React.FC<ProductGridProps> = ({
   products,
-  onCardClick,
   lastProductElementRef,
   isLoadingMore,
   animate,
-  onOpenRequestDrawer
+  onOpenRequestDrawer,
 }) => (
   <>
     <div
@@ -27,26 +26,29 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       }`}
     >
       {products.map((product, index) => {
+        const productLink = `/catalogo/produto/${product.id}`;
         const card = (
           <ProductCard
-            key={product.id}
             imageUrl={product.images?.[0]?.url || ""}
             title={product.name}
             price={product.price}
             isCustomizable={product.isPersonalizable}
             description={product.description || ""}
-            onCardClick={() => onCardClick(product)}
           />
         );
 
         if (products.length === index + 1) {
           return (
             <div ref={lastProductElementRef} key={product.id}>
-              {card}
+              <Link to={productLink}>{card}</Link>
             </div>
           );
         }
-        return card;
+        return (
+          <Link to={productLink} key={product.id}>
+            {card}
+          </Link>
+        );
       })}
     </div>
 

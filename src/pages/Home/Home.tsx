@@ -6,15 +6,10 @@ import FaqAccordion from "../../components/Faq/FaqAccordion";
 import ScrollToHash from "../../components/ScrollToHash/ScrollToHash";
 import ProductSlider from "./components/ProductSlider/ProductSlider";
 import ProductShowcase from "./components/ProductShowcase/ProductShowcase";
-import { Product } from "../../types/types";
 import { useCatalogContext } from "../../context/CatalogContext";
 import { useHomeProducts } from "../../hooks/useHomeProducts";
 
-interface HomePageProps {
-  onProductCardClick: (product: Product) => void;
-}
-
-const HomePage: React.FC<HomePageProps> = ({ onProductCardClick }) => {
+const HomePage: React.FC = () => {
   const { handleMakerSearch } = useCatalogContext();
   const navigate = useNavigate();
   const { products: homeProducts, isLoading: homeLoading } = useHomeProducts();
@@ -60,7 +55,6 @@ const HomePage: React.FC<HomePageProps> = ({ onProductCardClick }) => {
             <ProductShowcase
               products={homeProducts}
               isLoading={homeLoading}
-              onProductCardClick={onProductCardClick}
               onSearch={handleHomeSearch}
             />
           </div>

@@ -1,3 +1,5 @@
+import { Product } from "../../../../types/types";
+
 export const contactDetailsMap = {
   INSTAGRAM: {
     label: "Instagram",
@@ -27,9 +29,18 @@ export const contactDetailsMap = {
 
 export const generateWhatsappLink = (
   makerName: string,
-  contactInfo: string
+  contactInfo: string,
+  product?: Product
 ) => {
-  const message = `Oi, vim pela Rethink3D. Você é o Maker ${makerName}? Prazer em te conhecer, gostaria de saber sobre seus produtos e serviços.`;
+  let message: string;
+
+  if (product) {
+    const productUrl = `https://web.rethink3d.com.br/catalogo/produto/${product.id}`;
+    message = `Oi! Vim pelo catálogo da Rethink3D e tenho interesse no produto "${product.name}".\n\nLink do produto: ${productUrl}`;
+  } else {
+    message = `Oi, vim pela Rethink3D. Você é o Maker ${makerName}? Prazer em te conhecer, gostaria de saber sobre seus produtos e serviços.`;
+  }
+
   const encodedMessage = encodeURIComponent(message);
   return `https://wa.me/${contactInfo}?text=${encodedMessage}`;
 };

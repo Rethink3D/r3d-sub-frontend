@@ -29,12 +29,12 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
 
   useEffect(() => {
     if (featuredProduct) {
-      trackEvent('Visualização de Produto (Modal)', {
-        'label': `productId:${featuredProduct.id}|makerId:${maker.id}`
+      trackEvent("Visualização de Produto (Modal)", {
+        label: `productId:${featuredProduct.id}|makerId:${maker.id}`,
       });
     }
   }, [featuredProduct, maker.id]);
-  
+
   const handleModalContentClick = (e: React.MouseEvent) => e.stopPropagation();
 
   const handleViewAllClick = () => {
@@ -74,7 +74,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
           <FeaturedProductCarousel product={featuredProduct!} />
         </div>
       </div>
-      <ContactList maker={maker} />
+      <ContactList maker={maker} product={featuredProduct} />
     </>
   );
 

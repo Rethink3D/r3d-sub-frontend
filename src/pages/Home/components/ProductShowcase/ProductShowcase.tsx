@@ -1,4 +1,5 @@
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Link } from "react-router-dom";
 import { EffectCoverflow, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -45,14 +46,12 @@ const ChevronRightIcon = () => (
 interface ProductShowcaseProps {
   products: Product[];
   isLoading: boolean;
-  onProductCardClick: (product: Product) => void;
   onSearch: (searchTerm: string) => void;
 }
 
 const ProductShowcase: React.FC<ProductShowcaseProps> = ({
   products,
   isLoading,
-  onProductCardClick,
   onSearch,
 }) => {
   if (isLoading) {
@@ -122,16 +121,20 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
         >
           {products.map((product) => (
             <SwiperSlide key={product.id} className={styles.swiperSlide}>
-              <ProductCard
-                title={product.name}
-                description={product.description}
-                price={product.price}
-                imageUrl={
-                  product.images[0]?.url || "https://via.placeholder.com/300"
-                }
-                isCustomizable={product.isPersonalizable}
-                onCardClick={() => onProductCardClick(product)}
-              />
+              <Link
+                to={`/catalogo/produto/${product.id}`}
+                className="flex h-full w-full"
+              >
+                <ProductCard
+                  title={product.name}
+                  description={product.description}
+                  price={product.price}
+                  imageUrl={
+                    product.images[0]?.url || "https://via.placeholder.com/300"
+                  }
+                  isCustomizable={product.isPersonalizable}
+                />
+              </Link>
             </SwiperSlide>
           ))}
         </Swiper>
