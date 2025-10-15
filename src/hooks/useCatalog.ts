@@ -12,7 +12,7 @@ export const useCatalog = () => {
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [allMakers, setAllMakers] = useState<Maker[]>([]);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState("price-asc");
+  const [sortBy, setSortBy] = useState("relevance");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [animateGrid, setAnimateGrid] = useState(false);
@@ -89,10 +89,6 @@ export const useCatalog = () => {
   const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
 
-    if (!searchInput && selectedCategoryIds.length === 0) {
-      result = result.sort(() => Math.random() - 0.5);
-    }
-
     if (searchInput) {
       const lowercasedInput = searchInput.toLowerCase();
       result = result.filter(
@@ -118,6 +114,10 @@ export const useCatalog = () => {
         result.sort(
           (a, b) => Number.parseFloat(b.price) - Number.parseFloat(a.price)
         );
+        break;
+      case "relevance":
+      default:
+        result.sort(() => Math.random() - 0.5);
         break;
     }
     return result;

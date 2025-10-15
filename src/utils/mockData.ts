@@ -97,6 +97,7 @@ const generateMockProducts = (count: number): Product[] => {
 export const mockProducts = generateMockProducts(100);
 
 export const sortOptions = [
+  { value: "relevance", label: "Ordenar por" },
   { value: "price-asc", label: "Menor Preço" },
   { value: "price-desc", label: "Maior Preço" },
 ];
