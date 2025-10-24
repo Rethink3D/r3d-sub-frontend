@@ -95,7 +95,7 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
                 nextEl: ".swiper-button-next-custom",
                 prevEl: ".swiper-button-prev-custom",
               }}
-              className="w-full h-48 rounded-lg bg-gray-200 dark:bg-gray-800 cursor-pointer"
+              className="w-full aspect-square rounded-lg bg-gray-200 dark:bg-gray-800 cursor-pointer"
             >
               {product.images.map((image) => (
                 <SwiperSlide key={image.id}>
