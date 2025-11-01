@@ -59,7 +59,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     <div className="relative w-full" ref={selectRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between bg-fundo-cards border border-borda rounded-lg px-4 py-2.5 text-texto-principal hover:border-gray-500 transition-colors whitespace-nowrap"
+        className="px-4 py-2 bg-gray900dark:bg-gray-900 text-texto-principal dark:text-white hover:bg-sky-700 hover:text-white cursor-pointer transition-colors rounded-lg w-full flex justify-between items-center"
       >
         <span>{selectedOption?.label}</span>
         <ChevronDownIcon />

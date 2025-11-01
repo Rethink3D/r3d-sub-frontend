@@ -74,6 +74,16 @@ body {
   }
 }
 
+@keyframes shimmer-effect {
+  0% {
+    background-position: 150% 0;
+  }
+  100% {
+    background-position: -150% 0;
+  }
+}
+
+
 .animate-fade-in-down {
   animation: fadeInDown 0.3s ease-out forwards;
 }
@@ -136,4 +146,17 @@ body {
 
 .dark .swiper-pagination-bullet {
   @apply bg-white;
+}
+
+:root {
+  --gradiente-principal: linear-gradient(to right, #20d2ff, #ff00ff, #ffd027);
+  --cor-fundo-principal: white;
+  --cor-texto-principal: black;
+  --gradiente-botoes: linear-gradient(to right, #00eeff, #ff00ff, #ffc700);
+}
+
+.dark {
+  --cor-fundo-principal: #121212;
+  --cor-texto-principal: white;
+
 }

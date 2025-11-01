@@ -15,12 +15,14 @@ export default {
         },
         borda: {
           padrao: "var(--cor-borda)",
-          gradiente: "var(--gradiente-botoes)",
         },
         gradiente: {
           "logo-1": "var(--cor-gradiente-logo-1)",
           "logo-2": "var(--cor-gradiente-logo-2)",
         },
+      },
+      backgroundImage: {
+        'gradiente-borda-botao': 'var(--gradiente-botoes)',
       },
     },
   },

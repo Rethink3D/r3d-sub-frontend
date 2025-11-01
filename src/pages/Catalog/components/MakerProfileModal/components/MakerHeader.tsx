@@ -44,7 +44,7 @@ const MakerHeader: React.FC<MakerHeaderProps> = ({ maker }) => (
         </div>
 
         {maker.acceptsPersonalization && (
-          <div className="group relative flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
+          <div className="group relative flex items-center gap-2 px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-300 border border-purple-300">
             <InformationIcon className="flex-shrink-0 w-5 h-5" />
             <h3 className="font-semibold text-sm">
               Aceita Pedidos Sob Demanda

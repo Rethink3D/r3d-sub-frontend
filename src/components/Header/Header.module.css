@@ -16,14 +16,14 @@
 }
 
 .ctaButtonWithBorder {
+  --bg-color: var(--cor-fundo-principal); 
   border: 2px solid transparent;
-  background-image: linear-gradient(
-      var(--cor-fundo-principal),
-      var(--cor-fundo-principal)
-    ),
-    var(--gradiente-botoes);
+  background-image:
+    linear-gradient(var(--bg-color), var(--bg-color)),
+    var(--gradiente-principal);
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
+  color: var(--cor-texto-principal);
 }
 
 .active {
@@ -40,7 +40,7 @@
   height: 3px;
   width: 100%;
   border-radius: 2px;
-  background: linear-gradient(90deg, #333, #fff, #bbb, #333);
+  background: linear-gradient(90deg, #0a0a0a, #000000, #000000, #ffffff);
   background-size: 300% 100%;
   animation: shimmer-effect 4s linear infinite;
 }
@@ -53,7 +53,7 @@
   height: 1px;
   width: 100%;
   border-radius: 2px;
-  background: linear-gradient(90deg, #333, #fff, #bbb, #333);
+  background: linear-gradient(90deg, #333, #000000, #0f0f0f, #ffffff);
   background-size: 300% 100%;
   animation: shimmer-effect 4s linear infinite;
 }
