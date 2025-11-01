@@ -6,6 +6,7 @@ import {
   FaEnvelope,
   FaInstagram,
   FaPhoneAlt,
+  FaFileContract,
 } from "react-icons/fa";
 import { IoCubeOutline } from "react-icons/io5";
 
@@ -54,6 +55,11 @@ const Footer: React.FC = () => {
                   <li>
                     <Link to="/#faq" className="flex items-center gap-3">
                       <FaQuestionCircle /> <span>FAQ</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/termos" className="flex items-center gap-3">
+                      <FaFileContract /> <span>Termos de Uso</span>
                     </Link>
                   </li>
                 </ul>
