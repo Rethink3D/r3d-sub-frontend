@@ -23,6 +23,7 @@ import ProductForm from "./pages/Admin/components/ProductForm";
 import NotFound from "./pages/NotFound/NotFound";
 import RequestPrintDrawer from "./pages/Catalog/components/RequestPrintDrawer";
 import MakerProfileModal from "./pages/Catalog/components/MakerProfileModal/MakerProfileModal";
+import Terms from "./pages/Terms/Terms";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -101,6 +102,7 @@ const AppContent: React.FC = () => {
           />
           <Route path="/saiba-mais" element={<About />} />
           <Route path="/contato" element={<Contact />} />
+          <Route path="/termos" element={<Terms />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route element={<ProtectedRoute />}>
