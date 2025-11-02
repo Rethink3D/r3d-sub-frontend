@@ -1,13 +1,13 @@
 import {
   Category,
+  DevolutionResponseDTO,
   Image,
   Maker,
   MakerPayload,
+  OrderStatusEnum,
   Product,
   ProductPayload,
 } from "../types/types";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface LoginResponse {
   access_token: string;
@@ -19,12 +19,38 @@ interface MakerInvitePayload {
   checked: boolean;
 }
 
+interface ProductToRefundDTO {
+  productToDevolutionId: string;
+  quantity: number;
+}
+
+interface UpdateDevolutionStatusDTO {
+  devolutionId: string;
+  status: OrderStatusEnum;
+  products: ProductToRefundDTO[];
+}
+
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  apiTarget: 'catalog' | 'devolution' = 'catalog',
 ): Promise<T> {
-  const url = `${API_BASE_URL}/${endpoint}`;
-  const token = localStorage.getItem("authToken");
+  const VITE_CATALOG_URL = import.meta.env.VITE_API_BASE_URL;
+  const VITE_DEVOLUTION_URL = import.meta.env.VITE_DEVOLUTION_API_BASE_URL;
+
+  let baseUrl;
+  if (apiTarget === 'devolution') {
+    baseUrl = VITE_DEVOLUTION_URL;
+  } else {
+    baseUrl = VITE_CATALOG_URL;
+  }
+
+  if (!baseUrl) {
+    throw new Error(`URL da API (${apiTarget}) não definida em .env`);
+  }
+
+  const url = `${baseUrl}/${endpoint}`;
+  const token = localStorage.getItem('authToken');
 
   const isFormData = options.body instanceof FormData;
 
@@ -147,4 +173,20 @@ export const createMakerInvite = (data: MakerInvitePayload): Promise<void> => {
     method: "POST",
     body: JSON.stringify(data),
   });
+};
+
+export const getDevolutions = (): Promise<DevolutionResponseDTO[]> =>
+  request('devolutions', {}, 'devolution');
+
+export const updateDevolutionStatus = (
+  data: UpdateDevolutionStatusDTO,
+): Promise<void> => {
+  return request(
+    `devolutions`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    },
+    'devolution',
+  );
 };

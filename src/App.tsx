@@ -23,6 +23,7 @@ import ProductForm from "./pages/Admin/components/ProductForm";
 import NotFound from "./pages/NotFound/NotFound";
 import RequestPrintDrawer from "./pages/Catalog/components/RequestPrintDrawer";
 import MakerProfileModal from "./pages/Catalog/components/MakerProfileModal/MakerProfileModal";
+import Devolutions from "./pages/Admin/Devolutions";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -116,6 +117,7 @@ const AppContent: React.FC = () => {
               <Route path="products" element={<Products />} />
               <Route path="products/new" element={<ProductForm />} />
               <Route path="products/edit/:id" element={<ProductForm />} />
+              <Route path="devolutions" element={<Devolutions />} />
             </Route>
           </Route>
         </Routes>
