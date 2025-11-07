@@ -24,10 +24,50 @@ import NotFound from "./pages/NotFound/NotFound";
 import RequestPrintDrawer from "./pages/Catalog/components/RequestPrintDrawer";
 import MakerProfileModal from "./pages/Catalog/components/MakerProfileModal/MakerProfileModal";
 import Devolutions from "./pages/Admin/Devolutions";
+import { MakerRegistration } from "./pages/MakerArea/MakerRegistration";
+import { MakerLogin } from "./pages/MakerArea/MakerLogin";
+import { MakerProtectedRoute } from "./pages/MakerArea/MakerProtectedRoute";
+import { MakerProductList } from "./pages/MakerArea/MakerProductList";
+import { MakerProductForm } from "./pages/MakerArea/MakerProductForm";
+import { MakerDashboardLayout } from "./pages/MakerArea/MakerDashboardLayout";
+
+// Placeholder para o conteúdo do Dashboard (o que aparece em /maker/dashboard)
+const MakerDashboardContent = () => (
+  <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
+    <h1 className="text-3xl font-bold text-texto-principal">Meu Dashboard</h1>
+    <p className="text-texto-secundario mt-4">Bem-vindo à sua área, Maker!</p>
+    <p className="text-texto-secundario mt-2">
+      Use o menu ao lado para gerenciar seus produtos e sua assinatura.
+    </p>
+  </div>
+);
+
+// Placeholder para a página de Assinatura
+const MakerSubscription = () => (
+  <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
+    <h1 className="text-3xl font-bold text-texto-principal">Minha Assinatura</h1>
+    <p className="text-texto-secundario mt-4">
+      Em breve, aqui você poderá gerenciar sua assinatura com o Asaas para
+      cadastrar produtos ilimitados.
+    </p>
+  </div>
+);
 
 const AppContent: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const internalLayoutPaths = [
+    "/admin",           
+    "/maker/dashboard", 
+    "/maker/produtos",
+    "/maker/assinatura"
+  ];
+  
+  const isInternalLayout = internalLayoutPaths.some(path =>
+    location.pathname.startsWith(path)
+  );
+
   const isAdminRoute = location.pathname.startsWith("/admin");
   const { handleMakerSearch } = useCatalogContext();
 
@@ -65,7 +105,7 @@ const AppContent: React.FC = () => {
         isAdminRoute ? "bg-gray-100" : ""
       }`}
     >
-      {!isAdminRoute && (
+      {!isInternalLayout && (
         <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />
       )}
 
@@ -102,6 +142,19 @@ const AppContent: React.FC = () => {
           />
           <Route path="/saiba-mais" element={<About />} />
           <Route path="/contato" element={<Contact />} />
+
+          <Route path="/maker/register" element={<MakerRegistration />} /> 
+          <Route path="/maker/login" element={<MakerLogin />} />
+          <Route element={<MakerProtectedRoute />}>
+            <Route element={<MakerDashboardLayout />}> 
+              <Route path="/maker/dashboard" element={<MakerDashboardContent />} />
+              <Route path="/maker/produtos" element={<MakerProductList />} />
+              <Route path="/maker/produtos/novo" element={<MakerProductForm />} />
+              <Route path="/maker/produtos/editar/:id" element={<MakerProductForm />} />
+              <Route path="/maker/assinatura" element={<MakerSubscription />} />
+            </Route>
+          </Route>
+
           <Route path="*" element={<NotFound />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route element={<ProtectedRoute />}>

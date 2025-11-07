@@ -1,0 +1,51 @@
+.stepIndicator {
+  width: 2.5rem; /* 40px */
+  height: 2.5rem; /* 40px */
+  border-radius: 9999px; /* full */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600; /* semibold */
+  font-size: 0.875rem; /* text-sm */
+  color: var(--cor-texto-secundario);
+  background-color: var(--cor-fundo-principal);
+  border: 2px solid var(--cor-borda);
+  transition: all 0.3s ease;
+}
+
+.stepIndicator.active {
+  color: #fff;
+  background-color: #3b82f6; /* blue-500 */
+  border-color: #3b82f6;
+  transform: scale(1.1);
+}
+
+.stepIndicator.completed {
+  color: #fff;
+  background-color: #16a34a; /* green-600 */
+  border-color: #16a34a;
+}
+
+.stepLine {
+  flex-grow: 1;
+  height: 2px;
+  background-color: var(--cor-borda);
+  margin-bottom: 2.25rem; /* Ajuste para alinhar com os números */
+  transition: background-color 0.3s ease;
+}
+
+.stepLine.completed {
+  background-color: #16a34a; /* green-600 */
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .stepIndicator {
+    width: 2rem; /* 32px */
+    height: 2rem; /* 32px */
+    font-size: 0.75rem; /* text-xs */
+  }
+  .stepLine {
+    margin-bottom: 2rem;
+  }
+}
