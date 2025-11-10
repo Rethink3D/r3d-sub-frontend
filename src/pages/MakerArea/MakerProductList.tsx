@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProducts, deleteProduct } from "../../services/api"; // [cite: 412]
-import { Product } from "../../types/types"; // [cite: 412]
+import { getProducts, deleteProduct } from "../../services/api";
+import { Product } from "../../types/types"; 
 
 // --- (PROTÓTIPO) ---
 // Precisamos saber QUAL maker está logado.
 // No futuro, isso virá do seu contexto de autenticação (Firebase).
-// Por agora, vamos usar um ID fixo de um maker que sabemos que existe[cite: 1055].
+// Por agora, vamos usar um ID fixo de um maker que sabemos que existe.
 const MOCK_MAKER_ID = "cd392e02-7237-4386-a818-bf215d58f8ac";
 // ---------------------
 

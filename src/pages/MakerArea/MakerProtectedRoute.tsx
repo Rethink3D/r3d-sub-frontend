@@ -1,11 +1,23 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth"; 
+import { auth } from "../../firebase-config";
+import { LoadingSpinner } from "../Catalog/components/Icons";
 
-/**
- * Verifica se o token FALSO do maker existe no localStorage.
- * Se não existir, expulsa o usuário para a tela de login.
- */
 export const MakerProtectedRoute: React.FC = () => {
-  const isAuthenticated = !!localStorage.getItem("makerAuthToken");
+  const [user, loading, error] = useAuthState(auth);
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/maker/login" replace />;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingSpinner className="w-12 h-12" />
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error("Erro de autenticação:", error);
+    return <Navigate to="/maker/login" replace />;
+  }
+
+  return user ? <Outlet /> : <Navigate to="/maker/login" replace />;
 };

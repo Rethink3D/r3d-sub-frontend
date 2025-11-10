@@ -1,8 +1,9 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { IoCubeOutline, IoGridOutline, IoDiamondOutline, IoLogOutOutline } from "react-icons/io5"; // Usando react-icons
+import { IoCubeOutline, IoGridOutline, IoDiamondOutline, IoLogOutOutline } from "react-icons/io5";
 import { useTheme } from "../../context/ThemeContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase-config";
 
-// Componente de Link da Sidebar
 const SidebarLink: React.FC<{ to: string; icon: React.ReactNode; label: string }> = ({ to, icon, label }) => {
   const baseClasses = "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors";
   const activeClasses = "bg-blue-600 text-white";
@@ -11,7 +12,7 @@ const SidebarLink: React.FC<{ to: string; icon: React.ReactNode; label: string }
   return (
     <NavLink
       to={to}
-      end // Garante que o link 'Dashboard' não fique ativo em outras rotas
+      end 
       className={({ isActive }) => `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
     >
       {icon}
@@ -25,10 +26,16 @@ export const MakerDashboardLayout: React.FC = () => {
   const { theme } = useTheme();
   const logoSrc = theme === "light" ? "/Full-name-2-thin black.png" : "/Full-name-2-thin 1.png";
 
-  const handleLogout = () => {
-    // No futuro, aqui também chamará o signOut() do Firebase
-    localStorage.removeItem("makerAuthToken");
-    navigate("/maker/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("makerAuthToken");
+      navigate("/maker/login");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+      localStorage.removeItem("makerAuthToken");
+      navigate("/maker/login");
+    }
   };
 
   return (

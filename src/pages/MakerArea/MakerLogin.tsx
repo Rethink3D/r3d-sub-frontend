@@ -1,139 +1,220 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LoadingSpinner } from "../Catalog/components/Icons"; 
+import { LoadingSpinner } from "../Catalog/components/Icons";
+import {
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup,
+} from "firebase/auth";
+import { auth } from "../../firebase-config";
+
+const GoogleIcon = () => (
+    <svg className="w-5 h-5" viewBox="0 0 48 48">
+        <path
+            fill="#4285F4"
+            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+        ></path>
+        <path
+            fill="#34A853"
+            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.8c-.57 3.02-2.31 5.48-4.79 7.2l7.8 6.01C42.6 39.2 46.98 32.6 46.98 24.55z"
+        ></path>
+        <path
+            fill="#FBBC05"
+            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+        ></path>
+        <path
+            fill="#EA4335"
+            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.8-6.01c-2.18 1.45-4.96 2.3-8.09 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+        ></path>
+        <path fill="none" d="M0 0h48v48H0z"></path>
+    </svg>
+);
 
 export const MakerLogin: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+        try {
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
 
-    // --- Simulação de API/Firebase (2 segundos) ---
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+            const token = await userCredential.user.getIdToken();
+            // console.log("Login com Firebase OK. Token:", token);
 
-    try {
-      // Lógica de simulação
-      if (password.toLowerCase() === "erro") {
-        throw new Error("Usuário ou senha inválidos. (Simulação)");
-      }
+            localStorage.setItem("makerAuthToken", token);
 
-      // --- SUCESSO (Simulado) ---
-      console.log("Simulando login com:", { email, password });
-      
-      // 1. AQUI entraria a chamada do Firebase:
-      //    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      //    const token = await userCredential.user.getIdToken();
-      
-      // 2. Por enquanto, salvamos um token FALSO para proteger as rotas
-      localStorage.setItem("makerAuthToken", "mock_firebase_jwt_token");
+            navigate("/maker/dashboard");
+        } catch (error: any) {
+            console.error("Erro no login:", error);
+            if (
+                error.code === "auth/invalid-credential" ||
+                error.code === "auth/wrong-password" ||
+                error.code === "auth/user-not-found"
+            ) {
+                setError("Usuário ou senha inválidos.");
+            } else {
+                setError("Falha ao tentar logar. Tente novamente.");
+            }
+            setIsLoading(false);
+        }
+    };
 
-      // 3. Redireciona para o dashboard do maker
-      navigate("/maker/dashboard");
+    const handleGoogleLogin = async () => {
+        setIsLoading(true);
+        setError(null);
+        const provider = new GoogleAuthProvider();
 
-    } catch (err: any) {
-      // --- ERRO (Simulado) ---
-      console.error(err);
-      setError(err.message || "Falha ao tentar logar.");
-      setIsLoading(false);
-    }
-  };
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const token = await result.user.getIdToken();
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] bg-fundo-principal text-texto-principal p-4">
-      <div className="w-full max-w-md mx-auto">
-        <div className="bg-fundo-secundario shadow-lg rounded-2xl p-8 md:p-10 border border-borda">
-          <h1 className="text-3xl font-bold text-center mb-6">
-            Acessar sua Conta
-          </h1>
-          
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Campo de Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-texto-principal mb-2"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="seu.email@exemplo.com"
-                className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={isLoading}
-              />
+            //console.log("Login com Google OK. Token:", token);
+
+            // TODO: No futuro, você pode checar no seu backend se esse usuário
+            //    (result.user.uid) já tem um perfil de maker.
+            //    Por agora, vamos assumir que sim.
+
+            localStorage.setItem("makerAuthToken", token);
+            navigate("/maker/dashboard");
+        } catch (error: any) {
+            if (error.code === "auth/popup-closed-by-user") {
+                setIsLoading(false);
+                return; 
+            }
+
+            console.error("Erro no login com Google:", error);
+            setError("Falha ao logar com o Google. Tente novamente.");
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex flex-col items-center justify-center min-h-[80vh] bg-fundo-principal text-texto-principal p-4">
+            <div className="w-full max-w-md mx-auto">
+                <div className="bg-fundo-secundario shadow-lg rounded-2xl p-8 md:p-10 border border-borda">
+                    <h1 className="text-3xl font-bold text-center mb-6">
+                        Acessar sua Conta
+                    </h1>
+
+                    <button
+                        type="button"
+                        onClick={handleGoogleLogin}
+                        disabled={isLoading}
+                        className="w-full flex justify-center items-center gap-3 px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+                    >
+                        <GoogleIcon />
+                        <span className="font-medium">Entrar com Google</span>
+                    </button>
+
+                    <div className="flex items-center my-6">
+                        <div className="flex-grow border-t border-borda"></div>
+                        <span className="flex-shrink mx-4 text-xs text-texto-secundario uppercase">
+                            ou
+                        </span>
+                        <div className="flex-grow border-t border-borda"></div>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Campo de Email */}
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-texto-principal mb-2"
+                            >
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                placeholder="seu.email@exemplo.com"
+                                className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                disabled={isLoading}
+                            />
+                        </div>
+
+                        {/* Campo de Senha */}
+                        <div>
+                            <label
+                                htmlFor="password"
+                                className="block text-sm font-medium text-texto-principal mb-2"
+                            >
+                                Senha
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                placeholder="Sua senha"
+                                className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                disabled={isLoading}
+                            />
+                        </div>
+
+                        {error && (
+                            <p className="text-red-500 text-sm text-center">
+                                {error}
+                            </p>
+                        )}
+
+                        {/* Link "Esqueci a senha" (funcionalidade futura) */}
+                        <div className="text-right">
+                            <Link
+                                to="#"
+                                className="text-sm text-blue-500 hover:underline"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    alert(
+                                        "Feature: 'Esqueci a senha' - (Em breve!)"
+                                    );
+                                }}
+                            >
+                                Esqueceu a senha?
+                            </Link>
+                        </div>
+
+                        {/* Botão de Entrar */}
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <LoadingSpinner className="w-5 h-5" />
+                            ) : (
+                                "Entrar"
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="text-center mt-6 pt-4 border-t border-borda">
+                        <p className="text-texto-secundario">
+                            Não tem uma conta?{" "}
+                            <Link
+                                to="/maker/register"
+                                className="font-bold text-blue-500 hover:underline"
+                            >
+                                Cadastre-se
+                            </Link>
+                        </p>
+                    </div>
+                </div>
             </div>
-
-            {/* Campo de Senha */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-texto-principal mb-2"
-              >
-                Senha
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Sua senha"
-                className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={isLoading}
-              />
-            </div>
-
-            {error && (
-              <p className="text-red-500 text-sm text-center">{error}</p>
-            )}
-
-            {/* Link "Esqueci a senha" (funcionalidade futura) */}
-            <div className="text-right">
-              <Link 
-                to="#" 
-                className="text-sm text-blue-500 hover:underline"
-                onClick={(e) => { e.preventDefault(); alert("Feature: 'Esqueci a senha' - (Em breve!)"); }}
-              >
-                Esqueceu a senha?
-              </Link>
-            </div>
-
-            {/* Botão de Entrar */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <LoadingSpinner className="w-5 h-5" />
-              ) : (
-                "Entrar"
-              )}
-            </button>
-          </form>
-
-          {/* Link para Cadastro */}
-          <div className="text-center mt-6 pt-4 border-t border-borda">
-            <p className="text-texto-secundario">
-              Não tem uma conta?{" "}
-              <Link to="/maker/register" className="font-bold text-blue-500 hover:underline">
-                Cadastre-se
-              </Link>
-            </p>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };

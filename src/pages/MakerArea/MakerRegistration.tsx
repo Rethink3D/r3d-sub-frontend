@@ -7,11 +7,13 @@ import { Step2Profile } from "./steps/Step2Profile";
 import { Step3Contacts } from "./steps/Step3Contacts";
 import { Step4Categories } from "./steps/Step4Categories";
 import { MakerStatusEnum } from "../../types/types"; 
-
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { 
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "firebase/auth";
 import { auth } from "../../firebase-config";
 
-// Tipo para o formulário completo, incluindo auth
 type RegistrationForm = Omit<MakerPayload, "status" | "categoryIds"> & {
   email: string;
   password: string;
@@ -60,9 +62,8 @@ export const MakerRegistration: React.FC = () => {
     field: keyof RegistrationForm,
     value: any
   ) => {
-    setError(null); // Limpa o erro ao digitar
+    setError(null); 
     setFormData((prev) => {
-      // Pré-popula o email no campo de contato se for a primeira vez
       if (field === "email" && prev.contacts.length === 1 && prev.contacts[0].contactInfo === "") {
         return {
           ...prev,
@@ -74,55 +75,108 @@ export const MakerRegistration: React.FC = () => {
     });
   };
 
+  const handleGoogleLoginAndRegister = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      
+      if (result.user.email) {
+        updateFormData("email", result.user.email);
+      }
+      if (result.user.displayName) {
+        updateFormData("name", result.user.displayName);
+      }
+      
+      //console.log("Usuário autenticado com Google:", result.user.uid);
+      
+      nextStep(); 
+      setIsSubmitting(false);
+
+    } catch (error: any) {
+      if (error.code === 'auth/popup-closed-by-user') {
+        setIsSubmitting(false);
+        return;
+      }
+
+      console.error("Erro no cadastro com Google:", error);
+      setError("Falha ao cadastrar com o Google. Tente novamente.");
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setError(null);
 
-    // --- LÓGICA FUTURA ---
-    // 1. Chamar o Firebase para criar o usuário com (formData.email, formData.password)
-    //    const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-    //    const token = await userCredential.user.getIdToken();
-
-    // 2. Preparar o payload para o seu backend NestJS
     const makerApiPayload: MakerPayload = {
       name: formData.name,
       description: formData.description,
       acceptsPersonalization: formData.acceptsPersonalization,
-      status: MakerStatusEnum.ACTIVE, // O admin não define, mas o backend sim
+      status: MakerStatusEnum.ACTIVE,
       contacts: formData.contacts.filter((c) => c.contactInfo.trim() !== ""),
       categoryIds: Array.from(formData.categoryIds),
     };
 
-    // 3. Chamar um NOVO ENDPOINT no backend (ex: /auth/maker/register)
-    //    await registerMaker(makerApiPayload, token);
-
-    // 4. Se tiver imagem, fazer o upload
-    //    if (formData.profileImageFile && newMaker.id) {
-    //      await uploadMakerProfileImage(newMaker.id, formData.profileImageFile);
-    //    }
-
-    // --- PROTÓTIPO ATUAL ---
-    // Apenas simula o envio e exibe os dados no console
-    console.log("--- DADOS DO FORMULÁRIO PARA ENVIO ---");
-    console.log("Firebase Auth:", {
-      email: formData.email,
-      password: formData.password,
-    });
-    console.log("Payload Backend NestJS:", makerApiPayload);
-    console.log("Arquivo de Imagem:", formData.profileImageFile);
-
-    setTimeout(() => {
-      // Simulação de erro (exemplo)
-      if (formData.name.toLowerCase() === "erro") {
-        setError("Ocorreu um erro simulado ao registrar o maker.");
-        setIsSubmitting(false);
-        return;
-      }
+    let userCredential;
+    try {
+      userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      ); 
       
+      const user = userCredential.user;
+      const token = await user.getIdToken(); 
+
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/maker/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` 
+        },
+        body: JSON.stringify(makerApiPayload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Falha ao registrar o perfil no backend.");
+      }
+
+      // const newMakerProfile = await response.json();
+      // console.log("Perfil de Maker criado no backend:", newMakerProfile);
+      
+      // 4. TODO: Fazer o upload da imagem de perfil (se houver)
+      //    if (formData.profileImageFile && newMakerProfile.id) {
+      //      await uploadMakerProfileImage(newMakerProfile.id, formData.profileImageFile);
+      //    }
+
+      localStorage.setItem("makerAuthToken", token);
       setIsSubmitting(false);
-      alert("Cadastro realizado com sucesso (simulado)!");
-      navigate("/"); // Redireciona para a home
-    }, 2000);
+      alert("Cadastro realizado com sucesso!");
+      navigate("/maker/dashboard"); 
+
+    } catch (error: any) {
+      console.error("Erro no cadastro:", error);
+      
+      if (userCredential) {
+        console.warn("Rollback: Deletando usuário órfão do Firebase...");
+        await userCredential.user.delete();
+      }
+
+      if (error.code === 'auth/email-already-in-use') {
+        setError("Este email já está em uso.");
+        setCurrentStep(1);
+      } else if (error.code === 'auth/weak-password') {
+        setError("A senha é muito fraca.");
+        setCurrentStep(1);
+      } else {
+        setError(error.message || "Ocorreu um erro ao registrar. Tente novamente.");
+      }
+      setIsSubmitting(false);
+    }
   };
   
   const renderStep = () => {
@@ -133,6 +187,8 @@ export const MakerRegistration: React.FC = () => {
             formData={formData}
             updateFormData={updateFormData}
             nextStep={nextStep}
+            handleGoogleLogin={handleGoogleLoginAndRegister}
+            isSubmitting={isSubmitting}
           />
         );
       case 2:
