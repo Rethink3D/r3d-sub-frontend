@@ -15,7 +15,7 @@
 .gradientBorderButton {
   border: 2px solid transparent;
   background-image: linear-gradient(white, white),
-    linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ffc700);
+    linear-gradient(90deg, #0051ff, #0080ff, #ff00ff, #ffc700);
   background-origin: border-box;
   background-clip: padding-box, border-box;
   color: black;
@@ -28,7 +28,7 @@
 .gradientBorderButton:hover {
   transform: scale(1.05);
   background-image: linear-gradient(#f9f9f9, #f9f9f9),
-    linear-gradient(90deg, #00ffff, #0080ff, #ff00ff, #ffc700);
+    linear-gradient(90deg, #0004ff, #0080ff, #ff00ff, #ffc700);
 }
 
 .gradientBorderButton a {

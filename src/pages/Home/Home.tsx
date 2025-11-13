@@ -35,8 +35,8 @@ const HomePage: React.FC = () => {
             <p className="text-lg text-texto-secundario max-w-lg mx-auto lg:mx-0">
               Explore o catálogo da <strong>Rethink3D</strong> e descubra
               criações únicas de <strong>Makers</strong> talentosos. Encontre
-              projetos que você ama ou solicite algo totalmente{" "}
-              <strong>personalizado</strong>.
+              Projetos que você ama ou solicite algo totalmente{" "}
+              <strong>Personalizado</strong>.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
               <Link className={styles.gradientBorderButton} to="/catalogo">

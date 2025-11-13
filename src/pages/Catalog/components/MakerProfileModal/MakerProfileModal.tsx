@@ -61,7 +61,7 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
           <div className="mt-auto pt-4 text-center">
             <button
               onClick={handleViewAllClick}
-              className={`${styles.viewAllButton} font-bold py-3 px-6 rounded-lg bg-gray-800 text-white dark:bg-[#00c6ff] dark:text-gray-900`}
+              className={`${styles.viewAllButton} font-bold py-3 px-6 rounded-lg bg-purple-600 text-white dark:bg-purple-400 dark:text-gray-900`}
             >
               Ver Todos os Produtos de {maker.name}
             </button>
@@ -84,13 +84,13 @@ const MakerProfileModal: React.FC<MakerProfileModalProps> = ({
         <MakerHeader maker={maker} />
         <MakerCategories maker={maker} />
       </div>
-      <div className="my-6">
+      <div className="my-10">
         <MakerDescription description={maker.description} />
       </div>
       <div className="text-center mb-6">
         <button
           onClick={handleViewAllClick}
-          className={`${styles.viewAllButton} font-bold py-3 px-6 rounded-lg bg-gray-800 text-white dark:bg-[#00c6ff] dark:text-gray-900`}
+          className={`${styles.viewAllButton} font-bold py-3 px-6 rounded-lg bg-gray-900 text-white dark:bg-[#00c6ff] dark:text-gray-900`}
         >
           Ver Todos os Produtos de {maker.name}
         </button>

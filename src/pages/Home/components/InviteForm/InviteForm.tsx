@@ -139,7 +139,7 @@ const InviteForm: React.FC = () => {
         <button
           type="submit"
           className="w-full mt-4 p-0.5 dark:p-[1px] rounded-lg font-bold dark:text-white
-                    bg-[conic-gradient(from_275deg,#FF00DD_10%,#FF55CC_15%,#EEEE7A_40%,#CCEEAA_45%,#00EEFF_70%,#55EEFF_75%)]
+                    bg-[conic-gradient(from_275deg,#fffc00_10%,#fffc00_30%,#ffeb3b_50%,#ffee58_70%,#fffc00_90%)]
                     shadow-[0_0_5px_rgba(128,128,128,0.3)]
                     transition-all duration-300 ease-in-out
                     hover:scale-105

@@ -52,7 +52,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
           }}
           className={`w-full flex justify-between items-center text-left py-3 px-4 rounded-lg transition-colors duration-300 ${
             selectedCategoryIds.length === 0
-              ? "bg-blue-500 text-white font-bold"
+              ? "bg-purple-500 text-white font-bold"
               : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800"
           }`}
         >
@@ -61,7 +61,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
             className={`text-sm rounded-full px-2 py-0.5 ${
               selectedCategoryIds.length === 0
                 ? "bg-black/20"
-                : "bg-gray-200 dark:bg-gray-700/50"
+                : "bg-gray-1000 dark:bg-gray-700/50"
             }`}
           >
             {categoryCounts["Todos"]}
@@ -79,8 +79,8 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
               }}
               className={`w-full flex justify-between items-center text-left py-3 px-4 rounded-lg transition-colors duration-300 ${
                 isActive
-                  ? "bg-blue-500 text-white font-bold"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800"
+                  ? "bg-purple-500 text-white font-bold"
+                  : "text-gray-1000 dark:text-gray-1000 hover:bg-gray-1000dark:hover:bg-gray-1000"
               }`}
             >
               <span>{category.name}</span>

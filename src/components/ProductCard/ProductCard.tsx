@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isCustomizable,
 }) => {
   return (
-    <div className="relative hover:z-30 p-0.5 rounded-2xl bg-gradient-to-br from-[#00c6ff] to-[#8c52ff] cursor-pointer h-full w-full transform-gpu transition-transform duration-300 hover:scale-[1.03]">
+    <div className="relative hover:z-30 p-0.5 rounded-2xl bg-gradient-to-br from-[#ab25ff] to-[#2c71ab] cursor-pointer h-full w-full transform-gpu transition-transform duration-300 hover:scale-[1.03]">
       <div className="bg-white dark:bg-[#1a1a1a] dark:bg-opacity-100 h-full rounded-[14px] flex flex-col text-gray-900 dark:text-gray-50 overflow-hidden">
         <div className="relative bg-gray-100 w-full overflow-hidden rounded-t-[14px] sm:aspect-square">
           <img
@@ -65,9 +65,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex justify-between items-end mt-auto pt-1">
             <div className="text-right ml-auto">
               <span className="text-xs text-gray-500 dark:text-gray-400 block">
-                a partir de
+                A Partir de
               </span>
-              <p className="text-green-500 dark:text-green-400 text-xl sm:text-2xl font-bold drop-shadow-md">
+              <p className="text-green-500 dark:text-green-500 text-xl sm:text-2xl font-bold drop-shadow-md">
                 R${price}
               </p>
             </div>
