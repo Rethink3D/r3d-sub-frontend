@@ -105,23 +105,27 @@ export enum OrderStatusEnum {
   DONE = 'done',
 }
 
-export interface DevolutionImage {
-  id: number;
-  filename: string;
-  format: string;
+export type DevolutionImage = string;
+
+export interface DevolutionMaker { 
+  phone: string;
+  email: string;
+  name: string;
+  imageUrl: string;
 }
 
 export interface DevolutionProduct {
   id: string;
   name: string;
-  price: number;
+  price: string;
+  maker: DevolutionMaker;
 }
 
 export interface DevolutionProductItem {
   id: string;
   quantity: number;
-  approvedQuantity: number;
-  price: number;
+  approvedQuantity: number | null;
+  price: string;
   product: DevolutionProduct;
 }
 
@@ -132,6 +136,6 @@ export interface DevolutionResponseDTO {
   contact: string;
   creationTime: Date;
   products: DevolutionProductItem[];
-  images: DevolutionImage[]; 
+  images: DevolutionImage[];
   orderStatus: OrderStatusEnum | null;
 }

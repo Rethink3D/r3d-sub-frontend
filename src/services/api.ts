@@ -37,12 +37,25 @@ async function request<T>(
 ): Promise<T> {
   const VITE_CATALOG_URL = import.meta.env.VITE_API_BASE_URL;
   const VITE_DEVOLUTION_URL = import.meta.env.VITE_DEVOLUTION_API_BASE_URL;
+  
 
   let baseUrl;
+  let token: string | null; // Variável para o token
+
+  // --- MUDANÇA DE LÓGICA AQUI ---
   if (apiTarget === 'devolution') {
     baseUrl = VITE_DEVOLUTION_URL;
+    // Pega o token de admin direto do .env
+    token = import.meta.env.VITE_DEV_ADMIN_FIREBASE_TOKEN;
+    if (!token) {
+      throw new Error(
+        'Token de admin do Firebase não definido. Por favor, adicione VITE_DEV_ADMIN_FIREBASE_TOKEN ao seu .env',
+      );
+    }
   } else {
+    // Lógica antiga (para login, makers, produtos do site)
     baseUrl = VITE_CATALOG_URL;
+    token = localStorage.getItem('authToken');
   }
 
   if (!baseUrl) {
@@ -50,7 +63,6 @@ async function request<T>(
   }
 
   const url = `${baseUrl}/${endpoint}`;
-  const token = localStorage.getItem('authToken');
 
   const isFormData = options.body instanceof FormData;
 

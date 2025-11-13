@@ -1,28 +1,15 @@
 import React, { useState } from 'react';
 import {
   DevolutionResponseDTO,
-  DevolutionProductItem,
   OrderStatusEnum,
 } from '../../../types/types';
-// --- MOCK ---: Não precisamos mais da API real
-// import { updateDevolutionStatus } from '../../../services/api'; 
+import { updateDevolutionStatus } from '../../../services/api';
 import { LoadingSpinner } from '../../Catalog/components/Icons';
-
-// --- MOCK ---: A URL da API de devoluções (para as imagens)
-// Lembre-se de ter VITE_DEVOLUTION_API_BASE_URL=http://... no seu .env
-const API_BASE_URL = import.meta.env.VITE_DEVOLUTION_API_BASE_URL || 'http://localhost:3000';
 
 interface DevolutionFormProps {
   data: DevolutionResponseDTO;
-  onUpdateSuccess: (newStatus: OrderStatusEnum) => void;
+  onUpdateSuccess: () => void;
 }
-
-const getImageUrl = (devolutionId: string, image: { filename: string; format: string }) => {
-  // IMPORTANTE: Para o mock funcionar, você precisa estar com o backend
-  // rodando (mesmo sem autenticação), apenas para servir as imagens estáticas.
-  // Se não estiver, as imagens aparecerão quebradas, mas o resto funcionará.
-  return `${API_BASE_URL}/files/images/devolutions/${devolutionId}/${image.filename}${image.format}`;
-};
 
 const DevolutionForm: React.FC<DevolutionFormProps> = ({
   data,
@@ -31,9 +18,11 @@ const DevolutionForm: React.FC<DevolutionFormProps> = ({
   const [productQuantities, setProductQuantities] = useState<Map<string, number>>(
     new Map(data.products.map((p) => [p.id, p.quantity])),
   );
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const makerInfo = data.products[0]?.product.maker;
 
   const handleQuantityChange = (productItemId: string, newQuantity: number) => {
     const originalItem = data.products.find((p) => p.id === productItemId);
@@ -47,13 +36,10 @@ const DevolutionForm: React.FC<DevolutionFormProps> = ({
     setProductQuantities(new Map(productQuantities.set(productItemId, clampedQuantity)));
   };
 
-  // --- MOCK ---: Modificamos esta função
   const handleSubmit = async (decision: 'approve' | 'deny') => {
     setIsSubmitting(true);
     setError(null);
 
-    // Esta lógica de preparação de dados continua a mesma,
-    // pois testamos se estamos montando o DTO corretamente.
     let status: OrderStatusEnum;
     let productsToRefund: { productToDevolutionId: string; quantity: number }[] = [];
 
@@ -69,38 +55,19 @@ const DevolutionForm: React.FC<DevolutionFormProps> = ({
       });
     }
 
-    // --- MOCK ---
-    // Simula uma chamada de API de 1 segundo
-    console.log('--- MOCK SUBMIT ---');
-    console.log('Enviando para a API (simulado):', {
-      devolutionId: data.id,
-      status: status,
-      products: productsToRefund,
-    });
-
-    setTimeout(() => {
-      // Simula um sucesso.
-      console.log('--- MOCK SUCCESS ---');
+    try {
+      await updateDevolutionStatus({
+        devolutionId: data.id,
+        status: status,
+        products: productsToRefund,
+      });
+      onUpdateSuccess();
+    } catch (err: any) {
+      setError(err.message || 'Ocorreu um erro ao processar a solicitação.');
       setIsSubmitting(false);
-      onUpdateSuccess(status); // Chama o callback para o Pai remover o item
-    }, 1000); // 1 segundo de delay
-
-    // --- MOCK ---: O código real da API foi comentado
-    // try {
-    //   await updateDevolutionStatus({
-    //     devolutionId: data.id,
-    //     status: status,
-    //     products: productsToRefund,
-    //   });
-    //   onUpdateSuccess();
-    // } catch (err: any) {
-    //   setError(err.message || 'Ocorreu um erro ao processar a solicitação.');
-    //   setIsSubmitting(false);
-    // }
-    // --- FIM DO MOCK ---
+    }
   };
 
-  // O JSX abaixo permanece exatamente igual
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       {/* --- Seção de Informações Básicas --- */}
@@ -108,16 +75,47 @@ const DevolutionForm: React.FC<DevolutionFormProps> = ({
         <h2 className="text-2xl font-bold text-black mb-4">
           Analisar Devolução
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
+        
+        {/* Layout atualizado para exibir cliente e maker lado a lado */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+          
+          {/* Bloco Pedido (ocupa a linha toda) */}
+          <div className="md:col-span-2">
             <strong className="text-gray-600 block">Nº Pedido:</strong>
-            <span className="text-gray-900">{data.orderId}</span>
+            <span className="text-gray-900 text-base">{data.orderId}</span>
           </div>
+
+          {/* Bloco Cliente */}
           <div>
-            <strong className="text-gray-600 block">Contato (Usuário):</strong>
+            <strong className="text-gray-600 block">Cliente:</strong>
             <span className="text-gray-900">{data.contact}</span>
           </div>
-          <div className="col-span-full">
+
+          {/* Bloco Maker (NOVO) */}
+          <div>
+            <strong className="text-gray-600 block">Maker:</strong>
+            {makerInfo ? (
+              <div className="flex items-center gap-3 mt-1">
+                <img
+                  src={makerInfo.imageUrl}
+                  alt={makerInfo.name}
+                  className="w-10 h-10 rounded-full object-cover border"
+                />
+                <div>
+                  <span className="text-gray-900 font-semibold block">
+                    {makerInfo.name}
+                  </span>
+                  <span className="text-gray-700 block">{makerInfo.email}</span>
+                  <span className="text-gray-700 block">{makerInfo.phone}</span>
+                </div>
+              </div>
+            ) : (
+              <span className="text-gray-900">Não disponível</span>
+            )}
+          </div>
+
+          {/* Bloco Motivo (ocupa a linha toda) */}
+          <div className="md:col-span-2">
             <strong className="text-gray-600 block">Motivo da Devolução:</strong>
             <p className="text-gray-900 bg-gray-50 p-2 rounded border">
               {data.reason}
@@ -131,17 +129,17 @@ const DevolutionForm: React.FC<DevolutionFormProps> = ({
         <h3 className="text-xl font-semibold text-black mb-3">Imagens Enviadas</h3>
         {data.images.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {data.images.map((image) => (
+            {data.images.map((imageUrl, index) => (
               <a
-                key={image.id}
-                href={getImageUrl(data.id, image)}
+                key={index}
+                href={imageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative group"
               >
                 <img
-                  src={getImageUrl(data.id, image)}
-                  alt={`Imagem ${image.id} da devolução`}
+                  src={imageUrl}
+                  alt={`Imagem ${index + 1} da devolução`}
                   className="w-full h-32 object-cover rounded-md border"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-opacity">
@@ -171,7 +169,7 @@ const DevolutionForm: React.FC<DevolutionFormProps> = ({
               <div className="flex-1">
                 <p className="font-bold text-black">{item.product.name}</p>
                 <p className="text-sm text-gray-600">
-                  Preço unitário: R$ {item.product.price}
+                  Preço unitário: R$ {item.price}
                 </p>
               </div>
               <div className="flex items-center gap-4">
