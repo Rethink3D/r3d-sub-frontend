@@ -30,6 +30,7 @@ import { MakerProtectedRoute } from "./pages/MakerArea/MakerProtectedRoute";
 import { MakerProductList } from "./pages/MakerArea/MakerProductList";
 import { MakerProductForm } from "./pages/MakerArea/MakerProductForm";
 import { MakerDashboardLayout } from "./pages/MakerArea/MakerDashboardLayout";
+import { MakerProfileEdit } from "./pages/MakerArea/MakerProfileEdit";
 
 // Placeholder para o conteúdo do Dashboard (o que aparece em /maker/dashboard)
 const MakerDashboardContent = () => (
@@ -61,7 +62,8 @@ const AppContent: React.FC = () => {
     "/admin",           
     "/maker/dashboard", 
     "/maker/produtos",
-    "/maker/assinatura"
+    "/maker/assinatura",
+    "/maker/perfil",
   ];
   
   const isInternalLayout = internalLayoutPaths.some(path =>
@@ -148,6 +150,7 @@ const AppContent: React.FC = () => {
           <Route element={<MakerProtectedRoute />}>
             <Route element={<MakerDashboardLayout />}> 
               <Route path="/maker/dashboard" element={<MakerDashboardContent />} />
+              <Route path="/maker/perfil" element={<MakerProfileEdit />} />
               <Route path="/maker/produtos" element={<MakerProductList />} />
               <Route path="/maker/produtos/novo" element={<MakerProductForm />} />
               <Route path="/maker/produtos/editar/:id" element={<MakerProductForm />} />

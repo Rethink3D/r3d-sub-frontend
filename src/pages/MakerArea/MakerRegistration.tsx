@@ -10,7 +10,8 @@ import { MakerStatusEnum } from "../../types/types";
 import { 
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  UserCredential
 } from "firebase/auth";
 import { auth } from "../../firebase-config";
 
@@ -110,7 +111,7 @@ export const MakerRegistration: React.FC = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setError(null);
-
+    
     const makerApiPayload: MakerPayload = {
       name: formData.name,
       description: formData.description,
@@ -120,22 +121,30 @@ export const MakerRegistration: React.FC = () => {
       categoryIds: Array.from(formData.categoryIds),
     };
 
-    let userCredential;
-    try {
-      userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      ); 
-      
-      const user = userCredential.user;
-      const token = await user.getIdToken(); 
+    let userCredential: UserCredential | null = null; 
+    let token: string;
+    let user: any; 
 
+    try {
+      if (auth.currentUser && auth.currentUser.email === formData.email) {
+        console.log("Usuário já logado com Google. Pegando token...");
+        user = auth.currentUser;
+        token = await user.getIdToken();
+      } else {
+        console.log("Criando novo usuário com Email/Senha...");
+        userCredential = await createUserWithEmailAndPassword(
+          auth,
+          formData.email,
+          formData.password
+        );
+        user = userCredential.user;
+        token = await user.getIdToken();
+      }
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/maker/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` 
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(makerApiPayload)
       });
@@ -145,18 +154,12 @@ export const MakerRegistration: React.FC = () => {
         throw new Error(errorData.message || "Falha ao registrar o perfil no backend.");
       }
 
-      // const newMakerProfile = await response.json();
-      // console.log("Perfil de Maker criado no backend:", newMakerProfile);
-      
-      // 4. TODO: Fazer o upload da imagem de perfil (se houver)
-      //    if (formData.profileImageFile && newMakerProfile.id) {
-      //      await uploadMakerProfileImage(newMakerProfile.id, formData.profileImageFile);
-      //    }
+      // ... (TODO da imagem de perfil)
 
       localStorage.setItem("makerAuthToken", token);
       setIsSubmitting(false);
       alert("Cadastro realizado com sucesso!");
-      navigate("/maker/dashboard"); 
+      navigate("/maker/dashboard");
 
     } catch (error: any) {
       console.error("Erro no cadastro:", error);

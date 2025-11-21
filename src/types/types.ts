@@ -66,6 +66,7 @@ export interface Product {
   createdAt: string;
   deletedAt: string | null;
   popularity?: number;
+  status: string;
 }
 
 export interface MakerPayload {
@@ -86,8 +87,13 @@ export interface ProductPayload {
   material: string;
   price: string;
   isPersonalizable: boolean;
-  makerId: string;
+  makerId?: string;
   categoryIds?: string[];
+}
+
+export enum ProductStatusEnum {
+  ACTIVE = 'ACTIVE',
+  PAUSED = 'PAUSED',
 }
 
 export enum OrderStatusEnum {

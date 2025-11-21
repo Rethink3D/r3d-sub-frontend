@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams, Link, useOutletContext } from "react-router-dom";
 import {
   getProductById,
-  createProduct,
+  createMyProduct,
   updateProduct,
   uploadProductImage,
   deleteImage,
   getCategories,
 } from "../../services/api";
-import { Image, Category } from "../../types/types";
+import { Image, Category, ProductPayload, Maker} from "../../types/types";
 import { LoadingSpinner } from "../Catalog/components/Icons";
 
-// --- (PROTÓTIPO) ---
-const MOCK_MAKER_ID = "cd392e02-7237-4386-a818-bf215d58f8ac";
-// ---------------------
-
 export const MakerProductForm: React.FC = () => {
+  const maker = useOutletContext<Maker>();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
@@ -131,24 +128,22 @@ export const MakerProductForm: React.FC = () => {
     setIsSubmitting(true);
     setError("");
     
-    // O makerId agora é o MOCK_MAKER_ID, não vem do state
-    const makerId = MOCK_MAKER_ID; 
+    const productData: ProductPayload = {
+      name,
+      description,
+      material,
+      price: price,
+      isPersonalizable,
+      categoryIds: Array.from(selectedCategories),
+    };
 
     try {
-      const productData = {
-        name,
-        description,
-        material,
-        price: price,
-        isPersonalizable,
-        makerId,
-        categoryIds: Array.from(selectedCategories),
-      };
 
       if (isEditing && id) {
+        productData.makerId = maker.id;
         await updateProduct(id, productData);
       } else {
-        const newProduct = await createProduct(productData);
+        const newProduct = await createMyProduct(productData);
         if (filesToUpload.length > 0) {
           const uploadPromises = filesToUpload.map((file) =>
             uploadProductImage(newProduct.id, file)
@@ -164,7 +159,9 @@ export const MakerProductForm: React.FC = () => {
     }
   };
 
-  if (loading) return <LoadingSpinner className="w-12 h-12" />;
+  if (!maker || loading) {
+    return <LoadingSpinner className="w-12 h-12" />;
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
