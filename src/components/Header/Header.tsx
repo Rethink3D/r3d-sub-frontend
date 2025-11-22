@@ -6,6 +6,7 @@ import styles from "./Header.module.css";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import { useTheme } from "../../context/ThemeContext";
 
+
 const MenuIcon = () => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
 
     return (
         <>
-            <header className="bg-fundo-principal border-b border-borda sticky top-0 z-40 transition-colors">
+<header className="bg-fundo-principal border-b border-gray-300 dark:border-gray-700 sticky top-0 z-40 transition-colors"> 
                 <div className="container mx-auto flex w-full items-center justify-between h-28 px-4">
                     <div className="flex items-center gap-4">
                         <button
