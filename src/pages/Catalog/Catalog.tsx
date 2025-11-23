@@ -6,6 +6,7 @@ import CategorySidebar from "./components/CategorySideBar";
 import CatalogHeader from "./components/CatalogHeader";
 import ProductGrid from "./components/ProductGrid";
 import MobileFilterDrawer from "./components/MobileFilterDrawer";
+import PromotionalBanner from "../../components/PromotionalBanner/PromotionalBanner";
 
 interface CatalogProps {
   onOpenRequestDrawer: () => void;
@@ -61,6 +62,7 @@ const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
   return (
     <>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-2">
+        <PromotionalBanner />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <aside className="hidden lg:block lg:col-span-1">
             <CategorySidebar
