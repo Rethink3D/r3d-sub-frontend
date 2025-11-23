@@ -64,8 +64,6 @@ export const MakerLogin: React.FC = () => {
                 email,
                 password
             );
-            const token = await userCredential.user.getIdToken();
-            localStorage.setItem("makerAuthToken", token);
             
             await checkProfileAndRedirect();
         } catch (error: any) {

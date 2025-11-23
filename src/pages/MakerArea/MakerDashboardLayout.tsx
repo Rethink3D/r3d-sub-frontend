@@ -71,11 +71,9 @@ export const MakerDashboardLayout: React.FC = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      localStorage.removeItem("makerAuthToken");
       navigate("/maker/login");
     } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-      localStorage.removeItem("makerAuthToken");
+      console.error("Erro ao fazer logout:", error);  
       navigate("/maker/login");
     }
   };

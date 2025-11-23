@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { maskCPF } from "../../../utils/maskCPF";
 
 interface StepProps {
   formData: any;
@@ -83,7 +84,26 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
           className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
+      
+      {/* Campo de CPF */}
+      <div>
+        <label className="block text-sm font-medium text-texto-principal mb-2">
+          CPF (Para validação de identidade)
+        </label>
+        <input
+          type="text"
+          value={formData.cpf}
+          onChange={(e) => updateFormData("cpf", maskCPF(e.target.value))}
+          required
+          placeholder="000.000.000-00"
+          maxLength={14}
+          className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <p className="text-xs text-texto-secundario mt-1">
+          Seu CPF não será exibido publicamente no perfil.
+        </p>
+      </div>
+      
       {/* Campo de Descrição */}
       <div>
         <label

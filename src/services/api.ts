@@ -1,3 +1,4 @@
+import { auth } from "../firebase-config";
 import {
     Category,
     DevolutionResponseDTO,
@@ -97,7 +98,12 @@ async function requestMakerApi<T>(
     throw new Error(`URL da API não definida em .env`);
   }
 
-  const token = localStorage.getItem('makerAuthToken'); // Diferente da 'request'
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error('Usuário não autenticado (Sessão Firebase não encontrada).');
+  }
+
+  const token = await user.getIdToken();
 
   const isFormData = options.body instanceof FormData;
   const headers = {
@@ -250,10 +256,46 @@ export const createMyProduct = (data: ProductPayload): Promise<Product> => {
   });
 };
 
+export const updateMyProduct = (
+  id: string,
+  data: Partial<ProductPayload>
+): Promise<Product> => {
+  return requestMakerApi(`product/my-product/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+};
+
+export const deleteMyProduct = (id: string): Promise<void> => {
+  return requestMakerApi(`product/my-product/${id}`, {
+    method: "DELETE",
+  });
+};
+
 export const getMyMakerProfile = (): Promise<Maker> => {
   return requestMakerApi("maker/me", {
     method: 'GET',
   });
+};
+
+export const updateMyMakerProfile = (
+    data: Partial<MakerPayload>
+): Promise<Maker> => {
+    return requestMakerApi("maker/me", {
+        method: "PATCH",
+        body: JSON.stringify(data),
+    });
+};
+export const uploadMyProductImage = (
+    productId: string,
+    file: File
+): Promise<Image> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return requestMakerApi(`image/product/${productId}`, {
+        method: "POST",
+        body: formData,
+    });
 };
 
 export const uploadMyProfileImage = (
@@ -267,4 +309,8 @@ export const uploadMyProfileImage = (
         method: "POST",
         body: formData,
     });
+};
+
+export const deleteMyImage = (imageId: string): Promise<void> => {
+    return requestMakerApi(`image/${imageId}`, { method: "DELETE" });
 };

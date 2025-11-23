@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import {
-    updateMaker,
+    updateMyMakerProfile,
     getCategories,
-    uploadMakerProfileImage,
-    deleteImage,
+    uploadMyProfileImage,
+    deleteMyImage,
 } from "../../services/api";
 import {
     Maker,
@@ -20,7 +20,6 @@ const contactOptions = Object.keys(
     contactDetailsMap
 ) as (keyof typeof contactDetailsMap)[];
 
-// --- Hook Customizado para Lógica do Perfil ---
 const useMakerProfileForm = (maker: Maker | null) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -29,7 +28,7 @@ const useMakerProfileForm = (maker: Maker | null) => {
         acceptsPersonalization: false,
     });
     const [contacts, setContacts] = useState<
-        { type: string; contactInfo: string }[]
+        { id?: string; type: string; contactInfo: string }[]
     >([]);
     const [selectedCategories, setSelectedCategories] = useState(
         new Set<string>()
@@ -44,7 +43,6 @@ const useMakerProfileForm = (maker: Maker | null) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
 
-    // Inicializa dados
     useEffect(() => {
         if (maker) {
             setFormData({
@@ -62,7 +60,6 @@ const useMakerProfileForm = (maker: Maker | null) => {
         }
     }, [maker]);
 
-    // Carrega categorias
     useEffect(() => {
         getCategories()
             .then(setAvailableCategories)
@@ -105,14 +102,15 @@ const useMakerProfileForm = (maker: Maker | null) => {
         setIsUploading(true);
         setStatusMsg({ type: "", text: "" });
         try {
-            if (profileImage) await deleteImage(profileImage.id);
-            const newImage = await uploadMakerProfileImage(maker.id, file);
+            if (profileImage) await deleteMyImage(profileImage.id);
+            const newImage = await uploadMyProfileImage(maker.id, file);
             setProfileImage(newImage);
             setStatusMsg({ type: "success", text: "Imagem atualizada!" });
         } catch (err: any) {
+            const msg = err.response?.data?.message || err.message;
             setStatusMsg({
                 type: "error",
-                text: "Erro no upload: " + err.message,
+                text: "Erro no upload: " + msg,
             });
         } finally {
             setIsUploading(false);
@@ -125,24 +123,35 @@ const useMakerProfileForm = (maker: Maker | null) => {
         setIsSubmitting(true);
         setStatusMsg({ type: "", text: "" });
 
+        const sanitizedContacts = contacts
+            .filter((c) => c.contactInfo.trim() !== "")
+            .map(({ type, contactInfo }) => ({
+                type,
+                contactInfo,
+            }));
+
         const payload: Partial<MakerPayload> = {
             ...formData,
-            status: maker.status,
-            contacts: contacts.filter((c) => c.contactInfo.trim() !== ""),
+            contacts: sanitizedContacts,
             categoryIds: Array.from(selectedCategories),
         };
 
         try {
-            await updateMaker(maker.id, payload);
+            await updateMyMakerProfile(payload);
+
             setStatusMsg({
                 type: "success",
                 text: "Perfil salvo com sucesso!",
             });
-            setTimeout(() => navigate(0), 1000); // Reload suave
+            setTimeout(() => navigate(0), 1000);
         } catch (err: any) {
+            const errorMessage = Array.isArray(err.message)
+                ? err.message.join(", ")
+                : err.message || "Erro ao salvar.";
+
             setStatusMsg({
                 type: "error",
-                text: "Erro ao salvar: " + err.message,
+                text: "Erro ao salvar: " + errorMessage,
             });
         } finally {
             setIsSubmitting(false);
@@ -244,7 +253,7 @@ export const MakerProfileEdit: React.FC = () => {
                                     })
                                 }
                                 required
-                                className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario"
+                                className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario text-texto-principal"
                             />
                         </div>
 
@@ -262,11 +271,11 @@ export const MakerProfileEdit: React.FC = () => {
                                 }
                                 required
                                 rows={4}
-                                className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario"
+                                className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario text-texto-principal"
                             />
                         </div>
 
-                        <label className="flex items-center gap-3 cursor-pointer w-fit">
+                        <label className="flex items-center gap-3 cursor-pointer w-fit text-texto-principal">
                             <input
                                 type="checkbox"
                                 checked={formData.acceptsPersonalization}
@@ -304,7 +313,7 @@ export const MakerProfileEdit: React.FC = () => {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full sm:w-auto border border-borda rounded-lg px-3 py-3 bg-fundo-secundario"
+                                    className="w-full sm:w-auto border border-borda rounded-lg px-3 py-3 bg-fundo-secundario text-texto-principal"
                                 >
                                     {contactOptions.map((type) => (
                                         <option key={type} value={type}>
@@ -327,7 +336,7 @@ export const MakerProfileEdit: React.FC = () => {
                                             : "Usuário/Link"
                                     }
                                     required
-                                    className="flex-grow w-full px-3 py-3 border border-borda rounded-lg bg-fundo-secundario"
+                                    className="flex-grow w-full px-3 py-3 border border-borda rounded-lg bg-fundo-secundario text-texto-principal"
                                 />
                                 <button
                                     type="button"
@@ -362,7 +371,7 @@ export const MakerProfileEdit: React.FC = () => {
                             {availableCategories.map((cat) => (
                                 <label
                                     key={cat.id}
-                                    className="flex items-center gap-2 cursor-pointer"
+                                    className="flex items-center gap-2 cursor-pointer text-texto-principal"
                                 >
                                     <input
                                         type="checkbox"

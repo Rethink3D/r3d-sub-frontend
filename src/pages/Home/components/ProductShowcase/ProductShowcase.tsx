@@ -133,6 +133,7 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
                     product.images[0]?.url || "https://via.placeholder.com/300"
                   }
                   isCustomizable={product.isPersonalizable}
+                  type={product.type}
                 />
               </Link>
             </SwiperSlide>

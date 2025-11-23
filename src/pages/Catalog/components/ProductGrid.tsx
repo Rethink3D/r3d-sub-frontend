@@ -34,6 +34,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
                         price={product.price}
                         isCustomizable={product.isPersonalizable}
                         description={product.description || ""}
+                        type={product.type}
                     />
                 );
 

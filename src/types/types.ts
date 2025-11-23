@@ -41,6 +41,7 @@ export interface Maker {
   id: string;
   name: string;
   description: string;
+  cpf: string;
   acceptsPersonalization: boolean;
   status: MakerStatusEnum;
   contacts: Contact[];
@@ -51,6 +52,11 @@ export interface Maker {
   location: string;
   rating?: number;
   productCount?: number;
+}
+
+export enum ProductTypeEnum {
+  STANDARD = "STANDARD",
+  PROMOTIONAL = "PROMOTIONAL",
 }
 
 export interface Product {
@@ -66,11 +72,13 @@ export interface Product {
   createdAt: string;
   deletedAt: string | null;
   popularity?: number;
-  status: string;
+  status: ProductStatusEnum; 
+  type: ProductTypeEnum;
 }
 
 export interface MakerPayload {
   name: string;
+  cpf: string;
   description: string;
   acceptsPersonalization: boolean;
   status: MakerStatusEnum;
@@ -89,6 +97,7 @@ export interface ProductPayload {
   isPersonalizable: boolean;
   makerId?: string;
   categoryIds?: string[];
+  type?: ProductTypeEnum;
 }
 
 export enum ProductStatusEnum {
