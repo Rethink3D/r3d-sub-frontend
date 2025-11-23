@@ -16,10 +16,9 @@
 }
 
 .ctaButtonWithBorder {
-  --bg-color: var(--cor-fundo-principal); 
+  --bg-color: var(--cor-fundo-principal);
   border: 2px solid transparent;
-  background-image:
-    linear-gradient(var(--bg-color), var(--bg-color)),
+  background-image: linear-gradient(var(--bg-color), var(--bg-color)),
     var(--gradiente-principal);
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
