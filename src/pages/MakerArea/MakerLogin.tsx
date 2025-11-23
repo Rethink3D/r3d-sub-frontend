@@ -7,6 +7,7 @@ import {
     signInWithPopup,
 } from "firebase/auth";
 import { auth } from "../../firebase-config";
+import { getMyMakerProfile } from "../../services/api";
 
 const GoogleIcon = () => (
     <svg className="w-5 h-5" viewBox="0 0 48 48">
@@ -37,6 +38,21 @@ export const MakerLogin: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
+    const checkProfileAndRedirect = async () => {
+        try {
+            await getMyMakerProfile();
+            navigate("/maker/dashboard");
+        } catch (err) {
+            navigate("/maker/register", { 
+                state: { 
+                    fromGoogleLogin: true,
+                    email: auth.currentUser?.email,
+                    name: auth.currentUser?.displayName 
+                } 
+            });
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -48,13 +64,10 @@ export const MakerLogin: React.FC = () => {
                 email,
                 password
             );
-
             const token = await userCredential.user.getIdToken();
-            // console.log("Login com Firebase OK. Token:", token);
-
             localStorage.setItem("makerAuthToken", token);
-
-            navigate("/maker/dashboard");
+            
+            await checkProfileAndRedirect();
         } catch (error: any) {
             console.error("Erro no login:", error);
             if (
@@ -78,21 +91,14 @@ export const MakerLogin: React.FC = () => {
         try {
             const result = await signInWithPopup(auth, provider);
             const token = await result.user.getIdToken();
-
-            //console.log("Login com Google OK. Token:", token);
-
-            // TODO: No futuro, você pode checar no seu backend se esse usuário
-            //    (result.user.uid) já tem um perfil de maker.
-            //    Por agora, vamos assumir que sim.
-
             localStorage.setItem("makerAuthToken", token);
-            navigate("/maker/dashboard");
+            
+            await checkProfileAndRedirect();
         } catch (error: any) {
             if (error.code === "auth/popup-closed-by-user") {
                 setIsLoading(false);
                 return; 
             }
-
             console.error("Erro no login com Google:", error);
             setError("Falha ao logar com o Google. Tente novamente.");
             setIsLoading(false);
@@ -126,7 +132,6 @@ export const MakerLogin: React.FC = () => {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Campo de Email */}
                         <div>
                             <label
                                 htmlFor="email"
@@ -146,7 +151,6 @@ export const MakerLogin: React.FC = () => {
                             />
                         </div>
 
-                        {/* Campo de Senha */}
                         <div>
                             <label
                                 htmlFor="password"
@@ -172,7 +176,6 @@ export const MakerLogin: React.FC = () => {
                             </p>
                         )}
 
-                        {/* Link "Esqueci a senha" (funcionalidade futura) */}
                         <div className="text-right">
                             <Link
                                 to="#"
@@ -188,7 +191,6 @@ export const MakerLogin: React.FC = () => {
                             </Link>
                         </div>
 
-                        {/* Botão de Entrar */}
                         <button
                             type="submit"
                             className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center"

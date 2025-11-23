@@ -1,328 +1,418 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import {
-  updateMaker,
-  getCategories,
-  uploadMakerProfileImage,
-  deleteImage,
+    updateMaker,
+    getCategories,
+    uploadMakerProfileImage,
+    deleteImage,
 } from "../../services/api";
 import {
-  Maker,
-  Category,
-  Image,
-  MakerPayload,
-  ContactTypeEnum,
+    Maker,
+    Category,
+    Image,
+    MakerPayload,
+    ContactTypeEnum,
 } from "../../types/types";
 import { LoadingSpinner } from "../Catalog/components/Icons";
 import { contactDetailsMap } from "../Catalog/components/MakerProfileModal/utils";
 
-const contactOptions = Object.keys(contactDetailsMap) as (keyof typeof contactDetailsMap)[];
+const contactOptions = Object.keys(
+    contactDetailsMap
+) as (keyof typeof contactDetailsMap)[];
 
-export const MakerProfileEdit: React.FC = () => {
-  const maker = useOutletContext<Maker>();
-  const navigate = useNavigate();
+// --- Hook Customizado para Lógica do Perfil ---
+const useMakerProfileForm = (maker: Maker | null) => {
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        acceptsPersonalization: false,
+    });
+    const [contacts, setContacts] = useState<
+        { type: string; contactInfo: string }[]
+    >([]);
+    const [selectedCategories, setSelectedCategories] = useState(
+        new Set<string>()
+    );
+    const [profileImage, setProfileImage] = useState<Image | null>(null);
+    const [availableCategories, setAvailableCategories] = useState<Category[]>(
+        []
+    );
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [acceptsPersonalization, setAcceptsPersonalization] = useState(false);
-  const [contacts, setContacts] = useState<any[]>([]); 
-  const [selectedCategories, setSelectedCategories] = useState(new Set<string>());
-  const [profileImage, setProfileImage] = useState<Image | null>(null);
-  
-  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+    const [loadingCategories, setLoadingCategories] = useState(true);
+    const [isUploading, setIsUploading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
 
-  useEffect(() => {
-    if (maker) {
-      setName(maker.name);
-      setDescription(maker.description);
-      setAcceptsPersonalization(maker.acceptsPersonalization);
-      setContacts(maker.contacts.length > 0 ? maker.contacts : [{ type: ContactTypeEnum.EMAIL, contactInfo: "" }]);
-      setSelectedCategories(new Set(maker.categories.map((c) => c.id)));
-      setProfileImage(maker.profileImage || null);
-    }
-  }, [maker]);
+    // Inicializa dados
+    useEffect(() => {
+        if (maker) {
+            setFormData({
+                name: maker.name,
+                description: maker.description,
+                acceptsPersonalization: maker.acceptsPersonalization,
+            });
+            setContacts(
+                maker.contacts.length > 0
+                    ? maker.contacts
+                    : [{ type: ContactTypeEnum.EMAIL, contactInfo: "" }]
+            );
+            setSelectedCategories(new Set(maker.categories.map((c) => c.id)));
+            setProfileImage(maker.profileImage || null);
+        }
+    }, [maker]);
 
-  useEffect(() => {
-    getCategories()
-      .then(setAvailableCategories)
-      .catch(() => setError("Não foi possível carregar as categorias."))
-      .finally(() => setLoadingCategories(false));
-  }, []);
+    // Carrega categorias
+    useEffect(() => {
+        getCategories()
+            .then(setAvailableCategories)
+            .catch(() =>
+                setStatusMsg({
+                    type: "error",
+                    text: "Erro ao carregar categorias",
+                })
+            )
+            .finally(() => setLoadingCategories(false));
+    }, []);
 
-  const handleContactChange = (
-    index: number,
-    field: "type" | "contactInfo",
-    value: string
-  ) => {
-    const newContacts = [...contacts];
-    if (field === "type") {
-      newContacts[index].type = value as ContactTypeEnum;
-    } else {
-      newContacts[index].contactInfo = value;
-    }
-    setContacts(newContacts);
-  };
-
-  const addContactField = () => {
-    setContacts([...contacts, { type: ContactTypeEnum.WHATSAPP, contactInfo: "" }]);
-  };
-
-  const removeContactField = (index: number) => {
-    if (contacts.length > 0) {
-      setContacts(contacts.filter((_, i) => i !== index));
-    }
-  };
-
-  const handleCategoryToggle = (categoryId: string) => {
-    const newSelection = new Set(selectedCategories);
-    if (newSelection.has(categoryId)) {
-      newSelection.delete(categoryId);
-    } else {
-      newSelection.add(categoryId);
-    }
-    setSelectedCategories(newSelection);
-  };
-
-  const clearMessages = () => {
-    setError("");
-    setSuccess("");
-  }
-
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    clearMessages();
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      if (profileImage) {
-        await deleteImage(profileImage.id);
-      }
-      const newImage = await uploadMakerProfileImage(maker.id, file);
-      setProfileImage(newImage);
-      setSuccess("Imagem de perfil atualizada!");
-    } catch (err: any) {
-      setError("Erro no upload da imagem: " + err.message);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    clearMessages();
-    setIsSubmitting(true);
-
-    const makerData: Partial<MakerPayload> = {
-      name,
-      description,
-      acceptsPersonalization,
-      status: maker.status,
-      contacts: contacts.filter((c) => c.contactInfo.trim() !== ""),
-      categoryIds: Array.from(selectedCategories),
+    const handleContactChange = (
+        index: number,
+        field: string,
+        value: string
+    ) => {
+        const updated = [...contacts];
+        updated[index] = { ...updated[index], [field]: value };
+        setContacts(updated);
     };
 
-    try {
-      await updateMaker(maker.id, makerData);
-      setSuccess("Perfil salvo com sucesso!");
-      setTimeout(() => navigate(0), 1000); 
-    } catch (err: any) {
-      setError("Erro ao salvar o perfil: " + err.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    const manageContacts = (action: "add" | "remove", index?: number) => {
+        if (action === "add") {
+            setContacts([
+                ...contacts,
+                { type: ContactTypeEnum.WHATSAPP, contactInfo: "" },
+            ]);
+        } else if (index !== undefined && contacts.length > 0) {
+            setContacts(contacts.filter((_, i) => i !== index));
+        }
+    };
 
-  if (!maker) {
-    return <LoadingSpinner className="w-12 h-12" />;
-  }
-  
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-texto-principal">
-        Editar Perfil
-      </h1>
+    const handleImageUpload = async (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = e.target.files?.[0];
+        if (!file || !maker) return;
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+        setIsUploading(true);
+        setStatusMsg({ type: "", text: "" });
+        try {
+            if (profileImage) await deleteImage(profileImage.id);
+            const newImage = await uploadMakerProfileImage(maker.id, file);
+            setProfileImage(newImage);
+            setStatusMsg({ type: "success", text: "Imagem atualizada!" });
+        } catch (err: any) {
+            setStatusMsg({
+                type: "error",
+                text: "Erro no upload: " + err.message,
+            });
+        } finally {
+            setIsUploading(false);
+        }
+    };
 
-        {/* --- Card 1: Perfil Básico --- */}
-        <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
-          <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
-            Perfil Público
-          </h2>
-          <div className="space-y-6">
-            {/* Imagem */}
-            <div>
-              <label className="block text-sm font-medium text-texto-principal mb-2">
-                Foto de Perfil ou Logo
-              </label>
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-fundo-secundario border border-borda flex items-center justify-center overflow-hidden">
-                  {profileImage ? (
-                    <img
-                      src={profileImage.url}
-                      alt="Perfil"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-texto-secundario text-3xl">?</span>
-                  )}
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!maker) return;
+        setIsSubmitting(true);
+        setStatusMsg({ type: "", text: "" });
+
+        const payload: Partial<MakerPayload> = {
+            ...formData,
+            status: maker.status,
+            contacts: contacts.filter((c) => c.contactInfo.trim() !== ""),
+            categoryIds: Array.from(selectedCategories),
+        };
+
+        try {
+            await updateMaker(maker.id, payload);
+            setStatusMsg({
+                type: "success",
+                text: "Perfil salvo com sucesso!",
+            });
+            setTimeout(() => navigate(0), 1000); // Reload suave
+        } catch (err: any) {
+            setStatusMsg({
+                type: "error",
+                text: "Erro ao salvar: " + err.message,
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return {
+        formData,
+        setFormData,
+        contacts,
+        handleContactChange,
+        manageContacts,
+        selectedCategories,
+        setSelectedCategories,
+        profileImage,
+        handleImageUpload,
+        availableCategories,
+        loadingCategories,
+        isUploading,
+        isSubmitting,
+        statusMsg,
+        handleSubmit,
+    };
+};
+
+// --- Componente Visual ---
+export const MakerProfileEdit: React.FC = () => {
+    const maker = useOutletContext<Maker>();
+    const {
+        formData,
+        setFormData,
+        contacts,
+        handleContactChange,
+        manageContacts,
+        selectedCategories,
+        setSelectedCategories,
+        profileImage,
+        handleImageUpload,
+        availableCategories,
+        loadingCategories,
+        isUploading,
+        isSubmitting,
+        statusMsg,
+        handleSubmit,
+    } = useMakerProfileForm(maker);
+
+    if (!maker) return <LoadingSpinner className="w-12 h-12" />;
+
+    return (
+        <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold mb-6 text-texto-principal">
+                Editar Perfil
+            </h1>
+
+            <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Perfil Público */}
+                <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
+                    <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
+                        Perfil Público
+                    </h2>
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-20 h-20 rounded-full bg-fundo-secundario border border-borda flex items-center justify-center overflow-hidden">
+                                {profileImage ? (
+                                    <img
+                                        src={profileImage.url}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <span className="text-3xl">?</span>
+                                )}
+                            </div>
+                            <label
+                                className={`cursor-pointer rounded-md bg-blue-50 text-blue-600 px-4 py-2 hover:bg-blue-100 ${
+                                    isUploading ? "opacity-50" : ""
+                                }`}
+                            >
+                                {isUploading ? "Enviando..." : "Trocar Imagem"}
+                                <input
+                                    type="file"
+                                    hidden
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    disabled={isUploading}
+                                />
+                            </label>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-texto-principal mb-1">
+                                Nome
+                            </label>
+                            <input
+                                value={formData.name}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        name: e.target.value,
+                                    })
+                                }
+                                required
+                                className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-texto-principal mb-1">
+                                Bio
+                            </label>
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        description: e.target.value,
+                                    })
+                                }
+                                required
+                                rows={4}
+                                className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario"
+                            />
+                        </div>
+
+                        <label className="flex items-center gap-3 cursor-pointer w-fit">
+                            <input
+                                type="checkbox"
+                                checked={formData.acceptsPersonalization}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        acceptsPersonalization:
+                                            e.target.checked,
+                                    })
+                                }
+                                className="h-5 w-5 rounded text-blue-600"
+                            />
+                            <span>Aceito pedidos sob demanda</span>
+                        </label>
+                    </div>
+                </section>
+
+                {/* Contatos */}
+                <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
+                    <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
+                        Contatos
+                    </h2>
+                    <div className="space-y-4">
+                        {contacts.map((contact, index) => (
+                            <div
+                                key={index}
+                                className="flex flex-col sm:flex-row items-center gap-2"
+                            >
+                                <select
+                                    value={contact.type}
+                                    onChange={(e) =>
+                                        handleContactChange(
+                                            index,
+                                            "type",
+                                            e.target.value
+                                        )
+                                    }
+                                    className="w-full sm:w-auto border border-borda rounded-lg px-3 py-3 bg-fundo-secundario"
+                                >
+                                    {contactOptions.map((type) => (
+                                        <option key={type} value={type}>
+                                            {contactDetailsMap[type].label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <input
+                                    value={contact.contactInfo}
+                                    onChange={(e) =>
+                                        handleContactChange(
+                                            index,
+                                            "contactInfo",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder={
+                                        contact.type === "WHATSAPP"
+                                            ? "5599..."
+                                            : "Usuário/Link"
+                                    }
+                                    required
+                                    className="flex-grow w-full px-3 py-3 border border-borda rounded-lg bg-fundo-secundario"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        manageContacts("remove", index)
+                                    }
+                                    className="bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => manageContacts("add")}
+                        className="text-blue-600 font-semibold py-2 mt-4"
+                    >
+                        + Adicionar contato
+                    </button>
+                </section>
+
+                {/* Categorias */}
+                <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
+                    <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
+                        Especialidades
+                    </h2>
+                    {loadingCategories ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            {availableCategories.map((cat) => (
+                                <label
+                                    key={cat.id}
+                                    className="flex items-center gap-2 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedCategories.has(cat.id)}
+                                        onChange={() => {
+                                            const newSet = new Set(
+                                                selectedCategories
+                                            );
+                                            newSet.has(cat.id)
+                                                ? newSet.delete(cat.id)
+                                                : newSet.add(cat.id);
+                                            setSelectedCategories(newSet);
+                                        }}
+                                        className="h-5 w-5 rounded text-blue-600"
+                                    />
+                                    {cat.name}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </section>
+
+                {/* Feedback & Submit */}
+                <div className="border-t border-borda pt-4">
+                    {statusMsg.text && (
+                        <p
+                            className={`mb-4 ${
+                                statusMsg.type === "error"
+                                    ? "text-red-500"
+                                    : "text-green-500"
+                            }`}
+                        >
+                            {statusMsg.text}
+                        </p>
+                    )}
+                    <button
+                        type="submit"
+                        disabled={
+                            isSubmitting || loadingCategories || isUploading
+                        }
+                        className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 disabled:opacity-50"
+                    >
+                        {isSubmitting ? (
+                            <LoadingSpinner className="w-5 h-5" />
+                        ) : (
+                            "Salvar Alterações"
+                        )}
+                    </button>
                 </div>
-                <label 
-                  htmlFor="profileImageUpload"
-                  className={`relative cursor-pointer rounded-md bg-white dark:bg-fundo-secundario font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 p-2
-                              ${isUploading ? 'opacity-50' : ''}`}
-                >
-                  <span>{isUploading ? "Enviando..." : "Trocar imagem"}</span>
-                  <input 
-                    id="profileImageUpload" 
-                    name="profileImageUpload" 
-                    type="file" 
-                    className="sr-only" 
-                    accept="image/png, image/jpeg"
-                    onChange={handleFileSelect}
-                    disabled={isUploading}
-                  />
-                </label>
-                {isUploading && <LoadingSpinner className="w-5 h-5" />}
-              </div>
-            </div>
-            {/* Nome */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-texto-principal mb-2">
-                Nome do Maker (ou Loja)
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            {/* Descrição */}
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-texto-principal mb-2">
-                Sua Bio (Descrição)
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-                rows={4}
-                className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            {/* Checkbox */}
-            <label className="flex items-center gap-3 cursor-pointer text-texto-principal w-fit">
-              <input
-                type="checkbox"
-                checked={acceptsPersonalization}
-                onChange={(e) => setAcceptsPersonalization(e.target.checked)}
-                className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500"
-              />
-              <span className="font-medium">Aceito pedidos sob demanda</span>
-            </label>
-          </div>
-        </section>
-
-        {/* --- Card 2: Contatos --- */}
-        <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
-          <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
-            Canais de Contato
-          </h2>
-          <div className="space-y-4">
-            {contacts.map((contact, index) => (
-              <div key={index} className="flex flex-col sm:flex-row items-center gap-2">
-                <select
-                  value={contact.type}
-                  onChange={(e) => handleContactChange(index, "type", e.target.value)}
-                  className="w-full sm:w-auto border border-borda rounded-lg px-3 py-3 text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {contactOptions.map((type) => (
-                    <option key={type} value={type}>
-                      {contactDetailsMap[type].label}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type={contact.type === 'EMAIL' ? 'email' : 'text'}
-                  value={contact.contactInfo}
-                  onChange={(e) => handleContactChange(index, "contactInfo", e.target.value)}
-                  placeholder={contact.type === "WHATSAPP" ? "5599912345678" : "Seu usuário ou link"}
-                  required
-                  className="flex-grow w-full px-3 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeContactField(index)}
-                  className="w-full sm:w-auto bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition-colors"
-                >
-                  &times;
-                </button>
-              </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={addContactField}
-            className="text-blue-600 font-semibold py-2 mt-4 transition-colors hover:text-blue-500"
-          >
-            + Adicionar outro contato
-          </button>
-        </section>
-
-        {/* --- Card 3: Categorias --- */}
-        <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
-          <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
-            Suas Especialidades
-          </h2>
-          {loadingCategories ? (
-            <LoadingSpinner />
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {availableCategories.map((cat) => (
-                <label
-                  key={cat.id}
-                  className="flex items-center gap-2 cursor-pointer text-texto-principal"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.has(cat.id)}
-                    onChange={() => handleCategoryToggle(cat.id)}
-                    className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500"
-                  />
-                  {cat.name}
-                </label>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* --- Ações --- */}
-        <div className="flex items-center gap-4 pt-4 border-t border-borda">
-          <button
-            type="submit"
-            disabled={isSubmitting || loadingCategories || isUploading}
-            className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-          >
-            {isSubmitting ? (
-              <LoadingSpinner className="w-5 h-5" /> 
-            ) : "Salvar Alterações"}
-          </button>
+            </form>
         </div>
-        
-        {error && <p className="text-red-500 mt-4">{error}</p>}
-        {success && <p className="text-green-500 mt-4">{success}</p>}
-
-      </form>
-    </div>
-  );
+    );
 };

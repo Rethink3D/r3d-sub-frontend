@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams, Link, useOutletContext } from "react-router-dom";
 import {
   getProductById,
@@ -8,19 +8,22 @@ import {
   deleteImage,
   getCategories,
 } from "../../services/api";
-import { Image, Category, ProductPayload, Maker} from "../../types/types";
+import { Image, Category, ProductPayload, Maker } from "../../types/types";
 import { LoadingSpinner } from "../Catalog/components/Icons";
 
-export const MakerProductForm: React.FC = () => {
-  const maker = useOutletContext<Maker>();
-  const { id } = useParams<{ id: string }>();
+// --- Hook Customizado para Lógica do Formulário ---
+const useProductForm = (maker: Maker | null, productId?: string) => {
+  const isEditing = Boolean(productId);
   const navigate = useNavigate();
-  const isEditing = Boolean(id);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [material, setMaterial] = useState("");
-  const [price, setPrice] = useState("");
-  const [isPersonalizable, setIsPersonalizable] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    material: "",
+    price: "",
+    isPersonalizable: false,
+  });
+  
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
   const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
   const [productImages, setProductImages] = useState<Image[]>([]);
@@ -29,139 +32,136 @@ export const MakerProductForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Lógica de busca de dados (copiada do form admin)
-  const fetchProductData = async (productId: string) => { 
+  const updateField = (field: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const fetchCategories = useCallback(async () => {
     try {
-      const productData = await getProductById(productId);
-      setName(productData.name);
-      setDescription(productData.description);
-      setMaterial(productData.material);
-      setPrice(String(productData.price));
-      setIsPersonalizable(productData.isPersonalizable);
-      setSelectedCategories(new Set(productData.categories.map((cat) => cat.id)));
-      setProductImages(productData.images || []);
+      const data = await getCategories();
+      setAvailableCategories(data);
     } catch (err: any) {
-      setError("Erro ao recarregar dados do produto: " + err.message);
+      setError("Erro ao carregar categorias: " + err.message);
     }
-  };
+  }, []);
 
-  // Lógica de dados iniciais (copiada do form admin, mas sem 'getMakers')
+  const fetchProduct = useCallback(async () => {
+    if (!productId) return;
+    try {
+      const product = await getProductById(productId);
+      setFormData({
+        name: product.name,
+        description: product.description,
+        material: product.material,
+        price: String(product.price),
+        isPersonalizable: product.isPersonalizable,
+      });
+      setSelectedCategories(new Set(product.categories.map((c) => c.id)));
+      setProductImages(product.images || []);
+    } catch (err: any) {
+      setError("Erro ao carregar produto: " + err.message);
+    }
+  }, [productId]);
+
   useEffect(() => {
-    const fetchInitialData = async () => { 
+    const init = async () => {
       setLoading(true);
-      try {
-        const categoriesData = await getCategories();
-        setAvailableCategories(categoriesData);
-
-        if (isEditing && id) {
-          await fetchProductData(id);
-        }
-      } catch (err: any) {
-        setError("Erro ao carregar dados. " + err.message);
-      } finally {
-        setLoading(false);
-      }
+      await fetchCategories();
+      if (isEditing) await fetchProduct();
+      setLoading(false);
     };
-    fetchInitialData();
-  }, [id, isEditing]);
+    init();
+  }, [fetchCategories, fetchProduct, isEditing]);
 
-  // Lógica de toggle de categoria (copiada)
-  const handleCategoryToggle = (categoryId: string) => { 
-    const newSelection = new Set(selectedCategories);
-    if (newSelection.has(categoryId)) {
-      newSelection.delete(categoryId);
-    } else {
-      newSelection.add(categoryId);
-    }
-    setSelectedCategories(newSelection);
+  const handleCategoryToggle = (id: string) => {
+    const newSet = new Set(selectedCategories);
+    newSet.has(id) ? newSet.delete(id) : newSet.add(id);
+    setSelectedCategories(newSet);
   };
 
-  // Lógica de upload/delete de imagens (copiada)
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => { 
-    if (event.target.files) {
-      setFilesToUpload(Array.from(event.target.files));
-    }
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) setFilesToUpload(Array.from(e.target.files));
   };
-  const handleRemoveQueuedFile = (fileToRemove: File) => { 
-    setFilesToUpload(filesToUpload.filter((file) => file !== fileToRemove));
-  };
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0] && id) {
-      const file = event.target.files[0];
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0] && productId) {
       try {
-        await uploadProductImage(id, file);
-        await fetchProductData(id);
+        await uploadProductImage(productId, e.target.files[0]);
+        await fetchProduct();
       } catch (err: any) {
-        setError("Erro no upload da imagem: " + err.message);
+        setError("Erro no upload: " + err.message);
       }
     }
   };
+
   const handleImageDelete = async (imageId: string) => {
-    if (window.confirm("Tem certeza que deseja excluir esta imagem?") && id) {
+    if (window.confirm("Excluir imagem?") && productId) {
       try {
         await deleteImage(imageId);
-        await fetchProductData(id);
+        await fetchProduct();
       } catch (err: any) {
-        setError("Erro ao deletar imagem: " + err.message);
+        setError("Erro ao deletar: " + err.message);
       }
     }
   };
-  
-  // Lógica de Submit (copiada e adaptada)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validação
-    if (selectedCategories.size === 0) {
-      setError("Selecione pelo menos uma categoria.");
-      return;
-    }
-    if (isEditing && productImages.length === 0 && filesToUpload.length === 0) {
-      setError("O produto deve ter pelo menos uma imagem.");
-      return;
-    }
-    if (!isEditing && filesToUpload.length === 0) {
-      setError("Por favor, adicione pelo menos uma imagem.");
-      return;
-    }
+    if (selectedCategories.size === 0) return setError("Selecione uma categoria.");
+    if (!isEditing && filesToUpload.length === 0) return setError("Adicione uma imagem.");
 
     setIsSubmitting(true);
     setError("");
-    
-    const productData: ProductPayload = {
-      name,
-      description,
-      material,
-      price: price,
-      isPersonalizable,
+
+    const payload: ProductPayload = {
+      ...formData,
+      price: formData.price, 
       categoryIds: Array.from(selectedCategories),
+      makerId: isEditing ? maker?.id : undefined, // Back-end usa token para create, mas ID explícito para update
     };
 
     try {
-
-      if (isEditing && id) {
-        productData.makerId = maker.id;
-        await updateProduct(id, productData);
+      if (isEditing && productId) {
+        await updateProduct(productId, payload);
       } else {
-        const newProduct = await createMyProduct(productData);
-        if (filesToUpload.length > 0) {
-          const uploadPromises = filesToUpload.map((file) =>
-            uploadProductImage(newProduct.id, file)
-          );
-          await Promise.all(uploadPromises);
+        const newProduct = await createMyProduct(payload);
+        if (filesToUpload.length) {
+          await Promise.all(filesToUpload.map((f) => uploadProductImage(newProduct.id, f)));
         }
       }
       navigate("/maker/produtos");
     } catch (err: any) {
-      setError("Erro ao salvar o produto: " + err.message);
+      setError(err.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!maker || loading) {
-    return <LoadingSpinner className="w-12 h-12" />;
-  }
+  return {
+    formData, updateField,
+    selectedCategories, handleCategoryToggle, availableCategories,
+    productImages, filesToUpload, setFilesToUpload,
+    loading, isSubmitting, error,
+    handleFileSelect, handleImageUpload, handleImageDelete, handleSubmit,
+    isEditing
+  };
+};
+
+// --- Componente Visual ---
+export const MakerProductForm: React.FC = () => {
+  const maker = useOutletContext<Maker>();
+  const { id } = useParams<{ id: string }>();
+  
+  const {
+    formData, updateField,
+    selectedCategories, handleCategoryToggle, availableCategories,
+    productImages, filesToUpload, setFilesToUpload,
+    loading, isSubmitting, error,
+    handleFileSelect, handleImageUpload, handleImageDelete, handleSubmit,
+    isEditing
+  } = useProductForm(maker, id);
+
+  if (!maker || loading) return <LoadingSpinner className="w-12 h-12" />;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -172,97 +172,69 @@ export const MakerProductForm: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-8">
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        {/* --- Card 1: Detalhes do Produto --- */}
         <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
-            Detalhes do Produto
+            Detalhes
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label htmlFor="name" className="block text-sm font-medium text-texto-principal mb-2">
-                Nome do Produto
-              </label>
+              <label className="block text-sm font-medium text-texto-principal mb-2">Nome</label>
               <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={formData.name}
+                onChange={(e) => updateField("name", e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
             <div className="md:col-span-2">
-              <label htmlFor="description" className="block text-sm font-medium text-texto-principal mb-2">
-                Descrição
-              </label>
+              <label className="block text-sm font-medium text-texto-principal mb-2">Descrição</label>
               <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-                rows={4}
+                value={formData.description}
+                onChange={(e) => updateField("description", e.target.value)}
+                required rows={4}
                 className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
             <div>
-              <label htmlFor="material" className="block text-sm font-medium text-texto-principal mb-2">
-                Material Principal
-              </label>
+              <label className="block text-sm font-medium text-texto-principal mb-2">Material</label>
               <input
-                type="text"
-                id="material"
-                value={material}
-                onChange={(e) => setMaterial(e.target.value)}
-                required
-                placeholder="Ex: Resina, PLA, ABS..."
+                value={formData.material}
+                onChange={(e) => updateField("material", e.target.value)}
+                required placeholder="Ex: PLA, Resina"
                 className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-texto-principal mb-2">
-                Preço (R$)
-              </label>
+              <label className="block text-sm font-medium text-texto-principal mb-2">Preço (R$)</label>
               <input
-                type="number"
-                id="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                type="number" step="0.01" min="0"
+                value={formData.price}
+                onChange={(e) => updateField("price", e.target.value)}
                 required
-                min="0"
-                step="0.01"
-                placeholder="Ex: 49.90"
                 className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            
             <div className="md:col-span-2">
               <label className="flex items-center gap-3 cursor-pointer text-texto-principal w-fit">
                 <input
                   type="checkbox"
-                  checked={isPersonalizable}
-                  onChange={(e) => setIsPersonalizable(e.target.checked)}
+                  checked={formData.isPersonalizable}
+                  onChange={(e) => updateField("isPersonalizable", e.target.checked)}
                   className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500"
                 />
-                <span className="font-medium">Este produto aceita personalização</span>
+                <span className="font-medium">Aceita personalização?</span>
               </label>
             </div>
           </div>
         </section>
 
-        {/* --- Card 2: Categorias --- */}
         <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
             Categorias
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {availableCategories.map((cat) => (
-              <label
-                key={cat.id}
-                className="flex items-center gap-2 cursor-pointer text-texto-principal"
-              >
+              <label key={cat.id} className="flex items-center gap-2 cursor-pointer text-texto-principal">
                 <input
                   type="checkbox"
                   checked={selectedCategories.has(cat.id)}
@@ -275,97 +247,40 @@ export const MakerProductForm: React.FC = () => {
           </div>
         </section>
 
-        {/* --- Card 3: Imagens --- */}
         <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
-            Imagens do Produto
+            Imagens
           </h2>
-          
-          <label htmlFor="images" className="block text-sm font-medium text-texto-principal mb-2">
-            {isEditing ? "Carregar Novas Imagens" : "Carregar Imagens"}
-          </label>
-          <input
-            type="file"
-            id="images"
-            multiple
-            onChange={isEditing ? handleImageUpload : handleFileSelect}
-            accept="image/png, image/jpeg"
-            className="w-full text-texto-principal file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/50 dark:file:text-blue-300 file:text-blue-700 hover:file:bg-blue-100"
-          />
-          <p className="text-xs text-texto-secundario mt-2">Você pode enviar várias imagens. A primeira será a capa.</p>
+          <div className="mb-4">
+            <label className="cursor-pointer bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-md hover:bg-blue-100 transition-colors">
+              {isEditing ? "Upload Nova Imagem" : "Selecionar Imagens"}
+              <input type="file" multiple hidden onChange={isEditing ? handleImageUpload : handleFileSelect} accept="image/*" />
+            </label>
+          </div>
 
-          {/* Fila de Upload (só para 'Novo Produto') */}
-          {!isEditing && filesToUpload.length > 0 && (
-            <div className="mt-6">
-              <p className="text-sm font-medium text-texto-principal mb-2">Imagens na fila:</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                {filesToUpload.map((file, index) => (
-                  <div key={index} className="relative group aspect-square">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt="Preview"
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveQueuedFile(file)}
-                      className="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs opacity-0 group-hover:opacity-100"
-                    >
-                      X
-                    </button>
-                  </div>
-                ))}
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+            {/* Imagens Fila (Create) */}
+            {!isEditing && filesToUpload.map((file, idx) => (
+              <div key={idx} className="relative group aspect-square">
+                <img src={URL.createObjectURL(file)} className="w-full h-full object-cover rounded-md" />
+                <button type="button" onClick={() => setFilesToUpload(prev => prev.filter(f => f !== file))} className="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">X</button>
               </div>
-            </div>
-          )}
-
-          {/* Imagens Existentes (só para 'Editar') */}
-          {isEditing && (
-            <div className="mt-6">
-              <p className="text-sm font-medium text-texto-principal mb-2">Imagens existentes:</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                {productImages.map((img) => (
-                  <div key={img.id} className="relative group aspect-square">
-                    <img
-                      src={img.url}
-                      alt="Produto"
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleImageDelete(img.id)}
-                      className="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs opacity-0 group-hover:opacity-100"
-                    >
-                      X
-                    </button>
-                  </div>
-                ))}
+            ))}
+            {/* Imagens Existentes (Edit) */}
+            {isEditing && productImages.map((img) => (
+              <div key={img.id} className="relative group aspect-square">
+                <img src={img.url} className="w-full h-full object-cover rounded-md" />
+                <button type="button" onClick={() => handleImageDelete(img.id)} className="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">X</button>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
         </section>
 
-        {/* --- Ações --- */}
         <div className="flex items-center gap-4 pt-4 border-t border-borda">
-          <button
-            type="submit"
-            disabled={isSubmitting || loading}
-            className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-          >
-            {isSubmitting ? (
-              <LoadingSpinner className="w-5 h-5" /> 
-            ) : isEditing ? (
-              "Salvar Alterações"
-            ) : (
-              "Criar Produto"
-            )}
+          <button disabled={isSubmitting} className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50">
+            {isSubmitting ? <LoadingSpinner className="w-5 h-5" /> : "Salvar"}
           </button>
-          <Link
-            to="/maker/produtos" // Volta para a lista do maker
-            className="text-texto-secundario hover:underline"
-          >
-            Cancelar
-          </Link>
+          <Link to="/maker/produtos" className="text-texto-secundario hover:underline">Cancelar</Link>
         </div>
       </form>
     </div>

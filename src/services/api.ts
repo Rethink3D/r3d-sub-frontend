@@ -251,7 +251,20 @@ export const createMyProduct = (data: ProductPayload): Promise<Product> => {
 };
 
 export const getMyMakerProfile = (): Promise<Maker> => {
-  return requestMakerApi("auth/maker/me", {
+  return requestMakerApi("maker/me", {
     method: 'GET',
   });
+};
+
+export const uploadMyProfileImage = (
+    makerId: string,
+    file: File
+): Promise<Image> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    return requestMakerApi(`image/maker/${makerId}/profile`, {
+        method: "POST",
+        body: formData,
+    });
 };

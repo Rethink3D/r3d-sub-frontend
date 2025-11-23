@@ -1,7 +1,5 @@
-// Etapa 2: Perfil do Maker (Baseado no MakerForm)
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// Reutiliza a interface StepProps
 interface StepProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
@@ -15,6 +13,13 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
   const [imagePreview, setImagePreview] = useState<string | null>(
     formData.profileImageFile ? URL.createObjectURL(formData.profileImageFile) : null
   );
+
+  // Atualiza preview se a imagem mudar externamente (ex: reset)
+  useEffect(() => {
+      if (formData.profileImageFile) {
+          setImagePreview(URL.createObjectURL(formData.profileImageFile));
+      }
+  }, [formData.profileImageFile]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -30,7 +35,7 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
         Seu Perfil de Maker
       </h2>
       <p className="text-center text-texto-secundario">
-        Como seus clientes verão você?
+        Como seus clientes verões você?
       </p>
 
       {/* Campo de Imagem de Perfil */}
