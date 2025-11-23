@@ -176,14 +176,8 @@ export const MakerLogin: React.FC = () => {
 
                         <div className="text-right">
                             <Link
-                                to="#"
+                                to="/maker/recuperar-senha" 
                                 className="text-sm text-blue-500 hover:underline"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    alert(
-                                        "Feature: 'Esqueci a senha' - (Em breve!)"
-                                    );
-                                }}
                             >
                                 Esqueceu a senha?
                             </Link>

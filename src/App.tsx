@@ -55,6 +55,7 @@ const MakerSubscription = () => (
 );
 import Terms from "./pages/Terms/Terms";
 import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
+import { MakerForgotPassword } from "./pages/MakerArea/MakerForgotPassword";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -149,6 +150,7 @@ const AppContent: React.FC = () => {
 
           <Route path="/maker/register" element={<MakerRegistration />} /> 
           <Route path="/maker/login" element={<MakerLogin />} />
+          <Route path="/maker/recuperar-senha" element={<MakerForgotPassword />} />
           <Route element={<MakerProtectedRoute />}>
             <Route element={<MakerDashboardLayout />}> 
               <Route path="/maker/dashboard" element={<MakerDashboardContent />} />
