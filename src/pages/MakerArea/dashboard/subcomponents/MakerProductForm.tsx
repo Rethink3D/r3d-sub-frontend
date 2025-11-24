@@ -14,14 +14,13 @@ export const MakerProductForm: React.FC = () => {
     selectedCategories,
     handleCategoryToggle,
     availableCategories,
-    productImages,
-    filesToUpload,
-    removeFileFromUploadQueue,
+    serverImages,
+    localImages,
     loading,
     isSubmitting,
     handleFileSelect,
-    handleImageUpload,
-    handleImageDelete,
+    removeLocalImage,
+    markServerImageForDeletion,
     handleSubmit,
     isEditing,
   } = useMakerProductForm(maker, id);
@@ -171,72 +170,84 @@ export const MakerProductForm: React.FC = () => {
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
             Imagens
           </h2>
+          
+          {/* Input de Upload Unificado */}
           <div className="mb-4">
             <label
               className={`cursor-pointer bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-md hover:bg-blue-100 transition-colors inline-block ${
                 isSubmitting ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {isEditing ? "Upload Nova Imagem" : "Selecionar Imagens"}
+              Selecionar Imagens
               <input
                 type="file"
-                multiple={!isEditing}
+                multiple
                 hidden
-                onChange={isEditing ? handleImageUpload : handleFileSelect}
-                accept="image/*"
+                onChange={handleFileSelect}
+                accept="image/png, image/jpeg, image/webp, image/jpg"
                 disabled={isSubmitting}
               />
             </label>
-            {!isEditing && (
-              <p className="text-sm text-texto-secundario mt-2">
-                Selecione todas as imagens que deseja enviar.
-              </p>
-            )}
+            <p className="text-sm text-texto-secundario mt-2">
+                Formatos aceitos: PNG, JPG, WEBP. Máx: 5MB.
+            </p>
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-            {/* Preview de arquivos locais (Criação) */}
-            {!isEditing &&
-              filesToUpload.map((file, idx) => (
-                <div key={idx} className="relative group aspect-square">
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt="Preview"
-                    className="w-full h-full object-cover rounded-md border border-borda"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeFileFromUploadQueue(file)}
-                    className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity shadow-sm"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-
-            {/* Imagens do Servidor (Edição) */}
-            {isEditing &&
-              productImages.map((img) => (
+            {/* 1. Renderiza Imagens já existentes no servidor */}
+            {serverImages.map((img) => (
                 <div key={img.id} className="relative group aspect-square">
                   <img
                     src={img.url}
                     alt="Produto"
-                    className="w-full h-full object-cover rounded-md border border-borda"
+                    className="w-full h-full object-cover rounded-md border border-green-500/30"
+                    title="Imagem salva"
                   />
                   <button
                     type="button"
-                    onClick={() => handleImageDelete(img.id)}
-                    className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity shadow-sm"
+                    onClick={() => markServerImageForDeletion(img.id)}
+                    className="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity shadow-sm z-10"
+                    title="Remover imagem (será apagada ao salvar)"
                   >
                     ✕
                   </button>
                 </div>
-              ))}
+            ))}
+
+            {/* 2. Renderiza Imagens Novas (Locais) */}
+            {localImages.map((file, idx) => (
+                <div key={`local-${idx}`} className="relative group aspect-square">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-md border border-blue-500/50"
+                    title="Nova imagem (será enviada ao salvar)"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-blue-600/80 text-white text-[10px] text-center py-0.5 rounded-b-md">
+                    NOVO
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={() => removeLocalImage(idx)}
+                    className="absolute top-1 right-1 bg-gray-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity shadow-sm z-10"
+                    title="Remover da fila"
+                  >
+                    ✕
+                  </button>
+                </div>
+            ))}
           </div>
+          {serverImages.length === 0 && localImages.length === 0 && (
+             <p className="text-red-400 text-sm mt-4 font-medium">
+                * Nenhuma imagem selecionada. O produto precisa de pelo menos uma imagem.
+             </p>
+          )}
         </section>
 
         <div className="flex items-center gap-4 pt-4 border-t border-borda">
           <button
+            type="submit"
             disabled={isSubmitting}
             className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-2"
           >

@@ -12,6 +12,10 @@ import {
 import { Image, Category, Maker, ProductTypeEnum } from "../types/types";
 import { useToast } from "../context/ToastContext";
 
+// Configurações de validação
+const MAX_FILE_SIZE_MB = 5;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+
 export interface ProductFormSchema {
   name: string;
   description: string;
@@ -37,15 +41,14 @@ export const useMakerProductForm = (
     isPersonalizable: false,
     type: ProductTypeEnum.STANDARD,
   });
+  
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+  
+  const [serverImages, setServerImages] = useState<Image[]>([]);
+  const [localImages, setLocalImages] = useState<File[]>([]);
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
 
-  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
-    new Set()
-  );
-  const [availableCategories, setAvailableCategories] = useState<Category[]>(
-    []
-  );
-  const [productImages, setProductImages] = useState<Image[]>([]);
-  const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,11 +64,7 @@ export const useMakerProductForm = (
       const data = await getCategories();
       setAvailableCategories(data);
     } catch (err: any) {
-      addToast({
-        type: "error",
-        title: "Erro",
-        message: "Não foi possível carregar as categorias.",
-      });
+      addToast({ type: "error", title: "Erro", message: "Não foi possível carregar as categorias." });
     }
   }, [addToast]);
 
@@ -82,13 +81,9 @@ export const useMakerProductForm = (
         type: product.type || ProductTypeEnum.STANDARD,
       });
       setSelectedCategories(new Set(product.categories.map((c) => c.id)));
-      setProductImages(product.images || []);
+      setServerImages(product.images || []);
     } catch (err: any) {
-      addToast({
-        type: "error",
-        title: "Erro",
-        message: "Não foi possível carregar os dados do produto.",
-      });
+      addToast({ type: "error", title: "Erro", message: "Não foi possível carregar o produto." });
       navigate("/maker/produtos");
     }
   }, [productId, addToast, navigate]);
@@ -109,111 +104,76 @@ export const useMakerProductForm = (
     setSelectedCategories(newSet);
   };
 
+  const validateFile = (file: File): boolean => {
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      addToast({ type: "warning", title: "Arquivo Inválido", message: `O formato ${file.type} não é suportado. Use JPG, PNG ou WEBP.` });
+      return false;
+    }
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      addToast({ type: "warning", title: "Arquivo Grande", message: `A imagem deve ter no máximo ${MAX_FILE_SIZE_MB}MB.` });
+      return false;
+    }
+    return true;
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFilesToUpload((prev) => [
-        ...prev,
-        ...Array.from(e.target.files || []),
-      ]);
-    }
-  };
-
-  const removeFileFromUploadQueue = (fileToRemove: File) => {
-    setFilesToUpload((prev) => prev.filter((f) => f !== fileToRemove));
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0] && productId) {
-      const file = e.target.files[0];
-      const uploadToastId = "upload-toast";
-
-      try {
-        addToast({
-          type: "info",
-          message: "Enviando imagem...",
-          id: uploadToastId,
-          duration: 2000,
-        });
-        await uploadMyProductImage(productId, file);
-        await fetchProduct();
-        addToast({
-          type: "success",
-          message: "Imagem adicionada!",
-          duration: 3000,
-        });
-      } catch (err: any) {
-        const msg = err.response?.data?.message || err.message;
-        addToast({
-          type: "error",
-          title: "Erro no upload",
-          message: msg,
-        });
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files);
+      const validFiles = newFiles.filter(validateFile);
+      
+      if (validFiles.length > 0) {
+        setLocalImages((prev) => [...prev, ...validFiles]);
       }
+
+      e.target.value = "";
     }
   };
 
-  const handleImageDelete = (imageId: string) => {
-    if (productImages.length <= 1 && filesToUpload.length === 0) {
+  const removeLocalImage = (indexToRemove: number) => {
+    const totalVisibleImages = serverImages.length + localImages.length;
+
+    if (totalVisibleImages <= 1) {
       addToast({
         type: "warning",
         title: "Ação Bloqueada",
-        message: "O produto não pode ficar sem imagens. Adicione uma nova imagem antes de excluir a última.",
-        duration: 5000,
+        message: "O produto não pode ficar sem imagens.",
       });
       return;
     }
 
-    addToast({
-      type: "warning",
-      title: "Excluir imagem?",
-      message: "Essa ação remove a imagem permanentemente do servidor. Deseja continuar?",
-      confirmLabel: "Sim, excluir",
-      cancelLabel: "Cancelar",
-      duration: 0,
-      onConfirm: async () => {
-        try {
-          await deleteMyImage(imageId);
-          await fetchProduct();
-          
-          addToast({
-            type: "success",
-            title: "Sucesso",
-            message: "Imagem removida com sucesso.",
-            duration: 3000,
-          });
-        } catch (err: any) {
-          const msg = err.response?.data?.message || err.message;
-          addToast({
-            type: "error",
-            title: "Erro na exclusão",
-            message: "Não foi possível deletar a imagem: " + msg,
-          });
-        }
-      },
-    });
+    setLocalImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const markServerImageForDeletion = (imageId: string) => {
+    const totalVisibleImages = serverImages.length + localImages.length;
+
+    if (totalVisibleImages <= 1) {
+       addToast({
+        type: "warning",
+        title: "Ação Bloqueada",
+        message: "O produto não pode ficar sem imagens. Adicione uma nova imagem antes de excluir a última.",
+      });
+      return;
+    }
+
+    setImagesToDelete((prev) => [...prev, imageId]);
+    setServerImages((prev) => prev.filter(img => img.id !== imageId));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (selectedCategories.size === 0) {
-      return addToast({
-        type: "warning",
-        title: "Atenção",
-        message: "Selecione pelo menos uma categoria.",
-      });
+      return addToast({ type: "warning", title: "Atenção", message: "Selecione pelo menos uma categoria." });
     }
 
-    if (!isEditing && filesToUpload.length === 0) {
-      return addToast({
-        type: "warning",
-        title: "Imagens necessárias",
-        message: "Adicione pelo menos uma imagem para criar o produto.",
-      });
+    const totalImages = serverImages.length + localImages.length;
+    if (totalImages === 0) {
+      return addToast({ type: "warning", title: "Imagens necessárias", message: "Adicione pelo menos uma imagem." });
     }
 
     setIsSubmitting(true);
-    let createdProductId: string | null = null;
+    let targetProductId = productId;
 
     const payload = {
       ...formData,
@@ -222,78 +182,44 @@ export const useMakerProductForm = (
     };
 
     try {
-      if (isEditing && productId) {
-        await updateMyProduct(productId, payload);
-
-        if (filesToUpload.length) {
-          await Promise.all(
-            filesToUpload.map((f) => uploadMyProductImage(productId, f))
-          );
+      if (isEditing && targetProductId) {
+        await updateMyProduct(targetProductId, payload);
+        
+        if (imagesToDelete.length > 0) {
+          await Promise.all(imagesToDelete.map(id => deleteMyImage(id)));
         }
-
-        addToast({
-          type: "success",
-          title: "Sucesso",
-          message: "Produto atualizado!",
-        });
       } else {
         const newProduct = await createMyProduct(payload);
-        createdProductId = newProduct.id;
-
-        if (filesToUpload.length) {
-          await Promise.all(
-            filesToUpload.map((f) => uploadMyProductImage(newProduct.id, f))
-          );
-        }
-
-        addToast({
-          type: "success",
-          title: "Sucesso",
-          message: "Produto criado!",
-        });
+        targetProductId = newProduct.id;
       }
 
+      if (localImages.length > 0 && targetProductId) {
+        await Promise.all(
+          localImages.map((file) => uploadMyProductImage(targetProductId!, file))
+        );
+      }
+
+      addToast({
+        type: "success",
+        title: "Sucesso",
+        message: isEditing ? "Produto atualizado com sucesso!" : "Produto criado com sucesso!",
+      });
+      
       navigate("/maker/produtos");
+
     } catch (err: any) {
       console.error(err);
-
-      if (!isEditing && createdProductId) {
+      if (!isEditing && targetProductId) {
         try {
-          console.warn(
-            "Falha no upload. Revertendo criação...",
-            createdProductId
-          );
-          await deleteMyProduct(createdProductId);
-
-          addToast({
-            type: "error",
-            title: "Erro no Upload",
-            message:
-              "Falha ao enviar imagens. A criação do produto foi cancelada.",
-            duration: 6000,
-          });
+          console.warn("Falha no processo. Revertendo criação...", targetProductId);
+          await deleteMyProduct(targetProductId);
         } catch (rollbackErr) {
-          console.error("CRÍTICO: Falha no rollback.", rollbackErr);
-          addToast({
-            type: "error",
-            title: "Erro Crítico",
-            message:
-              "Ocorreu um erro e o produto pode ter ficado incompleto. Contate o suporte.",
-            duration: 8000,
-          });
+          console.error("Falha no rollback", rollbackErr);
         }
-      } else {
-        const responseMsg = err.response?.data?.message;
-        const msg = Array.isArray(responseMsg)
-          ? responseMsg.join(", ")
-          : responseMsg || err.message;
-
-        addToast({
-          type: "error",
-          title: "Erro ao salvar",
-          message: msg,
-        });
       }
+
+      const msg = err.response?.data?.message || err.message || "Erro desconhecido";
+      addToast({ type: "error", title: "Erro ao salvar", message: Array.isArray(msg) ? msg.join(", ") : msg });
     } finally {
       setIsSubmitting(false);
     }
@@ -305,14 +231,17 @@ export const useMakerProductForm = (
     selectedCategories,
     handleCategoryToggle,
     availableCategories,
-    productImages,
-    filesToUpload,
-    removeFileFromUploadQueue,
+    
+    serverImages, 
+    localImages,
+    
     loading,
     isSubmitting,
+    
     handleFileSelect,
-    handleImageUpload,
-    handleImageDelete,
+    removeLocalImage,
+    markServerImageForDeletion,
+    
     handleSubmit,
     isEditing,
   };
