@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
-import { Product, Category, Maker } from "../types/types";
+import { Product, Category, Maker, ProductTypeEnum } from "../types/types";
 import { getProducts, getMakers } from "../services/api";
 
 const ITEMS_PER_PAGE = 20;
@@ -12,13 +12,14 @@ export const useCatalog = () => {
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [allMakers, setAllMakers] = useState<Maker[]>([]);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [filterPersonalizable, setFilterPersonalizable] = useState(false);
+  const [filterPromotional, setFilterPromotional] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [animateGrid, setAnimateGrid] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
@@ -60,7 +61,6 @@ export const useCatalog = () => {
         });
 
         const uniqueCategories = Array.from(categoriesFromProducts.values());
-        // uniqueCategories.sort((a, b) => a.name.localeCompare(b.name))
 
         setProducts(productsData);
         setAllMakers(makersWithProductCount);
@@ -104,6 +104,14 @@ export const useCatalog = () => {
       );
     }
 
+    if (filterPersonalizable) {
+      result = result.filter((p) => p.isPersonalizable);
+    }
+
+    if (filterPromotional) {
+      result = result.filter((p) => p.type === ProductTypeEnum.PROMOTIONAL);
+    }
+
     switch (sortBy) {
       case "price-asc":
         result.sort(
@@ -121,7 +129,14 @@ export const useCatalog = () => {
         break;
     }
     return result;
-  }, [searchInput, selectedCategoryIds, sortBy, products]);
+  }, [
+    searchInput,
+    selectedCategoryIds,
+    filterPersonalizable,
+    filterPromotional,
+    sortBy,
+    products,
+  ]);
 
   const productsToShow = filteredAndSortedProducts.slice(0, visibleCount);
 
@@ -177,6 +192,8 @@ export const useCatalog = () => {
     (makerName: string) => {
       setSearchInput(makerName);
       setSelectedCategoryIds([]);
+      setFilterPersonalizable(false);
+      setFilterPromotional(false);
       setSearchParams({ maker: makerName });
     },
     [setSearchParams]
@@ -185,6 +202,8 @@ export const useCatalog = () => {
   const clearAllFilters = useCallback(() => {
     setSearchInput("");
     setSelectedCategoryIds([]);
+    setFilterPersonalizable(false);
+    setFilterPromotional(false);
     setSearchParams({});
   }, [setSearchParams]);
 
@@ -195,7 +214,13 @@ export const useCatalog = () => {
     if (!isLoading) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [searchInput, selectedCategoryIds, sortBy]);
+  }, [
+    searchInput,
+    selectedCategoryIds,
+    filterPersonalizable,
+    filterPromotional,
+    sortBy,
+  ]);
 
   const sortedCategoriesByCount = useMemo(() => {
     return allCategories.sort((a, b) => {
@@ -211,6 +236,8 @@ export const useCatalog = () => {
     searchInput,
     sortBy,
     selectedCategoryIds,
+    filterPersonalizable,
+    filterPromotional,
     productsToShow,
     allCategories: sortedCategoriesByCount,
     allMakers,
@@ -220,6 +247,8 @@ export const useCatalog = () => {
     setSearchInput,
     setSortBy,
     handleCategoryClick,
+    setFilterPersonalizable,
+    setFilterPromotional,
     lastProductElementRef,
     hasMoreProducts: productsToShow.length < filteredAndSortedProducts.length,
     handleMakerSearch,

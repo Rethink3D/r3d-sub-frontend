@@ -41,20 +41,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div className="relative hover:z-30 p-0.5 rounded-2xl bg-gradient-to-br from-[#00c6ff] to-[#8c52ff] cursor-pointer h-full w-full transform-gpu transition-transform duration-300 hover:scale-[1.03]">
       <div className="bg-white dark:bg-[#1a1a1a] dark:bg-opacity-100 h-full rounded-[14px] flex flex-col text-gray-900 dark:text-gray-50 overflow-hidden">
-        <div className="relative bg-gray-100 w-full overflow-hidden rounded-t-[14px] sm:aspect-square">
-          
-          {/* --- BADGE DA CAMPANHA --- */}
+        <div className="relative bg-gray-100 w-full overflow-hidden rounded-t-[14px] aspect-square">
           {isPromotional && (
-            <div className={`absolute top-0 left-0 z-20 px-3 py-1 rounded-br-lg text-xs font-bold uppercase tracking-wide shadow-md ${CAMPAIGN_CONFIG.badgeColor}`}>
+            <div
+              className={`absolute top-0 left-0 z-20 px-3 py-1 rounded-br-lg text-xs font-bold uppercase tracking-wide shadow-md ${CAMPAIGN_CONFIG.badgeColor}`}
+            >
               {CAMPAIGN_CONFIG.label}
             </div>
           )}
+
           <img
             src={imageUrl}
             alt={title}
-            className="w-full object-cover h-36 sm:h-full sm:object-contain"
+            className="w-full h-full object-cover"
           />
-          
+
           {isCustomizable && (
             <div
               tabIndex={0}
