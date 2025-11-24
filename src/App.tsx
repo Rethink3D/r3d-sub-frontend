@@ -117,7 +117,9 @@ const AppContent: React.FC = () => {
 
       <main
         className={
-          !isAdminRoute ? "container mx-auto flex-1 p-4 md:p-8" : "flex-1"
+          !isAdminRoute
+            ? "container mx-auto flex-1 px-4 md:px-8 pt-0"
+            : "flex-1"
         }
       >
         <Routes>

@@ -6,6 +6,7 @@ import FaqAccordion from "../../components/Faq/FaqAccordion";
 import ScrollToHash from "../../components/ScrollToHash/ScrollToHash";
 import ProductSlider from "./components/ProductSlider/ProductSlider";
 import ProductShowcase from "./components/ProductShowcase/ProductShowcase";
+import PromotionalBanner from "../../components/PromotionalBanner/PromotionalBanner";
 import { useCatalogContext } from "../../context/CatalogContext";
 import { useHomeProducts } from "../../hooks/useHomeProducts";
 
@@ -23,7 +24,8 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <div className="py-8 md:py-20 flex flex-col md:gap-24">
+      <div className="md:py-2 flex flex-col md:gap-1">
+        <PromotionalBanner />
         <ScrollToHash />
         <section className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16 items-center">
           <div className="lg:col-span-2 flex flex-col gap-8 text-center lg:text-left">
