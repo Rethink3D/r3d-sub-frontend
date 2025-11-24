@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { maskCPF } from "../../../../utils/maskCPF";
 import { BaseRegistrationStepProps } from "../../../../types/registration";
+import { MAKER_LIMITS } from "../../../../constants/InputsLimits";
 
 export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
   formData,
@@ -9,7 +10,6 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
   prevStep,
 }) => {
   const [error, setError] = useState<string | null>(null);
-
   const [imagePreview, setImagePreview] = useState<string | null>(
     formData.profileImageFile
       ? URL.createObjectURL(formData.profileImageFile)
@@ -32,6 +32,11 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
   };
 
   const handleNext = () => {
+    if (!formData.profileImageFile) {
+      setError("A foto de perfil ou logo é obrigatória.");
+      return;
+    }
+
     if (!formData.name.trim()) {
       setError("Por favor, informe o nome do Maker ou da Loja.");
       return;
@@ -65,10 +70,9 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
         Como seus clientes verão você?
       </p>
 
-      {/* Campo de Imagem de Perfil */}
       <div>
         <label className="block text-sm font-medium text-texto-principal mb-2">
-          Foto de Perfil ou Logo
+          Foto de Perfil ou Logo <span className="text-red-500">*</span>
         </label>
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded-full bg-fundo-principal border border-borda flex items-center justify-center overflow-hidden">
@@ -92,7 +96,6 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
         </div>
       </div>
 
-      {/* Campo de Nome do Maker */}
       <div>
         <label
           htmlFor="name"
@@ -106,12 +109,17 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
           value={formData.name}
           onChange={(e) => handleChange("name", e.target.value)}
           required
+          maxLength={MAKER_LIMITS.NAME}
           placeholder="Ex: Estúdio 3D do João"
           className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <div className="flex justify-end mt-1">
+          <span className="text-xs text-texto-secundario">
+            {formData.name.length}/{MAKER_LIMITS.NAME}
+          </span>
+        </div>
       </div>
 
-      {/* Campo de CPF */}
       <div>
         <label className="block text-sm font-medium text-texto-principal mb-2">
           CPF (Para validação de identidade)
@@ -130,7 +138,6 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
         </p>
       </div>
 
-      {/* Campo de Descrição */}
       <div>
         <label
           htmlFor="description"
@@ -144,12 +151,17 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
           onChange={(e) => handleChange("description", e.target.value)}
           required
           rows={4}
+          maxLength={MAKER_LIMITS.DESCRIPTION}
           placeholder="Conte aos clientes sobre seu trabalho, sua especialidade e o que você ama fazer."
           className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <div className="flex justify-end mt-1">
+          <span className="text-xs text-texto-secundario">
+            {formData.description.length}/{MAKER_LIMITS.DESCRIPTION}
+          </span>
+        </div>
       </div>
 
-      {/* Campo de Personalização */}
       <div>
         <label className="flex items-center gap-3 cursor-pointer text-texto-principal w-fit">
           <input
@@ -167,14 +179,12 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
         </p>
       </div>
 
-      {/* Exibição de Erro de Validação */}
       {error && (
         <p className="text-red-500 text-sm text-center font-medium animate-pulse">
           {error}
         </p>
       )}
 
-      {/* Botões de Navegação */}
       <div className="flex justify-between pt-4">
         <button
           type="button"

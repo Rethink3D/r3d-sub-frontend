@@ -3,6 +3,7 @@ import { Maker } from "../../../../types/types";
 import { LoadingSpinner } from "../../../Catalog/components/Icons";
 import { contactDetailsMap } from "../../../Catalog/components/MakerProfileModal/utils";
 import { useMakerProfileForm } from "../../../../hooks/useMakerProfileForm";
+import { MAKER_LIMITS } from "../../../../constants/InputsLimits";
 
 const contactOptions = Object.keys(
   contactDetailsMap
@@ -10,7 +11,6 @@ const contactOptions = Object.keys(
 
 export const MakerProfileEdit: React.FC = () => {
   const maker = useOutletContext<Maker>();
-
   const {
     formData,
     setFormData,
@@ -37,7 +37,6 @@ export const MakerProfileEdit: React.FC = () => {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Perfil Público */}
         <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
             Perfil Público
@@ -84,8 +83,14 @@ export const MakerProfileEdit: React.FC = () => {
                   })
                 }
                 required
+                maxLength={MAKER_LIMITS.NAME}
                 className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario text-texto-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <div className="flex justify-end mt-1">
+                <span className="text-xs text-texto-secundario">
+                  {formData.name.length}/{MAKER_LIMITS.NAME}
+                </span>
+              </div>
             </div>
 
             <div>
@@ -102,8 +107,14 @@ export const MakerProfileEdit: React.FC = () => {
                 }
                 required
                 rows={4}
+                maxLength={MAKER_LIMITS.DESCRIPTION}
                 className="w-full px-4 py-3 border border-borda rounded-lg bg-fundo-secundario text-texto-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <div className="flex justify-end mt-1">
+                <span className="text-xs text-texto-secundario">
+                  {formData.description.length}/{MAKER_LIMITS.DESCRIPTION}
+                </span>
+              </div>
             </div>
 
             <label className="flex items-center gap-3 cursor-pointer w-fit text-texto-principal">
@@ -123,7 +134,6 @@ export const MakerProfileEdit: React.FC = () => {
           </div>
         </section>
 
-        {/* Contatos */}
         <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
             Contatos
@@ -153,9 +163,11 @@ export const MakerProfileEdit: React.FC = () => {
                     handleContactChange(index, "contactInfo", e.target.value)
                   }
                   placeholder={
-                    contact.type === "WHATSAPP" ? "DDD + Número" : "Usuário/Link"
+                    contact.type === "WHATSAPP"
+                      ? "DDD + Número"
+                      : "Usuário/Link"
                   }
-                  maxLength={contact.type === "WHATSAPP" ? 11 : undefined}
+                  maxLength={contact.type === "WHATSAPP" ? 11 : 100}
                   required
                   className="flex-grow w-full px-3 py-3 border border-borda rounded-lg bg-fundo-secundario text-texto-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -179,7 +191,6 @@ export const MakerProfileEdit: React.FC = () => {
           </button>
         </section>
 
-        {/* Categorias */}
         <section className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
             Especialidades
@@ -214,7 +225,6 @@ export const MakerProfileEdit: React.FC = () => {
           )}
         </section>
 
-        {/* Submit Button */}
         <div className="border-t border-borda pt-4 flex justify-end">
           <button
             type="submit"

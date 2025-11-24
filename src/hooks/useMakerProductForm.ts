@@ -11,10 +11,11 @@ import {
 } from "../services/api";
 import { Image, Category, Maker, ProductTypeEnum } from "../types/types";
 import { useToast } from "../context/ToastContext";
-
-// Configurações de validação
-const MAX_FILE_SIZE_MB = 5;
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+import {
+  MAX_FILE_SIZE_MB,
+  ALLOWED_TYPES,
+  PRODUCT_LIMITS,
+} from "../constants/InputsLimits";
 
 export interface ProductFormSchema {
   name: string;
@@ -41,10 +42,14 @@ export const useMakerProductForm = (
     isPersonalizable: false,
     type: ProductTypeEnum.STANDARD,
   });
-  
-  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
-  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
-  
+
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
+    new Set()
+  );
+  const [availableCategories, setAvailableCategories] = useState<Category[]>(
+    []
+  );
+
   const [serverImages, setServerImages] = useState<Image[]>([]);
   const [localImages, setLocalImages] = useState<File[]>([]);
   const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
@@ -64,7 +69,11 @@ export const useMakerProductForm = (
       const data = await getCategories();
       setAvailableCategories(data);
     } catch (err: any) {
-      addToast({ type: "error", title: "Erro", message: "Não foi possível carregar as categorias." });
+      addToast({
+        type: "error",
+        title: "Erro",
+        message: "Não foi possível carregar as categorias.",
+      });
     }
   }, [addToast]);
 
@@ -80,10 +89,15 @@ export const useMakerProductForm = (
         isPersonalizable: product.isPersonalizable,
         type: product.type || ProductTypeEnum.STANDARD,
       });
+
       setSelectedCategories(new Set(product.categories.map((c) => c.id)));
       setServerImages(product.images || []);
     } catch (err: any) {
-      addToast({ type: "error", title: "Erro", message: "Não foi possível carregar o produto." });
+      addToast({
+        type: "error",
+        title: "Erro",
+        message: "Não foi possível carregar o produto.",
+      });
       navigate("/maker/produtos");
     }
   }, [productId, addToast, navigate]);
@@ -106,11 +120,19 @@ export const useMakerProductForm = (
 
   const validateFile = (file: File): boolean => {
     if (!ALLOWED_TYPES.includes(file.type)) {
-      addToast({ type: "warning", title: "Arquivo Inválido", message: `O formato ${file.type} não é suportado. Use JPG, PNG ou WEBP.` });
+      addToast({
+        type: "warning",
+        title: "Arquivo Inválido",
+        message: `O formato ${file.type} não é suportado. Use JPG, PNG ou WEBP.`,
+      });
       return false;
     }
     if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      addToast({ type: "warning", title: "Arquivo Grande", message: `A imagem deve ter no máximo ${MAX_FILE_SIZE_MB}MB.` });
+      addToast({
+        type: "warning",
+        title: "Arquivo Grande",
+        message: `A imagem deve ter no máximo ${MAX_FILE_SIZE_MB}MB.`,
+      });
       return false;
     }
     return true;
@@ -118,9 +140,22 @@ export const useMakerProductForm = (
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
+      const currentTotal = serverImages.length + localImages.length;
       const newFiles = Array.from(e.target.files);
+
+      if (currentTotal + newFiles.length > PRODUCT_LIMITS.MAX_IMAGES) {
+        addToast({
+          type: "warning",
+          title: "Limite Excedido",
+          message: `Você só pode adicionar até ${
+            PRODUCT_LIMITS.MAX_IMAGES
+          } imagens. Restam ${PRODUCT_LIMITS.MAX_IMAGES - currentTotal} slots.`,
+        });
+        return;
+      }
+
       const validFiles = newFiles.filter(validateFile);
-      
+
       if (validFiles.length > 0) {
         setLocalImages((prev) => [...prev, ...validFiles]);
       }
@@ -130,46 +165,44 @@ export const useMakerProductForm = (
   };
 
   const removeLocalImage = (indexToRemove: number) => {
-    const totalVisibleImages = serverImages.length + localImages.length;
-
-    if (totalVisibleImages <= 1) {
-      addToast({
-        type: "warning",
-        title: "Ação Bloqueada",
-        message: "O produto não pode ficar sem imagens.",
-      });
-      return;
-    }
-
     setLocalImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   const markServerImageForDeletion = (imageId: string) => {
     const totalVisibleImages = serverImages.length + localImages.length;
 
-    if (totalVisibleImages <= 1) {
-       addToast({
+    if (totalVisibleImages <= 1 && localImages.length === 0) {
+      addToast({
         type: "warning",
         title: "Ação Bloqueada",
-        message: "O produto não pode ficar sem imagens. Adicione uma nova imagem antes de excluir a última.",
+        message:
+          "O produto não pode ficar sem imagens. Adicione uma nova antes de excluir a última.",
       });
       return;
     }
 
     setImagesToDelete((prev) => [...prev, imageId]);
-    setServerImages((prev) => prev.filter(img => img.id !== imageId));
+    setServerImages((prev) => prev.filter((img) => img.id !== imageId));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (selectedCategories.size === 0) {
-      return addToast({ type: "warning", title: "Atenção", message: "Selecione pelo menos uma categoria." });
+      return addToast({
+        type: "warning",
+        title: "Atenção",
+        message: "Selecione pelo menos uma categoria.",
+      });
     }
 
     const totalImages = serverImages.length + localImages.length;
     if (totalImages === 0) {
-      return addToast({ type: "warning", title: "Imagens necessárias", message: "Adicione pelo menos uma imagem." });
+      return addToast({
+        type: "warning",
+        title: "Imagens necessárias",
+        message: "Adicione pelo menos uma imagem.",
+      });
     }
 
     setIsSubmitting(true);
@@ -184,9 +217,8 @@ export const useMakerProductForm = (
     try {
       if (isEditing && targetProductId) {
         await updateMyProduct(targetProductId, payload);
-        
         if (imagesToDelete.length > 0) {
-          await Promise.all(imagesToDelete.map(id => deleteMyImage(id)));
+          await Promise.all(imagesToDelete.map((id) => deleteMyImage(id)));
         }
       } else {
         const newProduct = await createMyProduct(payload);
@@ -195,31 +227,41 @@ export const useMakerProductForm = (
 
       if (localImages.length > 0 && targetProductId) {
         await Promise.all(
-          localImages.map((file) => uploadMyProductImage(targetProductId!, file))
+          localImages.map((file) =>
+            uploadMyProductImage(targetProductId!, file)
+          )
         );
       }
 
       addToast({
         type: "success",
         title: "Sucesso",
-        message: isEditing ? "Produto atualizado com sucesso!" : "Produto criado com sucesso!",
+        message: isEditing
+          ? "Produto atualizado com sucesso!"
+          : "Produto criado com sucesso!",
       });
-      
       navigate("/maker/produtos");
-
     } catch (err: any) {
       console.error(err);
       if (!isEditing && targetProductId) {
         try {
-          console.warn("Falha no processo. Revertendo criação...", targetProductId);
+          console.warn(
+            "Falha no processo. Revertendo criação...",
+            targetProductId
+          );
           await deleteMyProduct(targetProductId);
         } catch (rollbackErr) {
           console.error("Falha no rollback", rollbackErr);
         }
       }
 
-      const msg = err.response?.data?.message || err.message || "Erro desconhecido";
-      addToast({ type: "error", title: "Erro ao salvar", message: Array.isArray(msg) ? msg.join(", ") : msg });
+      const msg =
+        err.response?.data?.message || err.message || "Erro desconhecido";
+      addToast({
+        type: "error",
+        title: "Erro ao salvar",
+        message: Array.isArray(msg) ? msg.join(", ") : msg,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -231,17 +273,17 @@ export const useMakerProductForm = (
     selectedCategories,
     handleCategoryToggle,
     availableCategories,
-    
-    serverImages, 
+
+    serverImages,
     localImages,
-    
+
     loading,
     isSubmitting,
-    
+
     handleFileSelect,
     removeLocalImage,
     markServerImageForDeletion,
-    
+
     handleSubmit,
     isEditing,
   };
