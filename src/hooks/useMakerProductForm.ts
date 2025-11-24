@@ -9,7 +9,13 @@ import {
   deleteMyProduct,
   getCategories,
 } from "../services/api";
-import { Image, Category, Maker, ProductTypeEnum } from "../types/types";
+import {
+  Image,
+  Category,
+  Maker,
+  ProductTypeEnum,
+  MaterialTypeEnum,
+} from "../types/types";
 import { useToast } from "../context/ToastContext";
 import {
   MAX_FILE_SIZE_MB,
@@ -20,7 +26,7 @@ import {
 export interface ProductFormSchema {
   name: string;
   description: string;
-  material: string;
+  material: MaterialTypeEnum;
   price: string;
   isPersonalizable: boolean;
   type: ProductTypeEnum;
@@ -33,16 +39,14 @@ export const useMakerProductForm = (
   const isEditing = Boolean(productId);
   const navigate = useNavigate();
   const { addToast } = useToast();
-
   const [formData, setFormData] = useState<ProductFormSchema>({
     name: "",
     description: "",
-    material: "",
+    material: MaterialTypeEnum.PLA,
     price: "",
     isPersonalizable: false,
     type: ProductTypeEnum.STANDARD,
   });
-
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
     new Set()
   );
@@ -56,7 +60,6 @@ export const useMakerProductForm = (
 
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const updateField = <K extends keyof ProductFormSchema>(
     field: K,
     value: ProductFormSchema[K]
@@ -76,7 +79,6 @@ export const useMakerProductForm = (
       });
     }
   }, [addToast]);
-
   const fetchProduct = useCallback(async () => {
     if (!productId) return;
     try {
@@ -101,7 +103,6 @@ export const useMakerProductForm = (
       navigate("/maker/produtos");
     }
   }, [productId, addToast, navigate]);
-
   useEffect(() => {
     const init = async () => {
       setLoading(true);
@@ -111,7 +112,6 @@ export const useMakerProductForm = (
     };
     init();
   }, [fetchCategories, fetchProduct, isEditing]);
-
   const handleCategoryToggle = (id: string) => {
     const newSet = new Set(selectedCategories);
     newSet.has(id) ? newSet.delete(id) : newSet.add(id);
@@ -155,7 +155,6 @@ export const useMakerProductForm = (
       }
 
       const validFiles = newFiles.filter(validateFile);
-
       if (validFiles.length > 0) {
         setLocalImages((prev) => [...prev, ...validFiles]);
       }
@@ -163,14 +162,11 @@ export const useMakerProductForm = (
       e.target.value = "";
     }
   };
-
   const removeLocalImage = (indexToRemove: number) => {
     setLocalImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
-
   const markServerImageForDeletion = (imageId: string) => {
     const totalVisibleImages = serverImages.length + localImages.length;
-
     if (totalVisibleImages <= 1 && localImages.length === 0) {
       addToast({
         type: "warning",
@@ -184,10 +180,8 @@ export const useMakerProductForm = (
     setImagesToDelete((prev) => [...prev, imageId]);
     setServerImages((prev) => prev.filter((img) => img.id !== imageId));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (selectedCategories.size === 0) {
       return addToast({
         type: "warning",
@@ -213,7 +207,6 @@ export const useMakerProductForm = (
       price: String(parseFloat(formData.price) || 0),
       categoryIds: Array.from(selectedCategories),
     };
-
     try {
       if (isEditing && targetProductId) {
         await updateMyProduct(targetProductId, payload);
@@ -266,7 +259,6 @@ export const useMakerProductForm = (
       setIsSubmitting(false);
     }
   };
-
   return {
     formData,
     updateField,

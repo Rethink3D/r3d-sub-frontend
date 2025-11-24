@@ -92,7 +92,7 @@ export const MakerProductList: React.FC = () => {
                 Preço
               </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-texto-secundario uppercase tracking-wider">
-                Ativo?
+                Ativo
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-texto-secundario uppercase tracking-wider">
                 Ações

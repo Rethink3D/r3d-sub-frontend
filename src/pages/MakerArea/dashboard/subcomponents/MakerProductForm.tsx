@@ -1,5 +1,9 @@
 import { Link, useOutletContext, useParams } from "react-router-dom";
-import { Maker, ProductTypeEnum } from "../../../../types/types";
+import {
+  Maker,
+  ProductTypeEnum,
+  MaterialTypeEnum,
+} from "../../../../types/types";
 import { LoadingSpinner } from "../../../Catalog/components/Icons";
 import { CAMPAIGN_CONFIG } from "../../../../config/campaign";
 import { useMakerProductForm } from "../../../../hooks/useMakerProductForm";
@@ -25,7 +29,6 @@ export const MakerProductForm: React.FC = () => {
     handleSubmit,
     isEditing,
   } = useMakerProductForm(maker, id);
-
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     if (val < 0) return;
@@ -33,7 +36,6 @@ export const MakerProductForm: React.FC = () => {
   };
 
   if (!maker || loading) return <LoadingSpinner className="w-12 h-12" />;
-
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       <h1 className="text-3xl font-bold mb-6 text-texto-principal">
@@ -51,6 +53,7 @@ export const MakerProductForm: React.FC = () => {
               <label className="block text-sm font-medium text-texto-principal mb-2">
                 Nome
               </label>
+
               <input
                 value={formData.name}
                 onChange={(e) => updateField("name", e.target.value)}
@@ -114,19 +117,20 @@ export const MakerProductForm: React.FC = () => {
               <label className="block text-sm font-medium text-texto-principal mb-2">
                 Material
               </label>
-              <input
+              <select
                 value={formData.material}
-                onChange={(e) => updateField("material", e.target.value)}
+                onChange={(e) =>
+                  updateField("material", e.target.value as MaterialTypeEnum)
+                }
                 required
-                maxLength={PRODUCT_LIMITS.MATERIAL}
-                placeholder="Ex: PLA, Resina"
                 className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-secundario focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <div className="flex justify-end mt-1">
-                <span className="text-xs text-texto-secundario">
-                  {formData.material.length}/{PRODUCT_LIMITS.MATERIAL}
-                </span>
-              </div>
+              >
+                {Object.values(MaterialTypeEnum).map((mat) => (
+                  <option key={mat} value={mat}>
+                    {mat}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-texto-principal mb-2">
@@ -164,6 +168,7 @@ export const MakerProductForm: React.FC = () => {
           <h2 className="text-xl font-semibold text-texto-principal mb-6 border-b border-borda pb-3">
             Categorias
           </h2>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {availableCategories.map((cat) => (
               <label
@@ -176,6 +181,7 @@ export const MakerProductForm: React.FC = () => {
                   onChange={() => handleCategoryToggle(cat.id)}
                   className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500"
                 />
+
                 {cat.name}
               </label>
             ))}
