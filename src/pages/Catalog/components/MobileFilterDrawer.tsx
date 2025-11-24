@@ -7,7 +7,11 @@ interface MobileFilterDrawerProps {
   allCategories: Category[];
   categoryCounts: { [key: string]: number };
   selectedCategoryIds: string[];
+  filterPersonalizable: boolean;
+  filterPromotional: boolean;
   onCategoryClick: (id: string) => void;
+  onTogglePersonalizable: (value: boolean) => void;
+  onTogglePromotional: (value: boolean) => void;
 }
 
 const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
@@ -24,7 +28,12 @@ const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
         className="fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity opacity-100"
       ></div>
       <div className="fixed top-0 left-0 h-full w-full max-w-xs bg-white dark:bg-gray-900 z-50 transform transition-transform translate-x-0">
-        <CategorySidebar inDrawer={true} onClose={onClose} {...sidebarProps} />
+        <CategorySidebar
+          inDrawer={true}
+          onClose={onClose}
+          isCollapsed={false}
+          {...sidebarProps}
+        />
       </div>
     </div>
   );

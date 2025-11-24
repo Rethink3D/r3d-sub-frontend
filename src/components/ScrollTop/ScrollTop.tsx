@@ -5,7 +5,11 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const isModalRoute = pathname.includes("/catalogo");
+
+    if (!isModalRoute) {
+      window.scrollTo(0, 0);
+    }
   }, [pathname]);
 
   return null;

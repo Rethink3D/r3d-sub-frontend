@@ -7,8 +7,8 @@ interface MakerHeaderProps {
 }
 
 const MakerHeader: React.FC<MakerHeaderProps> = ({ maker }) => (
-  <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
-    <div className={`${styles.avatarRing} p-1 flex-shrink-0 mb-4 md:mb-0`}>
+  <div className="flex flex-row items-center gap-5 w-full">
+    <div className={`${styles.avatarRing} p-1 flex-shrink-0`}>
       <img
         src={
           maker.profileImage?.url ||
@@ -18,25 +18,30 @@ const MakerHeader: React.FC<MakerHeaderProps> = ({ maker }) => (
           )}&background=random&color=fff`
         }
         alt={maker.name}
-        className="w-28 h-28 rounded-full object-cover"
+        className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover"
       />
     </div>
-    <div className="flex-grow flex flex-col items-center md:items-start">
-      <h1 className="text-3xl font-bold">{maker.name}</h1>
 
-      <div className="flex flex-col items-center md:items-start gap-2 text-gray-600 dark:text-gray-400 text-sm mt-2">
-        <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-3 gap-y-1">
+    <div className="flex flex-col items-start gap-1">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-none">
+        {maker.name}
+      </h1>
+
+      <div className="flex flex-col items-start gap-1.5 text-gray-600 dark:text-gray-400 text-sm mt-1">
+        <div className="flex flex-wrap items-center gap-x-3">
           {maker.location && (
             <span className="flex items-center gap-1">
-              <LocationIcon /> {maker.location}
+              <LocationIcon className="w-4 h-4" /> {maker.location}
             </span>
           )}
-          {maker.location && maker.productCount > 0 && (
-            <span className="hidden sm:inline">•</span>
-          )}
-          {maker.productCount > 0 && (
+          {maker.location &&
+            maker.productCount !== undefined &&
+            maker.productCount > 0 && (
+              <span className="hidden sm:inline text-gray-400">•</span>
+            )}
+          {maker.productCount !== undefined && maker.productCount > 0 && (
             <span className="flex items-center gap-1">
-              <BoxIcon />
+              <BoxIcon className="w-4 h-4" />
               {maker.productCount}{" "}
               {maker.productCount === 1 ? "produto" : "produtos"}
             </span>
@@ -44,15 +49,11 @@ const MakerHeader: React.FC<MakerHeaderProps> = ({ maker }) => (
         </div>
 
         {maker.acceptsPersonalization && (
-          <div className="group relative flex items-center gap-2 px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-300 border border-purple-300">
-            <InformationIcon className="flex-shrink-0 w-5 h-5" />
-            <h3 className="font-semibold text-sm">
+          <div className="flex items-center gap-1.5 bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 px-2 py-0.5 rounded-md border border-purple-200 dark:border-purple-800">
+            <InformationIcon className="w-3.5 h-3.5" />
+            <span className="text-xs font-bold">
               Aceita Pedidos Sob Demanda
-            </h3>
-            <div className="absolute z-20 top-full mt-2 left-1/2 -translate-x-1/2 w-64 text-center bg-gray-900 text-white text-xs rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-              Este Maker aceita pedidos sob demanda nas categorias em que
-              trabalha.
-            </div>
+            </span>
           </div>
         )}
       </div>

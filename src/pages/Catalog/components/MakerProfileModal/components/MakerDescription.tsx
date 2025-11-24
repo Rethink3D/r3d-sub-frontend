@@ -9,9 +9,9 @@ const MakerDescription: React.FC<MakerDescriptionProps> = ({ description }) => {
   const isLongDescription = description.length > 200;
 
   return (
-    <div className="mt-6 text-center md:text-left">
+    <div className="text-center md:text-left w-full">
       <p
-        className={`text-gray-700 dark:text-gray-300 transition-all duration-300 ${
+        className={`text-gray-700 dark:text-gray-300 transition-all duration-300 break-all whitespace-pre-wrap ${
           !isExpanded && isLongDescription ? "line-clamp-3" : ""
         }`}
       >
