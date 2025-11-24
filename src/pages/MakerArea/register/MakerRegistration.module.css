@@ -1,12 +1,12 @@
 .stepIndicator {
-  width: 2.5rem; /* 40px */
-  height: 2.5rem; /* 40px */
-  border-radius: 9999px; /* full */
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600; /* semibold */
-  font-size: 0.875rem; /* text-sm */
+  font-weight: 600;
+  font-size: 0.875rem;
   color: var(--cor-texto-secundario);
   background-color: var(--cor-fundo-principal);
   border: 2px solid var(--cor-borda);
@@ -15,14 +15,14 @@
 
 .stepIndicator.active {
   color: #fff;
-  background-color: #3b82f6; /* blue-500 */
+  background-color: #3b82f6;
   border-color: #3b82f6;
   transform: scale(1.1);
 }
 
 .stepIndicator.completed {
   color: #fff;
-  background-color: #16a34a; /* green-600 */
+  background-color: #16a34a;
   border-color: #16a34a;
 }
 
@@ -30,20 +30,19 @@
   flex-grow: 1;
   height: 2px;
   background-color: var(--cor-borda);
-  margin-bottom: 2.25rem; /* Ajuste para alinhar com os números */
+  margin-bottom: 2.25rem;
   transition: background-color 0.3s ease;
 }
 
 .stepLine.completed {
-  background-color: #16a34a; /* green-600 */
+  background-color: #16a34a;
 }
 
-/* Mobile adjustments */
 @media (max-width: 640px) {
   .stepIndicator {
-    width: 2rem; /* 32px */
-    height: 2rem; /* 32px */
-    font-size: 0.75rem; /* text-xs */
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
   }
   .stepLine {
     margin-bottom: 2rem;

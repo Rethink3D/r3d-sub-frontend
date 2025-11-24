@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
-import { maskCPF } from "../../../utils/maskCPF";
+import { maskCPF } from "../../../../utils/maskCPF";
+import { BaseRegistrationStepProps } from "../../../../types/registration";
 
-interface StepProps {
-  formData: any;
-  updateFormData: (field: string, value: any) => void;
-  nextStep: () => void;
-  prevStep?: () => void;
-  isSubmitting?: boolean;
-  error?: string | null;
-}
+export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
+  formData,
+  updateFormData,
+  nextStep,
+  prevStep,
+}) => {
+  const [error, setError] = useState<string | null>(null);
 
-export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, nextStep, prevStep }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(
-    formData.profileImageFile ? URL.createObjectURL(formData.profileImageFile) : null
+    formData.profileImageFile
+      ? URL.createObjectURL(formData.profileImageFile)
+      : null
   );
 
-  // Atualiza preview se a imagem mudar externamente (ex: reset)
   useEffect(() => {
-      if (formData.profileImageFile) {
-          setImagePreview(URL.createObjectURL(formData.profileImageFile));
-      }
+    if (formData.profileImageFile) {
+      setImagePreview(URL.createObjectURL(formData.profileImageFile));
+    }
   }, [formData.profileImageFile]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,16 +27,42 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
       const file = event.target.files[0];
       updateFormData("profileImageFile", file);
       setImagePreview(URL.createObjectURL(file));
+      setError(null);
     }
   };
-  
+
+  const handleNext = () => {
+    if (!formData.name.trim()) {
+      setError("Por favor, informe o nome do Maker ou da Loja.");
+      return;
+    }
+
+    if (!formData.cpf.trim() || formData.cpf.length < 11) {
+      setError("Por favor, informe um CPF válido.");
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setError("A descrição do perfil é obrigatória.");
+      return;
+    }
+
+    setError(null);
+    if (nextStep) nextStep();
+  };
+
+  const handleChange = (field: string, value: any) => {
+    setError(null);
+    updateFormData(field as any, value);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in-scale">
       <h2 className="text-2xl font-semibold text-texto-principal text-center">
         Seu Perfil de Maker
       </h2>
       <p className="text-center text-texto-secundario">
-        Como seus clientes verões você?
+        Como seus clientes verão você?
       </p>
 
       {/* Campo de Imagem de Perfil */}
@@ -78,13 +104,13 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
           type="text"
           id="name"
           value={formData.name}
-          onChange={(e) => updateFormData("name", e.target.value)}
+          onChange={(e) => handleChange("name", e.target.value)}
           required
           placeholder="Ex: Estúdio 3D do João"
           className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      
+
       {/* Campo de CPF */}
       <div>
         <label className="block text-sm font-medium text-texto-principal mb-2">
@@ -93,7 +119,7 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
         <input
           type="text"
           value={formData.cpf}
-          onChange={(e) => updateFormData("cpf", maskCPF(e.target.value))}
+          onChange={(e) => handleChange("cpf", maskCPF(e.target.value))}
           required
           placeholder="000.000.000-00"
           maxLength={14}
@@ -103,7 +129,7 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
           Seu CPF não será exibido publicamente no perfil.
         </p>
       </div>
-      
+
       {/* Campo de Descrição */}
       <div>
         <label
@@ -115,14 +141,14 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
         <textarea
           id="description"
           value={formData.description}
-          onChange={(e) => updateFormData("description", e.target.value)}
+          onChange={(e) => handleChange("description", e.target.value)}
           required
           rows={4}
           placeholder="Conte aos clientes sobre seu trabalho, sua especialidade e o que você ama fazer."
           className="w-full px-4 py-3 border border-borda rounded-lg text-texto-principal bg-fundo-principal focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      
+
       {/* Campo de Personalização */}
       <div>
         <label className="flex items-center gap-3 cursor-pointer text-texto-principal w-fit">
@@ -141,6 +167,13 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
         </p>
       </div>
 
+      {/* Exibição de Erro de Validação */}
+      {error && (
+        <p className="text-red-500 text-sm text-center font-medium animate-pulse">
+          {error}
+        </p>
+      )}
+
       {/* Botões de Navegação */}
       <div className="flex justify-between pt-4">
         <button
@@ -152,7 +185,7 @@ export const Step2Profile: React.FC<StepProps> = ({ formData, updateFormData, ne
         </button>
         <button
           type="button"
-          onClick={nextStep}
+          onClick={handleNext}
           className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
         >
           Próximo &rarr;

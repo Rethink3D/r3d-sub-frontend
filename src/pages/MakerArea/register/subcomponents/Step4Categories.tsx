@@ -1,27 +1,20 @@
-// Etapa 4: Categorias e Submissão
 import { useState, useEffect } from "react";
-import { getCategories } from "../../../services/api";
-import { Category } from "../../../types/types";
-import { LoadingSpinner } from "../../../pages/Catalog/components/Icons";
+import { getCategories } from "../../../../services/api";
+import { Category } from "../../../../types/types";
+import { LoadingSpinner } from "../../../Catalog/components/Icons";
+import { Step4Props } from "../../../../types/registration";
 
-interface StepProps {
-  formData: any;
-  updateFormData: (field: string, value: any) => void;
-  prevStep?: () => void;
-  handleSubmit: () => void; // Função de submissão final
-  isSubmitting?: boolean;
-  error?: string | null;
-}
-
-export const Step4Categories: React.FC<StepProps> = ({
+export const Step4Categories: React.FC<Step4Props> = ({
   formData,
   updateFormData,
   prevStep,
   handleSubmit,
   isSubmitting,
-  error
+  error,
 }) => {
-  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<Category[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -63,7 +56,7 @@ export const Step4Categories: React.FC<StepProps> = ({
           <LoadingSpinner className="w-8 h-8" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-60 overflow-y-auto custom-scrollbar p-4 border border-borda rounded-lg"> {/* 👈 MUDANÇA AQUI */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-60 overflow-y-auto custom-scrollbar p-4 border border-borda rounded-lg">
           {availableCategories.map((cat) => (
             <label
               key={cat.id}
@@ -81,11 +74,8 @@ export const Step4Categories: React.FC<StepProps> = ({
         </div>
       )}
 
-      {error && (
-        <p className="text-red-500 text-sm text-center">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-      {/* Botões de Navegação */}
       <div className="flex justify-between pt-4 border-t border-borda mt-4">
         <button
           type="button"

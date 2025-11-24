@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth"; 
+import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase-config";
 import { LoadingSpinner } from "../Catalog/components/Icons";
 

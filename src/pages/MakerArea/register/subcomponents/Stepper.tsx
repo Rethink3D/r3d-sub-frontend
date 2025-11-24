@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './MakerRegistration.module.css';
+import React from "react";
+import styles from "../MakerRegistration.module.css";
 
 interface StepperProps {
   steps: string[];
@@ -20,29 +20,28 @@ export const Stepper: React.FC<StepperProps> = ({ steps, currentStep }) => {
               <div
                 className={`
                   ${styles.stepIndicator}
-                  ${isActive ? styles.active : ''}
-                  ${isCompleted ? styles.completed : ''}
+                  ${isActive ? styles.active : ""}
+                  ${isCompleted ? styles.completed : ""}
                 `}
               >
-                {isCompleted ? '✔' : stepNumber}
+                {isCompleted ? "✔" : stepNumber}
               </div>
               <span
                 className={`
                   text-xs sm:text-sm mt-2 font-medium
-                  ${isActive ? 'text-blue-500' : 'text-texto-secundario'}
-                  ${isCompleted ? 'text-green-500' : ''}
+                  ${isActive ? "text-blue-500" : "text-texto-secundario"}
+                  ${isCompleted ? "text-green-500" : ""}
                 `}
               >
                 {label}
               </span>
             </div>
 
-            {/* Linha de conexão */}
             {stepNumber < steps.length && (
               <div
                 className={`
                   ${styles.stepLine}
-                  ${isCompleted ? styles.completed : ''}
+                  ${isCompleted ? styles.completed : ""}
                 `}
               />
             )}

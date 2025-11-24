@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import type { Maker } from "./types/types";
+import { Maker } from "./types/types";
 import { CatalogProvider } from "./context/CatalogProvider";
 import { useCatalogContext } from "./context/CatalogContext";
 import { useProductModal } from "./hooks/useProductModal";
@@ -24,15 +24,18 @@ import NotFound from "./pages/NotFound/NotFound";
 import RequestPrintDrawer from "./pages/Catalog/components/RequestPrintDrawer";
 import MakerProfileModal from "./pages/Catalog/components/MakerProfileModal/MakerProfileModal";
 import Devolutions from "./pages/Admin/Devolutions";
-import { MakerRegistration } from "./pages/MakerArea/MakerRegistration";
-import { MakerLogin } from "./pages/MakerArea/MakerLogin";
+import { MakerRegistration } from "./pages/MakerArea/register/MakerRegistration";
+import { MakerLogin } from "./pages/MakerArea/login/MakerLogin";
 import { MakerProtectedRoute } from "./pages/MakerArea/MakerProtectedRoute";
-import { MakerProductList } from "./pages/MakerArea/MakerProductList";
-import { MakerProductForm } from "./pages/MakerArea/MakerProductForm";
-import { MakerDashboardLayout } from "./pages/MakerArea/MakerDashboardLayout";
-import { MakerProfileEdit } from "./pages/MakerArea/MakerProfileEdit";
+import { MakerProductList } from "./pages/MakerArea/dashboard/subcomponents/MakerProductList";
+import { MakerProductForm } from "./pages/MakerArea/dashboard/subcomponents/MakerProductForm";
+import { MakerDashboardLayout } from "./pages/MakerArea/dashboard/MakerDashboardLayout";
+import { MakerProfileEdit } from "./pages/MakerArea/dashboard/subcomponents/MakerProfileEdit";
+import Terms from "./pages/Terms/Terms";
+import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
+import { MakerForgotPassword } from "./pages/MakerArea/components/MakerForgotPassword";
+import { ToastProvider } from "./context/ToastContext";
 
-// Placeholder para o conteúdo do Dashboard (o que aparece em /maker/dashboard)
 const MakerDashboardContent = () => (
   <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
     <h1 className="text-3xl font-bold text-texto-principal">Meu Dashboard</h1>
@@ -43,33 +46,31 @@ const MakerDashboardContent = () => (
   </div>
 );
 
-// Placeholder para a página de Assinatura
 const MakerSubscription = () => (
   <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
-    <h1 className="text-3xl font-bold text-texto-principal">Minha Assinatura</h1>
+    <h1 className="text-3xl font-bold text-texto-principal">
+      Minha Assinatura
+    </h1>
     <p className="text-texto-secundario mt-4">
       Em breve, aqui você poderá gerenciar sua assinatura com o Asaas para
       cadastrar produtos ilimitados.
     </p>
   </div>
 );
-import Terms from "./pages/Terms/Terms";
-import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
-import { MakerForgotPassword } from "./pages/MakerArea/MakerForgotPassword";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const internalLayoutPaths = [
-    "/admin",           
-    "/maker/dashboard", 
+    "/admin",
+    "/maker/dashboard",
     "/maker/produtos",
     "/maker/assinatura",
     "/maker/perfil",
   ];
-  
-  const isInternalLayout = internalLayoutPaths.some(path =>
+
+  const isInternalLayout = internalLayoutPaths.some((path) =>
     location.pathname.startsWith(path)
   );
 
@@ -148,16 +149,28 @@ const AppContent: React.FC = () => {
           <Route path="/saiba-mais" element={<About />} />
           <Route path="/contato" element={<Contact />} />
 
-          <Route path="/maker/register" element={<MakerRegistration />} /> 
+          <Route path="/maker/register" element={<MakerRegistration />} />
           <Route path="/maker/login" element={<MakerLogin />} />
-          <Route path="/maker/recuperar-senha" element={<MakerForgotPassword />} />
+          <Route
+            path="/maker/recuperar-senha"
+            element={<MakerForgotPassword />}
+          />
           <Route element={<MakerProtectedRoute />}>
-            <Route element={<MakerDashboardLayout />}> 
-              <Route path="/maker/dashboard" element={<MakerDashboardContent />} />
+            <Route element={<MakerDashboardLayout />}>
+              <Route
+                path="/maker/dashboard"
+                element={<MakerDashboardContent />}
+              />
               <Route path="/maker/perfil" element={<MakerProfileEdit />} />
               <Route path="/maker/produtos" element={<MakerProductList />} />
-              <Route path="/maker/produtos/novo" element={<MakerProductForm />} />
-              <Route path="/maker/produtos/editar/:id" element={<MakerProductForm />} />
+              <Route
+                path="/maker/produtos/novo"
+                element={<MakerProductForm />}
+              />
+              <Route
+                path="/maker/produtos/editar/:id"
+                element={<MakerProductForm />}
+              />
               <Route path="/maker/assinatura" element={<MakerSubscription />} />
             </Route>
           </Route>
@@ -208,9 +221,11 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <CatalogProvider>
-      <AppContent />
-    </CatalogProvider>
+    <ToastProvider>
+      <CatalogProvider>
+        <AppContent />
+      </CatalogProvider>
+    </ToastProvider>
   );
 };
 
