@@ -1,7 +1,6 @@
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Maker } from "./types/types";
-import { CatalogProvider } from "./context/CatalogProvider";
 import { useCatalogContext } from "./context/CatalogContext";
 import { useProductModal } from "./hooks/useProductModal";
 import { useMakerModal } from "./hooks/useMakerModal";
@@ -34,7 +33,6 @@ import { MakerProfileEdit } from "./pages/MakerArea/dashboard/subcomponents/Make
 import Terms from "./pages/Terms/Terms";
 import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
 import { MakerForgotPassword } from "./pages/MakerArea/components/MakerForgotPassword";
-import { ToastProvider } from "./context/ToastContext";
 
 const MakerDashboardContent = () => (
   <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
@@ -209,13 +207,7 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  return (
-    <ToastProvider>
-      <CatalogProvider>
-        <AppContent />
-      </CatalogProvider>
-    </ToastProvider>
-  );
+  return <AppContent />;
 };
 
 export default App;
