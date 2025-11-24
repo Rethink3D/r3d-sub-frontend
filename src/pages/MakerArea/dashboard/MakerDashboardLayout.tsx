@@ -2,7 +2,6 @@ import { Outlet } from "react-router-dom";
 import {
   IoCubeOutline,
   IoGridOutline,
-  IoDiamondOutline,
   IoLogOutOutline,
   IoPersonOutline,
 } from "react-icons/io5";
@@ -62,11 +61,6 @@ export const MakerDashboardLayout: React.FC = () => {
               icon={<IoCubeOutline size={20} />}
               label="Meus Produtos"
             />
-            <SidebarLink
-              to="/maker/assinatura"
-              icon={<IoDiamondOutline size={20} />}
-              label="Assinatura"
-            />
           </nav>
         </div>
         <div className="mt-auto pt-4 border-t border-borda">
@@ -87,7 +81,7 @@ export const MakerDashboardLayout: React.FC = () => {
 
       {/* --- NAVBAR (Mobile) --- */}
       <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-fundo-principal border-t border-borda shadow-lg z-50">
-        <nav className="grid grid-cols-5 h-full">
+        <nav className="grid grid-cols-4 h-full">
           <MobileNavLink
             to="/maker/dashboard"
             icon={<IoGridOutline size={22} />}
@@ -102,11 +96,6 @@ export const MakerDashboardLayout: React.FC = () => {
             to="/maker/produtos"
             icon={<IoCubeOutline size={22} />}
             label="Produtos"
-          />
-          <MobileNavLink
-            to="/maker/assinatura"
-            icon={<IoDiamondOutline size={22} />}
-            label="Assinatura"
           />
           <button
             onClick={handleLogout}

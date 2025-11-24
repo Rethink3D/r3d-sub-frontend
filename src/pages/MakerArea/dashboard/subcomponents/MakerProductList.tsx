@@ -16,9 +16,6 @@ export const MakerProductList: React.FC = () => {
     products,
     loading,
     updatingId,
-    activeStandardCount,
-    activePromoCount,
-    limit,
     handleDelete,
     handleStatusToggle,
   } = useMakerProductList();
@@ -81,36 +78,6 @@ export const MakerProductList: React.FC = () => {
         </div>
       )}
 
-      {/* Painel de Status do Plano */}
-      <div className="mb-6 p-4 bg-white dark:bg-gray-800 border border-borda rounded-lg shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-center">
-        <div>
-          <p className="text-texto-principal">
-            <span className="font-bold text-blue-600 dark:text-blue-400">
-              Plano Gratuito:
-            </span>{" "}
-            Você tem{" "}
-            <strong
-              className={`${
-                activeStandardCount >= limit ? "text-red-500" : "text-green-600"
-              }`}
-            >
-              {activeStandardCount}
-            </strong>{" "}
-            de <strong>{limit}</strong> produtos padrão ativos.
-          </p>
-          {activePromoCount > 0 && (
-            <p className="text-sm text-green-600 dark:text-green-400 mt-1">
-              + {activePromoCount} produtos promocionais ativos (Ilimitado).
-            </p>
-          )}
-        </div>
-        {activeStandardCount >= limit && (
-          <span className="text-xs font-semibold bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full whitespace-nowrap">
-            Limite Atingido
-          </span>
-        )}
-      </div>
-
       <div className="bg-fundo-secundario shadow-md rounded-lg overflow-x-auto border border-borda">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
@@ -142,7 +109,6 @@ export const MakerProductList: React.FC = () => {
                   <p className="mb-2">
                     Você ainda não cadastrou nenhum produto.
                   </p>
-                  {/* Link condicional também na mensagem de vazio */}
                   {!isPending && (
                       <Link
                         to="/maker/produtos/novo"
@@ -183,11 +149,6 @@ export const MakerProductList: React.FC = () => {
                       <ToggleSwitch
                         checked={product.status === ProductStatusEnum.ACTIVE}
                         onChange={() => handleStatusToggle(product)}
-                        disabled={
-                          product.status === ProductStatusEnum.PAUSED &&
-                          product.type === ProductTypeEnum.STANDARD &&
-                          activeStandardCount >= limit
-                        }
                       />
                     )}
                   </td>

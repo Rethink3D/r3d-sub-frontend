@@ -1,13 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   getMyProducts,
   deleteMyProduct,
   updateProductStatus,
 } from "../services/api";
-import { Product, ProductStatusEnum, ProductTypeEnum } from "../types/types";
+import { Product, ProductStatusEnum } from "../types/types";
 import { useToast } from "../context/ToastContext";
-
-const ACTIVE_PRODUCT_LIMIT = 3;
 
 export const useMakerProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -34,26 +32,6 @@ export const useMakerProductList = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
-
-  const activeStandardCount = useMemo(
-    () =>
-      products.filter(
-        (p) =>
-          p.status === ProductStatusEnum.ACTIVE &&
-          p.type === ProductTypeEnum.STANDARD
-      ).length,
-    [products]
-  );
-
-  const activePromoCount = useMemo(
-    () =>
-      products.filter(
-        (p) =>
-          p.status === ProductStatusEnum.ACTIVE &&
-          p.type === ProductTypeEnum.PROMOTIONAL
-      ).length,
-    [products]
-  );
 
   const handleDelete = (id: string) => {
     addToast({
@@ -88,30 +66,13 @@ export const useMakerProductList = () => {
         ? ProductStatusEnum.PAUSED
         : ProductStatusEnum.ACTIVE;
 
-    if (newStatus === ProductStatusEnum.ACTIVE) {
-      if (
-        product.type === ProductTypeEnum.STANDARD &&
-        activeStandardCount >= ACTIVE_PRODUCT_LIMIT
-      ) {
-        addToast({
-          type: "warning",
-          title: "Limite Atingido",
-          message: `Você já possui ${ACTIVE_PRODUCT_LIMIT} produtos padrão ativos. Pause um produto existente para ativar este, ou crie um produto promocional.`,
-          duration: 6000,
-        });
-        return;
-      }
-    }
-
     setUpdatingId(product.id);
 
     try {
       const updatedProduct = await updateProductStatus(product.id, newStatus);
-
       setProducts((prev) =>
         prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
       );
-
       const statusLabel =
         newStatus === ProductStatusEnum.ACTIVE ? "ativado" : "pausado";
       addToast({
@@ -134,9 +95,6 @@ export const useMakerProductList = () => {
     products,
     loading,
     updatingId,
-    activeStandardCount,
-    activePromoCount,
-    limit: ACTIVE_PRODUCT_LIMIT,
     handleDelete,
     handleStatusToggle,
   };

@@ -37,185 +37,206 @@ import { MakerForgotPassword } from "./pages/MakerArea/components/MakerForgotPas
 import { ToastProvider } from "./context/ToastContext";
 
 const MakerDashboardContent = () => (
-  <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
-    <h1 className="text-3xl font-bold text-texto-principal">Meu Dashboard</h1>
-    <p className="text-texto-secundario mt-4">Bem-vindo à sua área, Maker!</p>
-    <p className="text-texto-secundario mt-2">
-      Use o menu ao lado para gerenciar seus produtos e sua assinatura.
-    </p>
-  </div>
-);
-
-const MakerSubscription = () => (
-  <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
-    <h1 className="text-3xl font-bold text-texto-principal">
-      Minha Assinatura
-    </h1>
-    <p className="text-texto-secundario mt-4">
-      Em breve, aqui você poderá gerenciar sua assinatura!
-    </p>
-  </div>
+    <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
+        <h1 className="text-3xl font-bold text-texto-principal">
+            Meu Dashboard
+        </h1>
+        <p className="text-texto-secundario mt-4">
+            Bem-vindo à sua área, Maker!
+        </p>
+        <p className="text-texto-secundario mt-2">
+            Use o menu ao lado para gerenciar seus produtos.
+        </p>
+    </div>
 );
 
 const AppContent: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-  const isAdminRoute = location.pathname.startsWith("/admin");
-  const { handleMakerSearch } = useCatalogContext();
+    const isAdminRoute = location.pathname.startsWith("/admin");
+    const { handleMakerSearch } = useCatalogContext();
 
-  const {
-    maker: productMaker,
-    product,
-    isLoading: isProductLoading,
-    handleCloseModal: closeProductModal,
-  } = useProductModal();
-  const {
-    maker: directMaker,
-    isLoading: isMakerLoading,
-    handleCloseModal: closeMakerModal,
-  } = useMakerModal();
+    const {
+        maker: productMaker,
+        product,
+        isLoading: isProductLoading,
+        handleCloseModal: closeProductModal,
+    } = useProductModal();
 
-  const [isRequestPanelOpen, setIsRequestPanelOpen] = useState(false);
+    const {
+        maker: directMaker,
+        isLoading: isMakerLoading,
+        handleCloseModal: closeMakerModal,
+    } = useMakerModal();
 
-  const makerToShow = productMaker || directMaker;
-  const isLoading = isProductLoading || isMakerLoading;
-  const handleClose = productMaker ? closeProductModal : closeMakerModal;
+    const [isRequestPanelOpen, setIsRequestPanelOpen] = useState(false);
 
-  const handleMakerSelect = (makerFromDrawer: Maker) => {
-    navigate(`/catalogo/maker/${makerFromDrawer.id}`);
-    setIsRequestPanelOpen(false);
-  };
+    const makerToShow = productMaker || directMaker;
+    const isLoading = isProductLoading || isMakerLoading;
+    const handleClose = productMaker ? closeProductModal : closeMakerModal;
 
-  const handleViewAllFromModal = (makerName: string) => {
-    handleMakerSearch(makerName);
-    handleClose();
-  };
+    const handleMakerSelect = (makerFromDrawer: Maker) => {
+        navigate(`/catalogo/maker/${makerFromDrawer.id}`);
+        setIsRequestPanelOpen(false);
+    };
 
-  return (
-    <div
-      className={`flex flex-col min-h-screen ${
-        isAdminRoute ? "bg-gray-100" : ""
-      }`}
-    >
-      {!isAdminRoute && (
-        <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />
-      )}
+    const handleViewAllFromModal = (makerName: string) => {
+        handleMakerSearch(makerName);
+        handleClose();
+    };
 
-      <main
-        className={
-          !isAdminRoute
-            ? "container mx-auto flex-1 px-4 md:px-8 pt-0"
-            : "flex-1"
-        }
-      >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/catalogo"
-            element={
-              <Catalog
-                onOpenRequestDrawer={() => setIsRequestPanelOpen(true)}
-              />
-            }
-          />
-          <Route
-            path="/catalogo/produto/:productId"
-            element={
-              <Catalog
-                onOpenRequestDrawer={() => setIsRequestPanelOpen(true)}
-              />
-            }
-          />
-          <Route
-            path="/catalogo/maker/:makerId"
-            element={
-              <Catalog
-                onOpenRequestDrawer={() => setIsRequestPanelOpen(true)}
-              />
-            }
-          />
-          <Route path="/saiba-mais" element={<About />} />
-          <Route path="/contato" element={<Contact />} />
+    return (
+        <div
+            className={`flex flex-col min-h-screen ${
+                isAdminRoute ? "bg-gray-100" : ""
+            }`}
+        >
+            <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />
 
-          <Route path="/maker/register" element={<MakerRegistration />} />
-          <Route path="/maker/login" element={<MakerLogin />} />
-          <Route
-            path="/maker/recuperar-senha"
-            element={<MakerForgotPassword />}
-          />
-          <Route element={<MakerProtectedRoute />}>
-            <Route element={<MakerDashboardLayout />}>
-              <Route
-                path="/maker/dashboard"
-                element={<MakerDashboardContent />}
-              />
-              <Route path="/maker/perfil" element={<MakerProfileEdit />} />
-              <Route path="/maker/produtos" element={<MakerProductList />} />
-              <Route
-                path="/maker/produtos/novo"
-                element={<MakerProductForm />}
-              />
-              <Route
-                path="/maker/produtos/editar/:id"
-                element={<MakerProductForm />}
-              />
-              <Route path="/maker/assinatura" element={<MakerSubscription />} />
-            </Route>
-          </Route>
+            <main
+                className={
+                    !isAdminRoute
+                        ? "container mx-auto flex-1 px-4 md:px-8 pt-0"
+                        : "flex-1"
+                }
+            >
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route
+                        path="/catalogo"
+                        element={
+                            <Catalog
+                                onOpenRequestDrawer={() =>
+                                    setIsRequestPanelOpen(true)
+                                }
+                            />
+                        }
+                    />
+                    <Route
+                        path="/catalogo/produto/:productId"
+                        element={
+                            <Catalog
+                                onOpenRequestDrawer={() =>
+                                    setIsRequestPanelOpen(true)
+                                }
+                            />
+                        }
+                    />
+                    <Route
+                        path="/catalogo/maker/:makerId"
+                        element={
+                            <Catalog
+                                onOpenRequestDrawer={() =>
+                                    setIsRequestPanelOpen(true)
+                                }
+                            />
+                        }
+                    />
+                    <Route path="/saiba-mais" element={<About />} />
+                    <Route path="/contato" element={<Contact />} />
 
-          <Route path="/termos" element={<Terms />} />
-          <Route path="/exclusao-de-conta" element={<AccountDeletion />} />
-          <Route path="*" element={<NotFound />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="makers" element={<Makers />} />
-              <Route
-                path="makers/:makerId/products"
-                element={<MakerProducts />}
-              />
-              <Route path="makers/new" element={<MakerForm />} />
-              <Route path="makers/edit/:id" element={<MakerForm />} />
-              <Route path="products" element={<Products />} />
-              <Route path="products/new" element={<ProductForm />} />
-              <Route path="products/edit/:id" element={<ProductForm />} />
-              <Route path="devolutions" element={<Devolutions />} />
-            </Route>
-          </Route>
-        </Routes>
-      </main>
+                    <Route
+                        path="/maker/register"
+                        element={<MakerRegistration />}
+                    />
+                    <Route path="/maker/login" element={<MakerLogin />} />
+                    <Route
+                        path="/maker/recuperar-senha"
+                        element={<MakerForgotPassword />}
+                    />
+                    <Route element={<MakerProtectedRoute />}>
+                        <Route element={<MakerDashboardLayout />}>
+                            <Route
+                                path="/maker/dashboard"
+                                element={<MakerDashboardContent />}
+                            />
+                            <Route
+                                path="/maker/perfil"
+                                element={<MakerProfileEdit />}
+                            />
+                            <Route
+                                path="/maker/produtos"
+                                element={<MakerProductList />}
+                            />
+                            <Route
+                                path="/maker/produtos/novo"
+                                element={<MakerProductForm />}
+                            />
+                            <Route
+                                path="/maker/produtos/editar/:id"
+                                element={<MakerProductForm />}
+                            />
+                        </Route>
+                    </Route>
 
-      {!isAdminRoute && <Footer />}
+                    <Route path="/termos" element={<Terms />} />
+                    <Route
+                        path="/exclusao-de-conta"
+                        element={<AccountDeletion />}
+                    />
+                    <Route path="*" element={<NotFound />} />
+                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="/admin" element={<AdminLayout />}>
+                            <Route path="dashboard" element={<Dashboard />} />
+                            <Route path="makers" element={<Makers />} />
+                            <Route
+                                path="makers/:makerId/products"
+                                element={<MakerProducts />}
+                            />
+                            <Route path="makers/new" element={<MakerForm />} />
+                            <Route
+                                path="makers/edit/:id"
+                                element={<MakerForm />}
+                            />
+                            <Route path="products" element={<Products />} />
+                            <Route
+                                path="products/new"
+                                element={<ProductForm />}
+                            />
+                            <Route
+                                path="products/edit/:id"
+                                element={<ProductForm />}
+                            />
+                            <Route
+                                path="devolutions"
+                                element={<Devolutions />}
+                            />
+                        </Route>
+                    </Route>
+                </Routes>
+            </main>
 
-      <RequestPrintDrawer
-        isOpen={isRequestPanelOpen}
-        onClose={() => setIsRequestPanelOpen(false)}
-        onMakerSelect={handleMakerSelect}
-      />
+            {!isAdminRoute && <Footer />}
 
-      {makerToShow && (
-        <MakerProfileModal
-          maker={makerToShow}
-          featuredProduct={product || undefined}
-          onClose={handleClose}
-          isLoading={isLoading}
-          onViewAllProducts={handleViewAllFromModal}
-        />
-      )}
-    </div>
-  );
+            <RequestPrintDrawer
+                isOpen={isRequestPanelOpen}
+                onClose={() => setIsRequestPanelOpen(false)}
+                onMakerSelect={handleMakerSelect}
+            />
+
+            {makerToShow && (
+                <MakerProfileModal
+                    maker={makerToShow}
+                    featuredProduct={product || undefined}
+                    onClose={handleClose}
+                    isLoading={isLoading}
+                    onViewAllProducts={handleViewAllFromModal}
+                />
+            )}
+        </div>
+    );
 };
 
 const App: React.FC = () => {
-  return (
-    <ToastProvider>
-      <CatalogProvider>
-        <AppContent />
-      </CatalogProvider>
-    </ToastProvider>
-  );
+    return (
+        <ToastProvider>
+            <CatalogProvider>
+                <AppContent />
+            </CatalogProvider>
+        </ToastProvider>
+    );
 };
 
 export default App;
