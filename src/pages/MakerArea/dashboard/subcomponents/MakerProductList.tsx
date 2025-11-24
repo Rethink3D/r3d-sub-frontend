@@ -1,10 +1,17 @@
-import { Link } from "react-router-dom";
-import { ProductStatusEnum, ProductTypeEnum } from "../../../../types/types";
+import { Link, useOutletContext } from "react-router-dom";
+import { 
+  ProductStatusEnum, 
+  ProductTypeEnum, 
+  Maker, 
+  MakerStatusEnum 
+} from "../../../../types/types";
 import { ToggleSwitch } from "../../components/ToggleSwitch";
 import { LoadingSpinner } from "../../../Catalog/components/Icons";
 import { useMakerProductList } from "../../../../hooks/useMakerProductList";
 
 export const MakerProductList: React.FC = () => {
+  const maker = useOutletContext<Maker>();
+  
   const {
     products,
     loading,
@@ -15,6 +22,9 @@ export const MakerProductList: React.FC = () => {
     handleDelete,
     handleStatusToggle,
   } = useMakerProductList();
+
+  // Verifica se a conta está pendente
+  const isPending = maker?.status === MakerStatusEnum.PENDING;
 
   if (loading) {
     return (
@@ -33,13 +43,43 @@ export const MakerProductList: React.FC = () => {
         <h1 className="text-3xl font-bold text-texto-principal">
           Meus Produtos
         </h1>
-        <Link
-          to="/maker/produtos/novo"
-          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors shadow-sm font-medium"
-        >
-          Novo Produto
-        </Link>
+        
+        {/* Botão Condicional: Bloqueia se estiver Pendente */}
+        {isPending ? (
+            <button 
+                disabled 
+                className="bg-gray-400 dark:bg-gray-600 text-white px-4 py-2 rounded-md cursor-not-allowed opacity-70 font-medium"
+            >
+                Novo Produto (Em Análise)
+            </button>
+        ) : (
+            <Link
+              to="/maker/produtos/novo"
+              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors shadow-sm font-medium"
+            >
+              Novo Produto
+            </Link>
+        )}
       </div>
+
+      {/* BANNER DE AVISO (Só aparece se PENDING) */}
+      {isPending && (
+        <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded-r-md">
+            <div className="flex">
+                <div className="flex-shrink-0">
+                    <span className="text-2xl">⚠️</span>
+                </div>
+                <div className="ml-3">
+                    <p className="text-sm text-yellow-700 dark:text-yellow-200">
+                        <strong className="font-bold">Sua conta está em análise.</strong>
+                        <br />
+                        Nossa equipe está verificando seu cadastro para garantir a qualidade da plataforma. 
+                        Enquanto isso, você não pode cadastrar novos produtos, mas pode completar seu perfil.
+                    </p>
+                </div>
+            </div>
+        </div>
+      )}
 
       {/* Painel de Status do Plano */}
       <div className="mb-6 p-4 bg-white dark:bg-gray-800 border border-borda rounded-lg shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-center">
@@ -102,12 +142,15 @@ export const MakerProductList: React.FC = () => {
                   <p className="mb-2">
                     Você ainda não cadastrou nenhum produto.
                   </p>
-                  <Link
-                    to="/maker/produtos/novo"
-                    className="text-blue-500 hover:underline text-sm"
-                  >
-                    Começar agora
-                  </Link>
+                  {/* Link condicional também na mensagem de vazio */}
+                  {!isPending && (
+                      <Link
+                        to="/maker/produtos/novo"
+                        className="text-blue-500 hover:underline text-sm"
+                      >
+                        Começar agora
+                      </Link>
+                  )}
                 </td>
               </tr>
             ) : (

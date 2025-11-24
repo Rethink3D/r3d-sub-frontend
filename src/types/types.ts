@@ -12,6 +12,7 @@ export enum ContactTypeEnum {
 }
 
 export enum MakerStatusEnum {
+  PENDING = "PENDING",
   ACTIVE = "ACTIVE",
   SUSPENDED = "SUSPENDED",
   DEACTIVATED = "DEACTIVATED",

@@ -153,27 +153,40 @@ export const useMakerProductForm = (
   };
 
   const handleImageDelete = (imageId: string) => {
-    if (!productId) return;
+    if (productImages.length <= 1 && filesToUpload.length === 0) {
+      addToast({
+        type: "warning",
+        title: "Ação Bloqueada",
+        message: "O produto não pode ficar sem imagens. Adicione uma nova imagem antes de excluir a última.",
+        duration: 5000,
+      });
+      return;
+    }
 
     addToast({
       type: "warning",
       title: "Excluir imagem?",
-      message: "Esta ação não pode ser desfeita.",
+      message: "Essa ação remove a imagem permanentemente do servidor. Deseja continuar?",
       confirmLabel: "Sim, excluir",
       cancelLabel: "Cancelar",
+      duration: 0,
       onConfirm: async () => {
         try {
           await deleteMyImage(imageId);
           await fetchProduct();
+          
           addToast({
             type: "success",
-            message: "Imagem removida.",
+            title: "Sucesso",
+            message: "Imagem removida com sucesso.",
             duration: 3000,
           });
         } catch (err: any) {
+          const msg = err.response?.data?.message || err.message;
           addToast({
             type: "error",
-            message: "Erro ao deletar imagem: " + err.message,
+            title: "Erro na exclusão",
+            message: "Não foi possível deletar a imagem: " + msg,
           });
         }
       },
