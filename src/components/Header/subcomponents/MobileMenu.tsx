@@ -14,6 +14,7 @@ interface MobileMenuProps {
   navItems: NavItem[];
   navLinkClasses: (path: string) => string;
   logoSrc: string;
+  isAuthenticated: boolean;
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
@@ -22,6 +23,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   navItems,
   navLinkClasses,
   logoSrc,
+  isAuthenticated,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +81,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           ))}
 
           <div className="w-full px-8 pt-2">
-            <UserMenu isMobile={true} />
+            <UserMenu isMobile={true} isAuthenticated={isAuthenticated} />
           </div>
         </nav>
       </div>

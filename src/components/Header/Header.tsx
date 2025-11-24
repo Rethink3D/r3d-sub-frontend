@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { NavHashLink } from "react-router-hash-link";
+import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Header.module.css";
 import { useTheme } from "../../context/ThemeContext";
+import { auth } from "../../firebase-config";
 import { MenuIcon } from "./subcomponents/HeaderIcons";
 import DesktopNav from "./subcomponents/DesktopNav";
 import MobileMenu from "./subcomponents/MobileMenu";
@@ -22,6 +24,8 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { theme } = useTheme();
+  const [user] = useAuthState(auth);
+  const isAuthenticated = !!user;
 
   const isCatalogPage = location.pathname === "/catalogo";
 
@@ -96,6 +100,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
           navLinkClasses={navLinkClasses}
           isCatalogPage={isCatalogPage}
           onOpenRequestDrawer={onOpenRequestDrawer}
+          isAuthenticated={isAuthenticated}
         />
       </div>
 
@@ -105,6 +110,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
         navItems={navItems}
         navLinkClasses={navLinkClasses}
         logoSrc={logoSrc}
+        isAuthenticated={isAuthenticated}
       />
     </header>
   );

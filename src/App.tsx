@@ -52,8 +52,7 @@ const MakerSubscription = () => (
       Minha Assinatura
     </h1>
     <p className="text-texto-secundario mt-4">
-      Em breve, aqui você poderá gerenciar sua assinatura com o Asaas para
-      cadastrar produtos ilimitados.
+      Em breve, aqui você poderá gerenciar sua assinatura!
     </p>
   </div>
 );
@@ -61,18 +60,6 @@ const MakerSubscription = () => (
 const AppContent: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const internalLayoutPaths = [
-    "/admin",
-    "/maker/dashboard",
-    "/maker/produtos",
-    "/maker/assinatura",
-    "/maker/perfil",
-  ];
-
-  const isInternalLayout = internalLayoutPaths.some((path) =>
-    location.pathname.startsWith(path)
-  );
 
   const isAdminRoute = location.pathname.startsWith("/admin");
   const { handleMakerSearch } = useCatalogContext();
@@ -111,7 +98,7 @@ const AppContent: React.FC = () => {
         isAdminRoute ? "bg-gray-100" : ""
       }`}
     >
-      {!isInternalLayout && (
+      {!isAdminRoute && (
         <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />
       )}
 
