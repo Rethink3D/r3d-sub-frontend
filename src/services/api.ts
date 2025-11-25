@@ -314,3 +314,10 @@ export const uploadMyProfileImage = (
 export const deleteMyImage = (imageId: string): Promise<void> => {
     return requestMakerApi(`image/${imageId}`, { method: "DELETE" });
 };
+
+export const mergeMakers = (sourceId: string, targetId: string): Promise<void> => {
+    return request("maker/merge", {
+        method: "POST",
+        body: JSON.stringify({ sourceId, targetId }),
+    });
+};
