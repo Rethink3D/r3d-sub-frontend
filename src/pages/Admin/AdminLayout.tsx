@@ -44,6 +44,14 @@ const AdminLayout: React.FC = () => {
           >
             Produtos
           </NavLink>
+          <NavLink
+            to="/admin/devolutions"
+            className={({ isActive }) =>
+              `${linkClasses} ${isActive ? activeLinkClasses : ""}`
+            }
+          >
+            Devoluções
+          </NavLink>
         </nav>
         <div className="mt-auto pt-8">
           <button

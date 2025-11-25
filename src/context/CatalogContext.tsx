@@ -7,6 +7,8 @@ export interface CatalogContextType {
   searchInput: string;
   sortBy: string;
   selectedCategoryIds: string[];
+  filterPersonalizable: boolean;
+  filterPromotional: boolean;
   productsToShow: Product[];
   allCategories: Category[];
   allMakers: Maker[];
@@ -17,6 +19,8 @@ export interface CatalogContextType {
   setSearchInput: (value: string) => void;
   setSortBy: (value: string) => void;
   handleCategoryClick: (categoryId: string) => void;
+  setFilterPersonalizable: (value: boolean) => void;
+  setFilterPromotional: (value: boolean) => void;
   lastProductElementRef: (node: HTMLDivElement) => void;
   handleMakerSearch: (makerName: string) => void;
   clearAllFilters: () => void;

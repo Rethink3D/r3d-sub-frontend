@@ -14,17 +14,21 @@ import {
   Category,
   Image,
 } from "../../../types/types";
+import { maskCPF } from "../../../utils/maskCPF";
+import { MAKER_LIMITS } from "../../../constants/InputsLimits";
 
 const MakerForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
+
   const [name, setName] = useState("");
+  const [cpf, setCpf] = useState("");
   const [description, setDescription] = useState("");
   const [acceptsPersonalization, setAcceptsPersonalization] = useState(false);
   const [status, setStatus] = useState<MakerStatusEnum>(MakerStatusEnum.ACTIVE);
   const [contacts, setContacts] = useState<
-    { type: string; contactInfo: string }[]
+    { id?: string; type: string; contactInfo: string }[]
   >([{ type: "EMAIL", contactInfo: "" }]);
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
     []
@@ -42,6 +46,7 @@ const MakerForm: React.FC = () => {
     try {
       const makerData = await getMakerById(makerId);
       setName(makerData.name);
+      setCpf(maskCPF(makerData.cpf || ""));
       setDescription(makerData.description);
       setAcceptsPersonalization(makerData.acceptsPersonalization);
       setStatus(makerData.status);
@@ -81,6 +86,7 @@ const MakerForm: React.FC = () => {
     value: string
   ) => {
     const newContacts = [...contacts];
+    // @ts-ignore
     newContacts[index][field] = value;
     setContacts(newContacts);
   };
@@ -130,14 +136,20 @@ const MakerForm: React.FC = () => {
     setIsSubmitting(true);
     setError("");
     try {
+      const sanitizedContacts = contacts
+        .filter((c) => c.contactInfo.trim() !== "")
+        .map(({ type, contactInfo }) => ({ type, contactInfo }));
+
       const makerData = {
         name,
+        cpf,
         description,
         acceptsPersonalization,
         status,
-        contacts: contacts.filter((c) => c.contactInfo.trim() !== ""),
+        contacts: sanitizedContacts,
         categoryIds: Array.from(selectedCategories),
       };
+
       if (isEditing && id) {
         await updateMaker(id, makerData);
         if (fileToUpload) await uploadMakerProfileImage(id, fileToUpload);
@@ -148,7 +160,8 @@ const MakerForm: React.FC = () => {
       }
       navigate("/admin/makers");
     } catch (err: any) {
-      setError("Erro ao salvar maker: " + err.message);
+      const msg = err.message || "Erro desconhecido";
+      setError("Erro ao salvar maker: " + msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -163,7 +176,12 @@ const MakerForm: React.FC = () => {
       </h1>
       <div className="bg-white p-8 rounded-lg shadow-md">
         <form onSubmit={handleSubmit} className="space-y-8">
-          {error && <p className="text-red-500 mb-4">{error}</p>}
+          {error && (
+            <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+              {error}
+            </div>
+          )}
+
           <section>
             <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
               Informações Básicas
@@ -182,9 +200,35 @@ const MakerForm: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  maxLength={MAKER_LIMITS.NAME}
+                  className="w-full px-3 py-2 border rounded-lg text-gray-900"
+                />
+                <div className="flex justify-end mt-1">
+                  <span className="text-xs text-gray-500">
+                    {name.length}/{MAKER_LIMITS.NAME}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label
+                  className="block text-gray-700 font-bold mb-2"
+                  htmlFor="cpf"
+                >
+                  CPF
+                </label>
+                <input
+                  type="text"
+                  id="cpf"
+                  value={cpf}
+                  onChange={(e) => setCpf(maskCPF(e.target.value))}
+                  required
+                  placeholder="000.000.000-00"
+                  maxLength={14}
                   className="w-full px-3 py-2 border rounded-lg text-gray-900"
                 />
               </div>
+
               <div>
                 <label
                   className="block text-gray-700 font-bold mb-2"
@@ -198,9 +242,16 @@ const MakerForm: React.FC = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   required
                   rows={4}
+                  maxLength={MAKER_LIMITS.DESCRIPTION}
                   className="w-full px-3 py-2 border rounded-lg text-gray-900"
                 />
+                <div className="flex justify-end mt-1">
+                  <span className="text-xs text-gray-500">
+                    {description.length}/{MAKER_LIMITS.DESCRIPTION}
+                  </span>
+                </div>
               </div>
+
               <div>
                 <label className="block text-gray-700 font-bold mb-2">
                   Aceita personalização?
@@ -221,6 +272,7 @@ const MakerForm: React.FC = () => {
               </div>
             </div>
           </section>
+
           <section>
             <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
               Contatos
@@ -249,6 +301,7 @@ const MakerForm: React.FC = () => {
                     }
                     placeholder="Informação de Contato"
                     className="flex-grow px-3 py-2 border rounded-lg text-gray-900"
+                    maxLength={100}
                   />
                   <button
                     type="button"
@@ -269,6 +322,7 @@ const MakerForm: React.FC = () => {
               + Adicionar Contato
             </button>
           </section>
+
           <section>
             <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
               Imagem de Perfil
@@ -319,27 +373,7 @@ const MakerForm: React.FC = () => {
               )}
             </div>
           </section>
-          <section>
-            <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
-              Categorias
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {availableCategories.map((cat) => (
-                <label
-                  key={cat.id}
-                  className="flex items-center gap-2 cursor-pointer text-gray-900"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.has(cat.id)}
-                    onChange={() => handleCategoryToggle(cat.id)}
-                    className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500"
-                  />
-                  {cat.name}
-                </label>
-              ))}
-            </div>
-          </section>
+
           <section>
             <div>
               <label
@@ -362,6 +396,7 @@ const MakerForm: React.FC = () => {
               </select>
             </div>
           </section>
+
           <div className="flex items-center gap-4 pt-4 border-t">
             <button
               type="submit"
