@@ -1,265 +1,122 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
 import { NavHashLink } from "react-router-hash-link";
+import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Header.module.css";
-import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import { useTheme } from "../../context/ThemeContext";
-
-
-const MenuIcon = () => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4 6h16M4 12h16M4 18h16"
-        />
-    </svg>
-);
-
-const CloseIcon = () => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 18L18 6M6 6l12 12"
-        />
-    </svg>
-);
+import { auth } from "../../firebase-config";
+import { MenuIcon } from "./subcomponents/HeaderIcons";
+import DesktopNav from "./subcomponents/DesktopNav";
+import MobileMenu from "./subcomponents/MobileMenu";
 
 const navItems = [
-    { path: "/", name: "Home" },
-    { path: "/catalogo", name: "Catálogo" },
-    { path: "/saiba-mais", name: "Saiba Mais" },
-    { path: "/contato", name: "Contato" },
-    { path: "/#faq", name: "FAQ" },
+  { path: "/", name: "Home" },
+  { path: "/catalogo", name: "Catálogo" },
+  { path: "/saiba-mais", name: "Saiba Mais" },
+  { path: "/contato", name: "Contato" },
 ];
 
 interface HeaderProps {
-    onOpenRequestDrawer: () => void;
+  onOpenRequestDrawer: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const location = useLocation();
-    const menuRef = useRef<HTMLDivElement>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const { theme } = useTheme();
+  const [user] = useAuthState(auth);
+  const isAuthenticated = !!user;
 
-    const isCatalogPage = location.pathname === "/catalogo";
+  const isCatalogPage = location.pathname === "/catalogo";
 
-    const currentPageName =
-        navItems.find((item) => location.pathname === item.path)?.name ||
-        navItems.find(
-            (item) =>
-                location.pathname.startsWith(item.path) && item.path !== "/"
-        )?.name ||
-        "Home";
+  const currentPageName =
+    navItems.find((item) => location.pathname === item.path)?.name ||
+    navItems.find(
+      (item) => location.pathname.startsWith(item.path) && item.path !== "/"
+    )?.name ||
+    "Home";
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? "hidden" : "unset";
+    return () => {
+      document.body.style.overflow = "unset";
     };
+  }, [isMenuOpen]);
 
-    useEffect(() => {
-        if (isMenuOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "unset";
-        }
-        return () => {
-            document.body.style.overflow = "unset";
-        };
-    }, [isMenuOpen]);
+  const navLinkClasses = (itemPath: string) => {
+    const baseClasses =
+      "text-xl md:text-lg lg:text-xl font-light text-texto-principal transition-colors duration-300";
+    if (itemPath === "/#faq") return `${baseClasses} hover:text-gray-500`;
+    const isActive = location.pathname === itemPath;
+    return `${baseClasses} ${isActive ? styles.active : "hover:text-gray-500"}`;
+  };
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                menuRef.current &&
-                !menuRef.current.contains(event.target as Node)
-            ) {
-                setIsMenuOpen(false);
-            }
-        };
+  const logoSrc =
+    theme === "light"
+      ? "/Full-name-2-thin black.png"
+      : "/Full-name-2-thin 1.png";
 
-        if (isMenuOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
+  return (
+    <header className="bg-fundo-principal border-b border-gray-300 dark:border-gray-700 sticky top-0 z-40 transition-colors">
+      <div className="container mx-auto flex w-full items-center justify-between h-28 px-4">
+        <div className="flex items-center gap-4">
+          {/* Mobile menu button */}
+          <button
+            onClick={toggleMenu}
+            className={`text-texto-principal z-50 md:hidden transition-opacity duration-300 ${
+              isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            <MenuIcon />
+          </button>
 
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isMenuOpen]);
+          {/* Logo Desktop */}
+          <div className="hidden md:flex items-center">
+            <NavHashLink
+              to="/#"
+              smooth
+              className="flex items-center flex-nowrap"
+            >
+              <img
+                className="w-32 sm:w-40 md:w-36 lg:w-52 transition-all duration-300"
+                src={logoSrc}
+                alt="Logo Rethink3D"
+              />
+              <span className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-[#ffffff]">
+                / Web
+              </span>
+            </NavHashLink>
+          </div>
 
-    const navLinkClasses = (itemPath: string) => {
-        const baseClasses =
-            "text-xl md:text-lg lg:text-xl font-light text-texto-principal transition-colors duration-300";
+          {/* Mobile title */}
+          <div className={`md:hidden relative ${styles.activeMobile}`}>
+            <span className="text-lg sm:text-xl font-medium text-gray-800 dark:text-[#ffffff]">
+              {currentPageName}
+            </span>
+          </div>
+        </div>
 
-        if (itemPath === "/#faq") {
-            return `${baseClasses} hover:text-gray-500`;
-        }
+        <DesktopNav
+          navItems={navItems}
+          navLinkClasses={navLinkClasses}
+          isCatalogPage={isCatalogPage}
+          onOpenRequestDrawer={onOpenRequestDrawer}
+          isAuthenticated={isAuthenticated}
+        />
+      </div>
 
-        const isActive = location.pathname === itemPath;
-
-        return `${baseClasses} ${
-            isActive ? styles.active : "hover:text-gray-500"
-        }`;
-    };
-
-    const { theme } = useTheme();
-
-    const logoSrc =
-        theme === "light"
-            ? "/Full-name-2-thin black.png"
-            : "/Full-name-2-thin 1.png";
-
-    return (
-        <>
-<header className="bg-fundo-principal border-b border-gray-300 dark:border-gray-700 sticky top-0 z-40 transition-colors"> 
-                <div className="container mx-auto flex w-full items-center justify-between h-28 px-4">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={toggleMenu}
-                            className={`text-texto-principal z-50 md:hidden transition-opacity duration-300 ${
-                                isMenuOpen
-                                    ? "opacity-0 pointer-events-none"
-                                    : "opacity-100"
-                            }`}
-                        >
-                            <MenuIcon />
-                        </button>
-
-                        <div className="hidden md:flex items-center">
-                            <NavHashLink
-                                to="/#"
-                                smooth
-                                className="flex items-center flex-nowrap"
-                            >
-                                <img
-                                    className="w-32 sm:w-40 md:w-36 lg:w-52 transition-all duration-300"
-                                    src={logoSrc}
-                                    alt="Logo Rethink3D"
-                                />
-                                <span className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-[#ffffff]">
-                                    / Web
-                                </span>
-                            </NavHashLink>
-                        </div>
-
-                        <div
-                            className={`md:hidden relative ${styles.activeMobile}`}
-                        >
-                            <span className="text-lg sm:text-xl font-medium text-gray-800 dark:text-[#ffffff]">
-                                {currentPageName}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 md:gap-2 lg:gap-4">
-                        <nav className="hidden md:flex items-center md:gap-2 lg:gap-6 xl:gap-8">
-                            {navItems.map((item) => (
-                                <NavHashLink
-                                    key={item.path}
-                                    to={
-                                        item.path === "/"
-                                            ? "/#"
-                                            : `${item.path}`
-                                    }
-                                    smooth
-                                    className={navLinkClasses(item.path)}
-                                >
-                                    {item.name}
-                                </NavHashLink>
-                            ))}
-                        </nav>
-                        <div className="hidden md:block w-px h-6 bg-borda"></div>
-                        {isCatalogPage ? (
-                            <button
-                                onClick={onOpenRequestDrawer}
-                                className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-4 py-2 md:px-2 md:py-2 lg:px-6 lg:py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}
-                            >
-                                <div className="flex flex-col items-center leading-tight lg:flex-row lg:gap-1.5 lg:whitespace-nowrap">
-                                    <span>Solicitar Impressão</span>
-                                </div>
-                            </button>
-                        ) : (
-                            <HashLink
-                                to="/catalogo"
-                                className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-4 py-2 md:px-2 md:py-2 lg:px-6 lg:py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}
-                            >
-                                <div className="flex flex-col items-center leading-tight lg:flex-row lg:gap-1.5 lg:whitespace-nowrap">
-                                    <span>Ver Catálogo </span>
-                                </div>
-                            </HashLink>
-                        )}
-                        <div className="hidden md:flex">
-                            <ThemeToggle />
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    ref={menuRef}
-                    className={`fixed top-0 left-0 h-full w-full max-w-xs bg-gray-100 dark:bg-black shadow-lg transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
-                        isMenuOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
-                >
-                    <div className="flex flex-col h-full">
-                        <div className="flex items-center h-28 px-4 gap-4">
-                            <button
-                                onClick={toggleMenu}
-                                className="text-texto-principal z-50"
-                            >
-                                <CloseIcon />
-                            </button>
-                            <NavHashLink
-                                to="/#"
-                                smooth
-                                onClick={toggleMenu}
-                                className="flex items-center"
-                            >
-                                <img
-                                    className="w-40"
-                                    src={logoSrc}
-                                    alt="Logo Rethink3D"
-                                />
-                                <span className="text-xl text-gray-800 dark:text-[#ffffff]">
-                                    / Web
-                                </span>
-                            </NavHashLink>
-                        </div>
-
-                        <nav className="flex flex-col items-center pt-2 flex-grow gap-8">
-                            {navItems.map((item) => (
-                                <NavHashLink
-                                    key={item.path}
-                                    to={item.path}
-                                    smooth
-                                    className={navLinkClasses(item.path)}
-                                    onClick={toggleMenu}
-                                >
-                                    {item.name}
-                                </NavHashLink>
-                            ))}
-
-                            <ThemeToggle />
-                        </nav>
-                    </div>
-                </div>
-            </header>
-        </>
-    );
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        navItems={navItems}
+        navLinkClasses={navLinkClasses}
+        logoSrc={logoSrc}
+        isAuthenticated={isAuthenticated}
+      />
+    </header>
+  );
 };
 
 export default Header;
