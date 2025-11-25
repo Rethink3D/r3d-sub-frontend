@@ -11,9 +11,9 @@ import {
 import { auth } from "../firebase-config";
 import { uploadMyProfileImage } from "../services/api";
 import { RegistrationForm } from "../types/registration";
-import { MakerPayload } from "../types/types";
 import { useToast } from "../context/ToastContext";
 import { translateBackendError } from "../utils/translateApiRegisterError";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const STEPS_COUNT = 4;
 
@@ -21,6 +21,7 @@ export const useMakerRegistration = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToast } = useToast();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const googleState = location.state as {
     fromGoogleLogin?: boolean;
@@ -33,7 +34,6 @@ export const useMakerRegistration = () => {
   const [currentStep, setCurrentStep] = useState(isGoogleFlow ? 2 : 1);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [formData, setFormData] = useState<RegistrationForm>({
     email: googleState?.email || "",
     password: "",
@@ -117,7 +117,6 @@ export const useMakerRegistration = () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-
       setFormData((prev) => ({
         ...prev,
         email: result.user.email || "",
@@ -132,12 +131,10 @@ export const useMakerRegistration = () => {
               ]
             : prev.contacts,
       }));
-
       setCurrentStep(2);
     } catch (error: any) {
       if (error.code !== "auth/popup-closed-by-user") {
         console.error("Erro no cadastro com Google:", error);
-
         addToast({
           type: "error",
           title: "Erro no Google",
@@ -170,22 +167,24 @@ export const useMakerRegistration = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
+    if (!executeRecaptcha) {
+      addToast({
+        type: "warning",
+        title: "Erro no Sistema",
+        message: "O reCAPTCHA não foi inicializado corretamente.",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
-
-    const makerApiPayload: Omit<MakerPayload, "status"> = {
-      name: formData.name,
-      cpf: formData.cpf,
-      description: formData.description,
-      acceptsPersonalization: formData.acceptsPersonalization,
-      contacts: formData.contacts.filter((c) => c.contactInfo.trim() !== ""),
-      categoryIds: Array.from(formData.categoryIds),
-    };
 
     let userCredential: UserCredential | null = null;
     let token: string;
 
     try {
+      const recaptchaToken = await executeRecaptcha("maker_registration");
+
       if (auth.currentUser) {
         token = await auth.currentUser.getIdToken();
       } else {
@@ -196,6 +195,16 @@ export const useMakerRegistration = () => {
         );
         token = await userCredential.user.getIdToken();
       }
+
+      const makerApiPayload = {
+        name: formData.name,
+        cpf: formData.cpf,
+        description: formData.description,
+        acceptsPersonalization: formData.acceptsPersonalization,
+        contacts: formData.contacts.filter((c) => c.contactInfo.trim() !== ""),
+        categoryIds: Array.from(formData.categoryIds),
+        recaptchaToken,
+      };
 
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/auth/maker/register`,
@@ -214,7 +223,6 @@ export const useMakerRegistration = () => {
         const rawMessage = Array.isArray(errorData.message)
           ? errorData.message.join(", ")
           : errorData.message;
-
         throw new Error(
           rawMessage || "Falha ao registrar o perfil no backend."
         );
@@ -244,7 +252,6 @@ export const useMakerRegistration = () => {
         message: "Seu cadastro de Maker foi realizado com sucesso.",
         duration: 4000,
       });
-
       navigate("/maker/dashboard");
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
@@ -258,7 +265,6 @@ export const useMakerRegistration = () => {
       }
 
       let errorMsg = "Ocorreu um erro ao registrar. Tente novamente.";
-
       if (error.code === "auth/email-already-in-use") {
         errorMsg = "Este email já está em uso.";
         if (!isGoogleFlow) setCurrentStep(1);

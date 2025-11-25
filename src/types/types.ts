@@ -88,6 +88,7 @@ export interface MakerPayload {
     contactInfo: string;
   }[];
   categoryIds?: string[];
+  recaptchaToken?: string;
 }
 
 export interface ProductPayload {
