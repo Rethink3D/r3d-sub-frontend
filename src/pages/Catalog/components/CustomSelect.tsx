@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 
-const ChevronDownIcon = () => (
+const ChevronIcon = ({ rotated }: { rotated: boolean }) => (
   <svg
-    className="w-5 h-5 text-gray-400"
+    className={`w-5 h-5 text-black dark:text-white transition-transform ${
+      rotated ? "rotate-180" : "rotate-0"
+    }`}
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
@@ -59,10 +61,13 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     <div className="relative w-full" ref={selectRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-4 py-2 bg-gray900dark:bg-gray-900 text-texto-principal dark:text-white hover:bg-sky-700 hover:text-white cursor-pointer transition-colors rounded-lg w-full flex justify-between items-center"
+        className="px-4 bg-gray900 dark:bg-gray-900 text-texto-principal dark:text-white 
+        hover:bg-[#8c52ff] hover:text-white cursor-pointer transition-colors 
+        rounded-lg w-full flex justify-between items-center border border-gray-300 
+        dark:border-gray-700 py-3"
       >
-        <span>{selectedOption?.label}</span>
-        <ChevronDownIcon />
+        <span className="text-sm">{selectedOption?.label}</span>
+        <ChevronIcon rotated={isOpen} />
       </button>
 
       {isOpen && (
@@ -72,7 +77,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
               <li
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
-                className="px-4 py-2 text-texto-principal hover:bg-sky-700 hover:text-white cursor-pointer transition-colors"
+                className="px-4 py-2 text-sm hover:bg-sky-700 hover:text-white cursor-pointer transition-colors"
               >
                 {option.label}
               </li>

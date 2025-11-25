@@ -14,6 +14,7 @@ interface MobileMenuProps {
   navItems: NavItem[];
   navLinkClasses: (path: string) => string;
   logoSrc: string;
+  isAuthenticated: boolean;
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
@@ -22,6 +23,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   navItems,
   navLinkClasses,
   logoSrc,
+  isAuthenticated,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -52,6 +54,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           <button onClick={onClose} className="text-texto-principal z-50">
             <CloseIcon />
           </button>
+
           <NavHashLink
             to="/#"
             smooth
@@ -71,15 +74,19 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               key={item.path}
               to={item.path}
               smooth
-              className={navLinkClasses(item.path)}
               onClick={onClose}
+              className={({ isActive }) =>
+                `${navLinkClasses(item.path)} ${
+                  isActive ? "font-bold text-blue-500" : ""
+                }`
+              }
             >
               {item.name}
             </NavHashLink>
           ))}
 
           <div className="w-full px-8 pt-2">
-            <UserMenu isMobile={true} />
+            <UserMenu isMobile={true} isAuthenticated={isAuthenticated} />
           </div>
         </nav>
       </div>

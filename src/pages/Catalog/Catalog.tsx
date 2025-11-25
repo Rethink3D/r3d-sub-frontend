@@ -14,6 +14,8 @@ interface CatalogProps {
 
 const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
   const {
     isLoading,
     error,
@@ -23,11 +25,15 @@ const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
     searchInput: contextSearchInput,
     sortBy,
     selectedCategoryIds,
+    filterPersonalizable,
+    filterPromotional,
     isLoadingMore,
     animateGrid,
     setSearchInput,
     setSortBy,
     handleCategoryClick,
+    setFilterPersonalizable,
+    setFilterPromotional,
     lastProductElementRef,
   } = useCatalogContext();
 
@@ -63,17 +69,33 @@ const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
     <>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-2">
         <PromotionalBanner />
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <aside className="hidden lg:block lg:col-span-1">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <aside
+            className={`hidden lg:block transition-all duration-300 ${
+              isSidebarCollapsed ? "w-16" : "w-1/4 min-w-[280px]"
+            }`}
+          >
             <CategorySidebar
               allCategories={allCategories}
               categoryCounts={categoryCounts}
               selectedCategoryIds={selectedCategoryIds}
+              filterPersonalizable={filterPersonalizable}
+              filterPromotional={filterPromotional}
               onCategoryClick={handleCategoryClick}
+              onTogglePersonalizable={setFilterPersonalizable}
+              onTogglePromotional={setFilterPromotional}
+              isCollapsed={isSidebarCollapsed}
+              onToggleCollapse={() =>
+                setIsSidebarCollapsed(!isSidebarCollapsed)
+              }
             />
           </aside>
 
-          <main className="lg:col-span-3">
+          <main
+            className={`flex-1 w-full ${
+              isSidebarCollapsed ? "lg:w-[calc(100%-4rem)]" : "lg:w-3/4"
+            }`}
+          >
             <CatalogHeader
               searchInput={localSearchInput}
               onSearchChange={setLocalSearchInput}
@@ -99,12 +121,16 @@ const Catalog: React.FC<CatalogProps> = ({ onOpenRequestDrawer }) => {
         allCategories={allCategories}
         categoryCounts={categoryCounts}
         selectedCategoryIds={selectedCategoryIds}
+        filterPersonalizable={filterPersonalizable}
+        filterPromotional={filterPromotional}
         onCategoryClick={handleCategoryClick}
+        onTogglePersonalizable={setFilterPersonalizable}
+        onTogglePromotional={setFilterPromotional}
       />
 
       <button
         onClick={() => setIsMobileFiltersOpen(true)}
-        className="lg:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg z-30"
+        className="lg:hidden fixed bottom-6 left-6 bg-blue-600 text-white p-4 rounded-full shadow-lg z-30"
       >
         <FilterIcon />
       </button>

@@ -9,7 +9,9 @@ import {
   getMakers,
   getCategories,
 } from "../../../services/api";
-import { Maker, Image, Category } from "../../../types/types";
+import { Maker, Image, Category, MaterialTypeEnum } from "../../../types/types";
+import { PRODUCT_LIMITS } from "../../../constants/InputsLimits";
+import { LoadingSpinner } from "../../Catalog/components/Icons";
 
 const ProductForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +19,9 @@ const ProductForm: React.FC = () => {
   const isEditing = Boolean(id);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [material, setMaterial] = useState("");
+  const [material, setMaterial] = useState<MaterialTypeEnum>(
+    MaterialTypeEnum.PLA
+  );
   const [price, setPrice] = useState("");
   const [isPersonalizable, setIsPersonalizable] = useState(false);
   const [makerId, setMakerId] = useState("");
@@ -33,7 +37,6 @@ const ProductForm: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-
   const fetchProductData = async (productId: string) => {
     try {
       const productData = await getProductById(productId);
@@ -74,7 +77,6 @@ const ProductForm: React.FC = () => {
     };
     fetchInitialData();
   }, [id, isEditing]);
-
   const handleCategoryToggle = (categoryId: string) => {
     const newSelection = new Set(selectedCategories);
     if (newSelection.has(categoryId)) {
@@ -87,22 +89,35 @@ const ProductForm: React.FC = () => {
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setFilesToUpload(Array.from(event.target.files));
+      const newFiles = Array.from(event.target.files);
+      if (filesToUpload.length + newFiles.length > PRODUCT_LIMITS.MAX_IMAGES) {
+        setError(`Limite de ${PRODUCT_LIMITS.MAX_IMAGES} imagens excedido.`);
+        return;
+      }
+
+      setFilesToUpload((prev) => [...prev, ...newFiles]);
+      setError("");
     }
   };
-
   const handleRemoveQueuedFile = (fileToRemove: File) => {
     setFilesToUpload(filesToUpload.filter((file) => file !== fileToRemove));
   };
-
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (event.target.files && event.target.files[0] && id) {
-      const file = event.target.files[0];
+    if (event.target.files && event.target.files.length > 0 && id) {
+      const newFiles = Array.from(event.target.files);
+      if (productImages.length + newFiles.length > PRODUCT_LIMITS.MAX_IMAGES) {
+        setError(
+          `Limite de ${PRODUCT_LIMITS.MAX_IMAGES} imagens excedido. Você tem ${productImages.length} imagens.`
+        );
+        return;
+      }
+
       try {
-        await uploadProductImage(id, file);
+        await Promise.all(newFiles.map((file) => uploadProductImage(id, file)));
         await fetchProductData(id);
+        setError("");
       } catch (err: any) {
         setError("Erro no upload da imagem: " + err.message);
       }
@@ -120,6 +135,20 @@ const ProductForm: React.FC = () => {
     }
   };
 
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === "") {
+      setPrice("");
+      return;
+    }
+
+    const val = parseFloat(value);
+    if (isNaN(val)) return;
+    if (val < 0) return;
+    if (val > PRODUCT_LIMITS.MAX_PRICE) return;
+
+    setPrice(value);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!makerId) {
@@ -128,7 +157,6 @@ const ProductForm: React.FC = () => {
     }
     setIsSubmitting(true);
     setError("");
-
     try {
       if (isEditing && id) {
         const productData = {
@@ -171,7 +199,6 @@ const ProductForm: React.FC = () => {
   };
 
   if (loading) return <p>Carregando formulário...</p>;
-
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6 text-gray-800">
@@ -199,8 +226,14 @@ const ProductForm: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  maxLength={PRODUCT_LIMITS.NAME}
                   className="w-full px-3 py-2 border rounded-lg text-gray-900"
                 />
+                <div className="flex justify-end mt-1">
+                  <span className="text-xs text-gray-500">
+                    {name.length}/{PRODUCT_LIMITS.NAME}
+                  </span>
+                </div>
               </div>
               <div>
                 <label
@@ -233,14 +266,24 @@ const ProductForm: React.FC = () => {
                 >
                   Descrição
                 </label>
+
                 <textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   required
                   rows={4}
+                  maxLength={PRODUCT_LIMITS.DESCRIPTION}
                   className="w-full px-3 py-2 border rounded-lg text-gray-900"
                 />
+                <div className="flex justify-end mt-1">
+                  <span
+                    className="text-xs 
+text-gray-500"
+                  >
+                    {description.length}/{PRODUCT_LIMITS.DESCRIPTION}
+                  </span>
+                </div>
               </div>
               <div>
                 <label
@@ -249,14 +292,21 @@ const ProductForm: React.FC = () => {
                 >
                   Material Principal
                 </label>
-                <input
-                  type="text"
+                <select
                   id="material"
                   value={material}
-                  onChange={(e) => setMaterial(e.target.value)}
+                  onChange={(e) =>
+                    setMaterial(e.target.value as MaterialTypeEnum)
+                  }
                   required
-                  className="w-full px-3 py-2 border rounded-lg text-gray-900"
-                />
+                  className="w-full px-3 py-2 border rounded-lg text-gray-900 bg-white"
+                >
+                  {Object.values(MaterialTypeEnum).map((mat) => (
+                    <option key={mat} value={mat}>
+                      {mat}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label
@@ -269,14 +319,19 @@ const ProductForm: React.FC = () => {
                   type="number"
                   id="price"
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={handlePriceChange}
+                  onKeyDown={(e) =>
+                    ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
+                  }
                   required
                   min="0"
+                  max={PRODUCT_LIMITS.MAX_PRICE}
                   step="0.01"
                   placeholder="Ex: 49.90"
                   className="w-full px-3 py-2 border rounded-lg text-gray-900"
                 />
               </div>
+
               <div className="md:col-span-2">
                 <label className="flex items-center gap-2 cursor-pointer text-gray-900 w-fit">
                   <input
@@ -323,16 +378,19 @@ const ProductForm: React.FC = () => {
                 className="block text-gray-700 font-bold mb-2"
                 htmlFor="images"
               >
-                {isEditing ? "Carregar Nova Imagem" : "Carregar Imagens"}
+                {isEditing ? "Carregar Novas Imagens" : "Carregar Imagens"}
               </label>
               <input
                 type="file"
                 id="images"
                 multiple
                 onChange={isEditing ? handleImageUpload : handleFileSelect}
-                accept="image/png, image/jpeg"
+                accept="image/png, image/jpeg, image/webp, image/jpg"
                 className="w-full text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Formatos: PNG, JPG. Máx: {PRODUCT_LIMITS.MAX_IMAGES} imagens.
+              </p>
             </div>
 
             {!isEditing && filesToUpload.length > 0 && (
@@ -348,6 +406,7 @@ const ProductForm: React.FC = () => {
                         alt="Preview"
                         className="w-full h-32 object-cover rounded-md"
                       />
+
                       <button
                         type="button"
                         onClick={() => handleRemoveQueuedFile(file)}
@@ -391,13 +450,18 @@ const ProductForm: React.FC = () => {
           <div className="flex items-center gap-4 pt-4 border-t">
             <button
               type="submit"
-              className="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors"
+              disabled={isSubmitting}
+              className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
-              {isEditing ? "Salvar Alterações" : "Criar Produto"}
+              {isSubmitting && <LoadingSpinner className="w-5 h-5" />}
+
+              {isSubmitting ? "Salvando..." : "Salvar Produto"}
             </button>
             <Link
               to="/admin/products"
-              className="text-gray-600 hover:underline"
+              className={`text-texto-secundario hover:underline ${
+                isSubmitting ? "pointer-events-none opacity-50" : ""
+              }`}
             >
               Cancelar
             </Link>

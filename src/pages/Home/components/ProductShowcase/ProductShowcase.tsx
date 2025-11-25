@@ -129,10 +129,12 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({
                   title={product.name}
                   description={product.description}
                   price={product.price}
+                  discountPercentage={product.discountPercentage}
                   imageUrl={
                     product.images[0]?.url || "https://via.placeholder.com/300"
                   }
                   isCustomizable={product.isPersonalizable}
+                  type={product.type}
                 />
               </Link>
             </SwiperSlide>

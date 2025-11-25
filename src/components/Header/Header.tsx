@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { NavHashLink } from "react-router-hash-link";
+import { useAuthState } from "react-firebase-hooks/auth";
 import styles from "./Header.module.css";
 import { useTheme } from "../../context/ThemeContext";
+import { auth } from "../../firebase-config";
 import { MenuIcon } from "./subcomponents/HeaderIcons";
 import DesktopNav from "./subcomponents/DesktopNav";
 import MobileMenu from "./subcomponents/MobileMenu";
@@ -22,6 +24,8 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { theme } = useTheme();
+  const [user] = useAuthState(auth);
+  const isAuthenticated = !!user;
 
   const isCatalogPage = location.pathname === "/catalogo";
 
@@ -58,6 +62,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
     <header className="bg-fundo-principal border-b border-gray-300 dark:border-gray-700 sticky top-0 z-40 transition-colors">
       <div className="container mx-auto flex w-full items-center justify-between h-28 px-4">
         <div className="flex items-center gap-4">
+          {/* Mobile menu button */}
           <button
             onClick={toggleMenu}
             className={`text-texto-principal z-50 md:hidden transition-opacity duration-300 ${
@@ -67,6 +72,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
             <MenuIcon />
           </button>
 
+          {/* Logo Desktop */}
           <div className="hidden md:flex items-center">
             <NavHashLink
               to="/#"
@@ -84,6 +90,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
             </NavHashLink>
           </div>
 
+          {/* Mobile title */}
           <div className={`md:hidden relative ${styles.activeMobile}`}>
             <span className="text-lg sm:text-xl font-medium text-gray-800 dark:text-[#ffffff]">
               {currentPageName}
@@ -96,6 +103,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
           navLinkClasses={navLinkClasses}
           isCatalogPage={isCatalogPage}
           onOpenRequestDrawer={onOpenRequestDrawer}
+          isAuthenticated={isAuthenticated}
         />
       </div>
 
@@ -105,6 +113,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
         navItems={navItems}
         navLinkClasses={navLinkClasses}
         logoSrc={logoSrc}
+        isAuthenticated={isAuthenticated}
       />
     </header>
   );

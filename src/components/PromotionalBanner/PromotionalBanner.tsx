@@ -1,6 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 const PromotionalBanner: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="w-full mb-6 overflow-hidden rounded-lg">
+    <div
+      className="w-full mb-6 overflow-hidden rounded-lg cursor-pointer"
+      onClick={() => navigate("/catalogo")}
+    >
       <picture>
         <source
           media="(max-width: 768px)"

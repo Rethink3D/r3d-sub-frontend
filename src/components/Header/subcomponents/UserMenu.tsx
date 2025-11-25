@@ -1,16 +1,21 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { IoLogOutOutline } from "react-icons/io5";
 import { useTheme } from "../../../context/ThemeContext";
+import { auth } from "../../../firebase-config";
 import { MakerIcon, ThemeIcon, UserProfileIcon } from "./HeaderIcons";
 
 interface UserMenuProps {
   isMobile?: boolean;
+  isAuthenticated: boolean;
 }
 
-const UserMenu = ({ isMobile = false }: UserMenuProps) => {
+const UserMenu = ({ isMobile = false, isAuthenticated }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isMobile) return;
@@ -24,6 +29,15 @@ const UserMenu = ({ isMobile = false }: UserMenuProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobile]);
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/maker/login");
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    }
+  };
+
   if (isMobile) {
     return (
       <div className="w-full flex flex-col items-center animate-fadeIn">
@@ -31,7 +45,7 @@ const UserMenu = ({ isMobile = false }: UserMenuProps) => {
 
         <div className="flex flex-col gap-4 w-full items-center">
           <Link
-            to="/maker/login"
+            to={isAuthenticated ? "/maker/dashboard" : "/maker/login"}
             className="text-lg font-medium text-texto-principal flex items-center gap-2 hover:text-blue-500 transition-colors"
           >
             <MakerIcon /> Área Maker
@@ -43,6 +57,15 @@ const UserMenu = ({ isMobile = false }: UserMenuProps) => {
           >
             <ThemeIcon theme={theme} /> Trocar de Tema
           </button>
+
+          {isAuthenticated && (
+            <button
+              onClick={handleLogout}
+              className="text-lg font-medium text-red-500 flex items-center gap-2 hover:text-red-600 transition-colors"
+            >
+              <IoLogOutOutline size={20} /> Sair
+            </button>
+          )}
         </div>
       </div>
     );
@@ -50,7 +73,7 @@ const UserMenu = ({ isMobile = false }: UserMenuProps) => {
 
   return (
     <div
-      className="relative h-10 w-[90px] z-50 flex items-center justify-center mb-2"
+      className="relative h-10 w-[90px] z-50 flex items-center justify-center"
       ref={menuRef}
     >
       <div
@@ -123,14 +146,14 @@ const UserMenu = ({ isMobile = false }: UserMenuProps) => {
         <div
           className={`
                 transition-all duration-500 ease-in-out
-                ${isOpen ? "max-h-40 opacity-100 pb-2" : "max-h-0 opacity-0"}
+                ${isOpen ? "max-h-60 opacity-100 pb-2" : "max-h-0 opacity-0"}
             `}
         >
           <div className="flex flex-col mt-1">
             <div className="h-px bg-gray-200 dark:bg-gray-700 mx-3 mb-2"></div>
 
             <Link
-              to="/maker/login"
+              to={isAuthenticated ? "/maker/dashboard" : "/maker/login"}
               className="px-4 py-2 hover:bg-gray-50 dark:hover:bg-[#252525] font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-3 transition-colors"
               onClick={() => setIsOpen(false)}
             >
@@ -146,6 +169,18 @@ const UserMenu = ({ isMobile = false }: UserMenuProps) => {
             >
               <ThemeIcon theme={theme} /> Trocar de Tema
             </button>
+
+            {isAuthenticated && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLogout();
+                }}
+                className="px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-left font-medium text-red-600 flex items-center gap-3 transition-colors w-full"
+              >
+                <IoLogOutOutline size={20} /> Sair
+              </button>
+            )}
           </div>
         </div>
       </div>
