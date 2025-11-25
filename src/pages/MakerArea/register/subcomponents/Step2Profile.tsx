@@ -67,7 +67,7 @@ export const Step2Profile: React.FC<BaseRegistrationStepProps> = ({
     <div className="space-y-6 animate-fade-in-scale max-w-lg mx-auto">
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-semibold text-texto-principal dark:text-white">
-          Seu Perfil de Maker
+          Imagem da Loja
         </h2>
         <p className="text-texto-secundario dark:text-gray-400">
           Como seus clientes verão você?

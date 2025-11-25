@@ -36,38 +36,30 @@ export const MakerProductList: React.FC = () => {
         </h1>
 
         {/* Botão de Novo Produto */}
-        {isPending ? (
-          <button
-            disabled
-            className="w-full sm:w-auto bg-gray-400 dark:bg-gray-600 text-white px-4 py-2 rounded-md cursor-not-allowed opacity-70 font-medium text-center"
-          >
-            Novo Produto (Em Análise)
-          </button>
-        ) : (
-          <Link
-            to="/maker/produtos/novo"
-            className="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors shadow-sm font-medium text-center"
-          >
-            + Novo Produto
-          </Link>
-        )}
+        <Link
+          to="/maker/produtos/novo"
+          className="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors shadow-sm font-medium text-center"
+        >
+          + Novo Produto
+        </Link>
       </div>
 
       {/* BANNER DE AVISO */}
       {isPending && (
-        <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded-r-md">
+        <div className="mb-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 p-4 rounded-r-md">
           <div className="flex">
             <div className="flex-shrink-0">
-              <span className="text-2xl">⚠️</span>
+              <span className="text-2xl">ℹ️</span>
             </div>
             <div className="ml-3">
-              <p className="text-sm text-yellow-700 dark:text-yellow-200">
+              <p className="text-sm text-blue-700 dark:text-blue-200">
                 <strong className="font-bold">
                   Sua conta está em análise.
                 </strong>
                 <br />
-                Enquanto verificamos seu cadastro, você não pode cadastrar novos
-                produtos. Dúvidas? Contate-nos no Instagram!
+                Você já pode cadastrar seus produtos para adiantar! Eles ficarão
+                visíveis aqui para você gerenciar, mas só aparecerão no catálogo
+                público após a aprovação do seu perfil.
               </p>
             </div>
           </div>
@@ -80,14 +72,12 @@ export const MakerProductList: React.FC = () => {
           <p className="text-texto-secundario mb-2">
             Você ainda não cadastrou nenhum produto.
           </p>
-          {!isPending && (
-            <Link
-              to="/maker/produtos/novo"
-              className="text-blue-500 hover:underline text-sm font-bold"
-            >
-              Começar agora
-            </Link>
-          )}
+          <Link
+            to="/maker/produtos/novo"
+            className="text-blue-500 hover:underline text-sm font-bold"
+          >
+            Começar agora
+          </Link>
         </div>
       )}
 
