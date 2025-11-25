@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { CloseIcon, LoadingSpinner } from "./Icons";
 import { getMakers } from "../../../services/api";
-import { Maker } from "../../../types/types";
+import { Maker, MakerStatusEnum } from "../../../types/types";
 import DemandMakerCard from "./DemandMakerCard";
 
 interface RequestPrintDrawerProps {
@@ -42,7 +42,11 @@ const RequestPrintDrawer: React.FC<RequestPrintDrawerProps> = ({
   }, [isOpen, makers.length]);
 
   const onDemandMakers = useMemo(() => {
-    return makers.filter((maker) => maker.acceptsPersonalization);
+    return makers.filter(
+      (maker) => 
+        maker.acceptsPersonalization && 
+        maker.status === MakerStatusEnum.ACTIVE
+    );
   }, [makers]);
 
   if (!isOpen && !isShowing) {
@@ -62,7 +66,8 @@ const RequestPrintDrawer: React.FC<RequestPrintDrawerProps> = ({
       ></div>
       <div
         onClick={handlePanelClick}
-        className={`fixed top-0 right-0 h-full w-full max-w-xs bg-gray-100 dark:bg-black text-texto-principal shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 right-0 h-full w-full max-w-xs bg-gray-100 
+        dark:bg-black text-texto-principal shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
           isShowing ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -78,6 +83,7 @@ const RequestPrintDrawer: React.FC<RequestPrintDrawerProps> = ({
               <CloseIcon />
             </button>
           </div>
+
           <div className="p-4 overflow-y-auto flex-grow custom-scrollbar">
             {isLoading && (
               <div className="flex justify-center items-center h-full">
@@ -97,7 +103,7 @@ const RequestPrintDrawer: React.FC<RequestPrintDrawerProps> = ({
                   ))
                 ) : (
                   <p className="text-texto-secundario text-center mt-8">
-                    Nenhum maker que aceita pedidos sob demanda foi encontrado.
+                    Nenhum maker ativo que aceita pedidos sob demanda foi encontrado.
                   </p>
                 )}
               </div>
