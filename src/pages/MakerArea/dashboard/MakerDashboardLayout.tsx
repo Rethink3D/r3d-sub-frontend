@@ -8,9 +8,24 @@ import {
 import { LoadingSpinner } from "../../Catalog/components/Icons";
 import { useMakerProfile } from "../../../hooks/useMakerProfle";
 import { MobileNavLink, SidebarLink } from "./subcomponents/NavLinks";
+import { useToast } from "../../../context/ToastContext";
 
 export const MakerDashboardLayout: React.FC = () => {
   const { maker, loading, error, handleLogout } = useMakerProfile();
+  const { addToast } = useToast();
+
+  const confirmLogout = () => {
+    addToast({
+      type: "warning",
+      title: "Sair da conta?",
+      message: "Você terá que fazer login novamente para acessar sua área.",
+      confirmLabel: "Sim, sair",
+      cancelLabel: "Cancelar",
+      onConfirm: () => {
+        handleLogout();
+      },
+    });
+  };
 
   if (loading) {
     return (
@@ -65,7 +80,7 @@ export const MakerDashboardLayout: React.FC = () => {
         </div>
         <div className="mt-auto pt-4 border-t border-borda">
           <button
-            onClick={handleLogout}
+            onClick={confirmLogout}
             className="flex items-center gap-3 w-full px-4 py-3 rounded-lg font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           >
             <IoLogOutOutline size={22} />
@@ -98,8 +113,8 @@ export const MakerDashboardLayout: React.FC = () => {
             label="Produtos"
           />
           <button
-            onClick={handleLogout}
-            className="flex flex-col items-center justify-center gap-1 w-full h-full text-texto-secundario active:text-red-500 transition-colors"
+            onClick={confirmLogout}
+            className="flex flex-col items-center justify-center gap-1 w-full h-full text-texto-secundario active:text-red-500 transition-colors hover:text-red-500"
           >
             <IoLogOutOutline size={22} />
             <span className="text-xs font-medium">Sair</span>

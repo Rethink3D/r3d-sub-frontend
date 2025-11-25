@@ -31,7 +31,9 @@ const DesktopNav: React.FC<DesktopNavProps> = ({
             key={item.path}
             to={item.path === "/" ? "/#" : `${item.path}`}
             smooth
-            className={navLinkClasses(item.path)}
+            className={({ isActive }) =>
+              `${navLinkClasses(item.path)} ${isActive ? styles.active : ""}`
+            }
           >
             {item.name}
           </NavHashLink>
@@ -57,7 +59,7 @@ const DesktopNav: React.FC<DesktopNavProps> = ({
               className={`${styles.ctaButtonWithBorder} font-semibold text-texto-principal text-sm rounded-xl px-4 py-2 md:px-2 md:py-2 lg:px-6 lg:py-3 transition-transform duration-200 hover:scale-105 inline-block text-center`}
             >
               <div className="flex flex-col items-center leading-tight lg:flex-row lg:gap-1.5 lg:whitespace-nowrap">
-                <span>Ver Catálogo </span>
+                <span>Ver Catálogo</span>
               </div>
             </HashLink>
           )}

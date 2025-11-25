@@ -1,4 +1,4 @@
-import React from "react";
+import { useMemo } from "react";
 import { ProductTypeEnum } from "../../types/types";
 import { CAMPAIGN_CONFIG } from "../../config/campaign";
 
@@ -24,6 +24,7 @@ interface ProductCardProps {
   title: string;
   description: string;
   price: string;
+  discountPercentage?: number;
   isCustomizable?: boolean;
   type?: ProductTypeEnum;
 }
@@ -33,10 +34,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
   title,
   description,
   price,
+  discountPercentage = 0,
   isCustomizable,
   type,
 }) => {
   const isPromotional = type === ProductTypeEnum.PROMOTIONAL;
+
+  const finalPrice = useMemo(() => {
+    const originalPrice = parseFloat(price);
+    if (isNaN(originalPrice)) return "0.00";
+
+    if (discountPercentage && discountPercentage > 0) {
+      const discount = originalPrice * (discountPercentage / 100);
+      return (originalPrice - discount).toFixed(2);
+    }
+    return originalPrice.toFixed(2);
+  }, [price, discountPercentage]);
 
   return (
     <div className="relative hover:z-30 p-0.5 rounded-2xl bg-gradient-to-br from-[#00c6ff] to-[#8c52ff] cursor-pointer h-full w-full transform-gpu transition-transform duration-300 hover:scale-[1.03]">
@@ -47,6 +60,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
               className={`absolute top-0 left-0 z-20 px-3 py-1 rounded-br-lg text-xs font-bold uppercase tracking-wide shadow-md ${CAMPAIGN_CONFIG.badgeColor}`}
             >
               {CAMPAIGN_CONFIG.label}
+            </div>
+          )}
+
+          {discountPercentage > 0 && (
+            <div className="absolute top-0 right-0 z-20 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-bl-lg shadow-md">
+              -{discountPercentage}%
             </div>
           )}
 
@@ -79,12 +98,28 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </p>
           <div className="flex justify-between items-end mt-auto pt-1">
             <div className="text-right ml-auto">
-              <span className="text-xs text-gray-500 dark:text-gray-400 block">
-                a partir de
-              </span>
-              <p className="text-green-500 dark:text-green-400 text-xl sm:text-2xl font-bold drop-shadow-md">
-                R${price}
-              </p>
+              {discountPercentage > 0 ? (
+                <>
+                  <span className="text-xs text-gray-400 block line-through">
+                    De R${parseFloat(price).toFixed(2)}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 block">
+                    a partir de
+                  </span>
+                  <p className="text-green-600 dark:text-green-400 text-xl sm:text-2xl font-bold drop-shadow-md">
+                    R${finalPrice}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 block">
+                    a partir de
+                  </span>
+                  <p className="text-green-500 dark:text-green-400 text-xl sm:text-2xl font-bold drop-shadow-md">
+                    R${price}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

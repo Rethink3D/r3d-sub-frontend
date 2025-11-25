@@ -7,18 +7,29 @@ import { ThemeProvider } from "./context/ThemeContext";
 import ScrollToTop from "./components/ScrollTop/ScrollTop";
 import { CatalogProvider } from "./context/CatalogProvider";
 import { ToastProvider } from "./context/ToastContext";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ToastProvider>
-        <CatalogProvider>
-          <ThemeProvider>
-            <ScrollToTop />
-            <App />
-          </ThemeProvider>
-        </CatalogProvider>
-      </ToastProvider>
+      <GoogleReCaptchaProvider
+        reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+        scriptProps={{
+          async: false,
+          defer: false,
+          appendTo: "head",
+          nonce: undefined,
+        }}
+      >
+        <ToastProvider>
+          <CatalogProvider>
+            <ThemeProvider>
+              <ScrollToTop />
+              <App />
+            </ThemeProvider>
+          </CatalogProvider>
+        </ToastProvider>
+      </GoogleReCaptchaProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

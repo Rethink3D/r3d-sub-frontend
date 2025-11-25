@@ -14,11 +14,11 @@ const icons = {
   info: <Info className="w-6 h-6 text-blue-500" />,
 };
 
-const borderColors = {
-  success: "border-green-500/50",
-  error: "border-red-500/50",
-  warning: "border-yellow-500/50",
-  info: "border-blue-500/50",
+const containerStyles = {
+  success: "border-l-green-500 dark:border-l-green-500",
+  error: "border-l-red-500 dark:border-l-red-500",
+  warning: "border-l-yellow-500 dark:border-l-yellow-500",
+  info: "border-l-blue-500 dark:border-l-blue-500",
 };
 
 export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
@@ -59,16 +59,17 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
   return (
     <div
       className={`
-        relative w-full max-w-md p-4 rounded-lg shadow-lg border-l-4
-        bg-fundo-secundario text-texto-principal border-borda
+        relative w-full p-4 rounded-lg shadow-lg border-l-4 border-y border-r border-gray-100 dark:border-gray-700
+        bg-white dark:bg-[#1a1a1a] 
+        text-gray-900 dark:text-gray-100
         flex flex-col gap-2
-        transition-all duration-300 ease-in-out
-        pointer-events-auto  {/* <--- ADICIONE ESTA LINHA AQUI */}
-        ${borderColors[type]}
+        pointer-events-auto
+        transform transition-all duration-300 ease-out
+        ${containerStyles[type]}
         ${
           isClosing
-            ? "animate-out fade-out slide-out-to-right"
-            : "animate-in fade-in slide-in-from-right"
+            ? "opacity-0 translate-y-2 md:translate-x-full"
+            : "opacity-100 translate-y-0 md:translate-x-0 animate-fade-in-up"
         }
       `}
       role="alert"
@@ -77,8 +78,8 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
         <div className="flex-shrink-0 pt-0.5">{icons[type]}</div>
 
         <div className="flex-1 pr-6">
-          {title && <h3 className="font-semibold text-sm mb-1">{title}</h3>}
-          <p className="text-sm text-texto-secundario leading-relaxed">
+          {title && <h3 className="font-bold text-sm mb-1">{title}</h3>}
+          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
             {message}
           </p>
         </div>
@@ -86,7 +87,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
         {!isActionable && (
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 p-1 rounded-md text-texto-secundario hover:text-texto-principal hover:bg-fundo-hover transition-colors"
+            className="absolute top-3 right-3 p-1 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -97,14 +98,14 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
         <div className="flex justify-end gap-3 mt-2 pl-9">
           <button
             onClick={handleClose}
-            className="px-3 py-1.5 text-sm text-texto-secundario hover:text-texto-principal hover:underline transition-all"
+            className="px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             {cancelLabel}
           </button>
           <button
             onClick={handleConfirm}
-            className={`px-3 py-1.5 text-sm rounded-md font-medium text-white transition-opacity hover:opacity-90
-              ${type === "error" ? "bg-red-600" : "bg-cor-primaria"}
+            className={`px-3 py-1.5 text-sm rounded-md font-bold text-white shadow-sm transition-opacity hover:opacity-90
+              ${type === "error" ? "bg-red-600" : "bg-blue-600"}
             `}
           >
             {confirmLabel}
@@ -113,9 +114,17 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
       )}
 
       {!isActionable && !isClosing && duration > 0 && (
-        <div className="absolute bottom-0 left-0 h-1 bg-fundo-hover w-full rounded-b-lg overflow-hidden">
+        <div className="absolute bottom-0 left-0 h-1 w-full rounded-b-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
           <div
-            className="h-full bg-cor-primaria/60 origin-left animate-toast-progress"
+            className={`h-full origin-left animate-toast-progress ${
+              type === "error"
+                ? "bg-red-500"
+                : type === "success"
+                ? "bg-green-500"
+                : type === "warning"
+                ? "bg-yellow-500"
+                : "bg-blue-500"
+            }`}
             style={{ animationDuration: `${duration}ms` }}
           />
         </div>

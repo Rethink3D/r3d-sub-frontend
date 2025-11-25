@@ -66,6 +66,7 @@ export interface Product {
   description: string;
   material: MaterialTypeEnum;
   price: string;
+  discountPercentage?: number;
   isPersonalizable: boolean;
   maker: Maker;
   images: Image[];
@@ -88,6 +89,7 @@ export interface MakerPayload {
     contactInfo: string;
   }[];
   categoryIds?: string[];
+  recaptchaToken?: string;
 }
 
 export interface ProductPayload {
@@ -95,6 +97,7 @@ export interface ProductPayload {
   description: string;
   material: string;
   price: string;
+  discountPercentage?: number;
   isPersonalizable: boolean;
   makerId?: string;
   categoryIds?: string[];

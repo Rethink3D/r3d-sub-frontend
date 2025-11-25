@@ -54,6 +54,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           <button onClick={onClose} className="text-texto-principal z-50">
             <CloseIcon />
           </button>
+
           <NavHashLink
             to="/#"
             smooth
@@ -73,8 +74,12 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               key={item.path}
               to={item.path}
               smooth
-              className={navLinkClasses(item.path)}
               onClick={onClose}
+              className={({ isActive }) =>
+                `${navLinkClasses(item.path)} ${
+                  isActive ? "font-bold text-blue-500" : ""
+                }`
+              }
             >
               {item.name}
             </NavHashLink>
