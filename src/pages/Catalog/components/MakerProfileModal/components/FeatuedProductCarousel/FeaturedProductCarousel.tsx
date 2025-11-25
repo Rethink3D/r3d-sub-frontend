@@ -101,7 +101,7 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
             </div>
           )}
 
-          {product.discountPercentage && product.discountPercentage > 0 && (
+          {(product.discountPercentage ?? 0) > 0 && (
             <div className="absolute top-0 right-0 z-30 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-bl-lg shadow-md">
               -{product.discountPercentage}%
             </div>
@@ -176,10 +176,19 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
           </div>
 
           <div className="flex justify-between items-end mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+            
             {product.isPersonalizable ? (
-              <div className="flex items-center gap-1.5 bg-purple-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full">
+              <div 
+                tabIndex={0} 
+                className="group relative flex items-center gap-1.5 bg-purple-500 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full cursor-help"
+              >
                 <WandIcon className="w-3 h-3" />
                 <span>Personalizável</span>
+                
+                <div className="absolute z-50 bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 text-center bg-gray-900 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
+                  Este produto pode ser personalizado!
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                </div>
               </div>
             ) : (
               <span />
