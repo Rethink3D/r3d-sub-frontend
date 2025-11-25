@@ -53,6 +53,7 @@ export interface Maker {
   location: string;
   rating?: number;
   productCount?: number;
+  products?: Product[];
 }
 
 export enum ProductTypeEnum {
