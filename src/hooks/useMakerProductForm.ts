@@ -28,6 +28,7 @@ export interface ProductFormSchema {
   description: string;
   material: MaterialTypeEnum;
   price: string;
+  discountPercentage: string;
   isPersonalizable: boolean;
   type: ProductTypeEnum;
 }
@@ -44,6 +45,7 @@ export const useMakerProductForm = (
     description: "",
     material: MaterialTypeEnum.PLA,
     price: "",
+    discountPercentage: "",
     isPersonalizable: false,
     type: ProductTypeEnum.STANDARD,
   });
@@ -60,6 +62,7 @@ export const useMakerProductForm = (
 
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const updateField = <K extends keyof ProductFormSchema>(
     field: K,
     value: ProductFormSchema[K]
@@ -79,6 +82,7 @@ export const useMakerProductForm = (
       });
     }
   }, [addToast]);
+
   const fetchProduct = useCallback(async () => {
     if (!productId) return;
     try {
@@ -88,6 +92,7 @@ export const useMakerProductForm = (
         description: product.description,
         material: product.material,
         price: String(product.price),
+        discountPercentage: String(product.discountPercentage || ""),
         isPersonalizable: product.isPersonalizable,
         type: product.type || ProductTypeEnum.STANDARD,
       });
@@ -103,6 +108,7 @@ export const useMakerProductForm = (
       navigate("/maker/produtos");
     }
   }, [productId, addToast, navigate]);
+
   useEffect(() => {
     const init = async () => {
       setLoading(true);
@@ -112,6 +118,7 @@ export const useMakerProductForm = (
     };
     init();
   }, [fetchCategories, fetchProduct, isEditing]);
+
   const handleCategoryToggle = (id: string) => {
     const newSet = new Set(selectedCategories);
     newSet.has(id) ? newSet.delete(id) : newSet.add(id);
@@ -162,9 +169,11 @@ export const useMakerProductForm = (
       e.target.value = "";
     }
   };
+
   const removeLocalImage = (indexToRemove: number) => {
     setLocalImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
+
   const markServerImageForDeletion = (imageId: string) => {
     const totalVisibleImages = serverImages.length + localImages.length;
     if (totalVisibleImages <= 1 && localImages.length === 0) {
@@ -180,6 +189,7 @@ export const useMakerProductForm = (
     setImagesToDelete((prev) => [...prev, imageId]);
     setServerImages((prev) => prev.filter((img) => img.id !== imageId));
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedCategories.size === 0) {
@@ -199,14 +209,38 @@ export const useMakerProductForm = (
       });
     }
 
+    const priceValue = parseFloat(formData.price);
+    if (isNaN(priceValue) || priceValue < 0) {
+      return addToast({
+        type: "warning",
+        title: "Preço Inválido",
+        message: "Insira um preço válido.",
+      });
+    }
+
+    let discountValue = 0;
+    if (formData.type !== ProductTypeEnum.STANDARD) {
+      discountValue = parseFloat(formData.discountPercentage);
+      if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
+        return addToast({
+          type: "warning",
+          title: "Desconto Inválido",
+          message: "O desconto deve ser entre 0% e 100%.",
+        });
+      }
+    }
+
     setIsSubmitting(true);
     let targetProductId = productId;
 
     const payload = {
       ...formData,
-      price: String(parseFloat(formData.price) || 0),
+      price: String(priceValue),
+      discountPercentage:
+        formData.type !== ProductTypeEnum.STANDARD ? discountValue : 0,
       categoryIds: Array.from(selectedCategories),
     };
+
     try {
       if (isEditing && targetProductId) {
         await updateMyProduct(targetProductId, payload);
@@ -259,23 +293,20 @@ export const useMakerProductForm = (
       setIsSubmitting(false);
     }
   };
+
   return {
     formData,
     updateField,
     selectedCategories,
     handleCategoryToggle,
     availableCategories,
-
     serverImages,
     localImages,
-
     loading,
     isSubmitting,
-
     handleFileSelect,
     removeLocalImage,
     markServerImageForDeletion,
-
     handleSubmit,
     isEditing,
   };

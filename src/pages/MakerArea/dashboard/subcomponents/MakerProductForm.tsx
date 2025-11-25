@@ -8,6 +8,7 @@ import { LoadingSpinner } from "../../../Catalog/components/Icons";
 import { CAMPAIGN_CONFIG } from "../../../../config/campaign";
 import { useMakerProductForm } from "../../../../hooks/useMakerProductForm";
 import { PRODUCT_LIMITS } from "../../../../constants/InputsLimits";
+import { useMemo } from "react";
 
 export const MakerProductForm: React.FC = () => {
   const maker = useOutletContext<Maker>();
@@ -35,6 +36,23 @@ export const MakerProductForm: React.FC = () => {
     if (val < 0) return;
     updateField("price", e.target.value);
   };
+
+  const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value);
+    if (val < 0 || val > 100) return;
+    updateField("discountPercentage", e.target.value);
+  };
+
+  const finalPricePreview = useMemo(() => {
+    const price = parseFloat(formData.price);
+    const discount = parseFloat(formData.discountPercentage);
+
+    if (isNaN(price)) return 0;
+    if (isNaN(discount) || formData.type === ProductTypeEnum.STANDARD)
+      return price;
+
+    return price - price * (discount / 100);
+  }, [formData.price, formData.discountPercentage, formData.type]);
 
   if (!maker || loading) return <LoadingSpinner className="w-12 h-12" />;
 
@@ -141,7 +159,7 @@ export const MakerProductForm: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-texto-principal dark:text-gray-200 mb-2">
-                Preço (R$)
+                Preço Normal (R$)
               </label>
               <input
                 type="number"
@@ -155,6 +173,57 @@ export const MakerProductForm: React.FC = () => {
                 className="w-full px-4 py-3 border border-borda rounded-lg bg-white dark:bg-gray-900 text-texto-principal dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700"
               />
             </div>
+
+            {formData.type !== ProductTypeEnum.STANDARD && (
+              <div className="md:col-span-2 bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-texto-principal dark:text-gray-200 mb-2">
+                      Desconto (%){" "}
+                      <span className="text-[10px] text-gray-400">
+                        (opcional)
+                      </span>
+                    </label>
+
+                    <input
+                      type="number"
+                      step="1"
+                      min="0"
+                      max="100"
+                      value={formData.discountPercentage}
+                      onChange={handleDiscountChange}
+                      placeholder="0"
+                      className="w-full px-4 py-3 border border-borda rounded-lg bg-white dark:bg-gray-900 text-texto-principal dark:text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:border-gray-700"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Insira a porcentagem de desconto para este produto
+                      promocional.
+                    </p>
+                  </div>
+                  <div className="flex flex-col justify-center items-center md:items-end">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">
+                      Preço Final (Preview)
+                    </span>
+                    <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                      R${" "}
+                      {finalPricePreview.toLocaleString("pt-BR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </div>
+                    {parseFloat(formData.discountPercentage) > 0 && (
+                      <span className="text-sm text-gray-400 line-through">
+                        de R${" "}
+                        {parseFloat(formData.price || "0").toLocaleString(
+                          "pt-BR",
+                          { minimumFractionDigits: 2 }
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="md:col-span-2 bg-blue-50 p-4 rounded-lg border border-blue-100 dark:bg-blue-900/20 dark:border-blue-800">
               <label className="flex items-center gap-3 cursor-pointer w-full text-texto-principal dark:text-gray-200">
