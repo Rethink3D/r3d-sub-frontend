@@ -3,7 +3,7 @@ import { contactDetailsMap } from "../../../Catalog/components/MakerProfileModal
 import { BaseRegistrationStepProps } from "../../../../types/registration";
 import { Contact } from "../../../../types/types";
 import { isValidEmail } from "../../../../utils/isValidEmail";
-import { isValidWhatsAppNumber } from "../../../../utils/isValidWhatsappNumber";
+import { isValidWhatsAppNumber } from "../../../../utils/isValidWhatsAppNumber";
 
 const contactOptions = Object.keys(
   contactDetailsMap

@@ -16,7 +16,7 @@ import {
 } from "../types/types";
 import { useToast } from "../context/ToastContext";
 import { isValidEmail } from "../utils/isValidEmail"
-import { isValidWhatsAppNumber } from "../utils/isValidWhatsappNumber";
+import { isValidWhatsAppNumber } from "../utils/isValidWhatsAppNumber";
 
 type FormContact = Omit<Contact, "id"> & { id?: string };
 
