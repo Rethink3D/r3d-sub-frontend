@@ -9,7 +9,13 @@ import {
   deleteMyProduct,
   getCategories,
 } from "../services/api";
-import { Image, Category, Maker, ProductTypeEnum } from "../types/types";
+import {
+  Image,
+  Category,
+  Maker,
+  ProductTypeEnum,
+  MaterialTypeEnum,
+} from "../types/types";
 import { useToast } from "../context/ToastContext";
 import {
   MAX_FILE_SIZE_MB,
@@ -20,8 +26,9 @@ import {
 export interface ProductFormSchema {
   name: string;
   description: string;
-  material: string;
+  material: MaterialTypeEnum;
   price: string;
+  discountPercentage: string;
   isPersonalizable: boolean;
   type: ProductTypeEnum;
 }
@@ -33,16 +40,15 @@ export const useMakerProductForm = (
   const isEditing = Boolean(productId);
   const navigate = useNavigate();
   const { addToast } = useToast();
-
   const [formData, setFormData] = useState<ProductFormSchema>({
     name: "",
     description: "",
-    material: "",
+    material: MaterialTypeEnum.PLA,
     price: "",
+    discountPercentage: "",
     isPersonalizable: false,
     type: ProductTypeEnum.STANDARD,
   });
-
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
     new Set()
   );
@@ -86,6 +92,7 @@ export const useMakerProductForm = (
         description: product.description,
         material: product.material,
         price: String(product.price),
+        discountPercentage: String(product.discountPercentage || ""),
         isPersonalizable: product.isPersonalizable,
         type: product.type || ProductTypeEnum.STANDARD,
       });
@@ -155,7 +162,6 @@ export const useMakerProductForm = (
       }
 
       const validFiles = newFiles.filter(validateFile);
-
       if (validFiles.length > 0) {
         setLocalImages((prev) => [...prev, ...validFiles]);
       }
@@ -170,7 +176,6 @@ export const useMakerProductForm = (
 
   const markServerImageForDeletion = (imageId: string) => {
     const totalVisibleImages = serverImages.length + localImages.length;
-
     if (totalVisibleImages <= 1 && localImages.length === 0) {
       addToast({
         type: "warning",
@@ -187,7 +192,6 @@ export const useMakerProductForm = (
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (selectedCategories.size === 0) {
       return addToast({
         type: "warning",
@@ -205,12 +209,35 @@ export const useMakerProductForm = (
       });
     }
 
+    const priceValue = parseFloat(formData.price);
+    if (isNaN(priceValue) || priceValue < 0) {
+      return addToast({
+        type: "warning",
+        title: "Preço Inválido",
+        message: "Insira um preço válido.",
+      });
+    }
+
+    let discountValue = 0;
+    if (formData.type !== ProductTypeEnum.STANDARD) {
+      discountValue = parseFloat(formData.discountPercentage);
+      if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
+        return addToast({
+          type: "warning",
+          title: "Desconto Inválido",
+          message: "O desconto deve ser entre 0% e 100%.",
+        });
+      }
+    }
+
     setIsSubmitting(true);
     let targetProductId = productId;
 
     const payload = {
       ...formData,
-      price: String(parseFloat(formData.price) || 0),
+      price: String(priceValue),
+      discountPercentage:
+        formData.type !== ProductTypeEnum.STANDARD ? discountValue : 0,
       categoryIds: Array.from(selectedCategories),
     };
 
@@ -273,17 +300,13 @@ export const useMakerProductForm = (
     selectedCategories,
     handleCategoryToggle,
     availableCategories,
-
     serverImages,
     localImages,
-
     loading,
     isSubmitting,
-
     handleFileSelect,
     removeLocalImage,
     markServerImageForDeletion,
-
     handleSubmit,
     isEditing,
   };

@@ -70,14 +70,8 @@ export const MakerRegistration: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] bg-fundo-principal text-texto-principal p-4">
       <div className="w-full max-w-2xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-center items-center mb-8 text-center">
           <h1 className="text-3xl md:text-4xl font-bold">Torne-se um Maker</h1>
-          <button
-            onClick={handleCancelRegistration}
-            className="text-sm text-red-500 hover:underline"
-          >
-            Cancelar
-          </button>
         </div>
 
         <div className="px-4 md:px-8 mb-8">

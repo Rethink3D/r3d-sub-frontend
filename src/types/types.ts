@@ -64,8 +64,9 @@ export interface Product {
   id: string;
   name: string;
   description: string;
-  material: string;
+  material: MaterialTypeEnum;
   price: string;
+  discountPercentage?: number;
   isPersonalizable: boolean;
   maker: Maker;
   images: Image[];
@@ -73,7 +74,7 @@ export interface Product {
   createdAt: string;
   deletedAt: string | null;
   popularity?: number;
-  status: ProductStatusEnum; 
+  status: ProductStatusEnum;
   type: ProductTypeEnum;
 }
 
@@ -88,6 +89,7 @@ export interface MakerPayload {
     contactInfo: string;
   }[];
   categoryIds?: string[];
+  recaptchaToken?: string;
 }
 
 export interface ProductPayload {
@@ -95,6 +97,7 @@ export interface ProductPayload {
   description: string;
   material: string;
   price: string;
+  discountPercentage?: number;
   isPersonalizable: boolean;
   makerId?: string;
   categoryIds?: string[];
@@ -102,23 +105,35 @@ export interface ProductPayload {
 }
 
 export enum ProductStatusEnum {
-  ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
+  ACTIVE = "ACTIVE",
+  PAUSED = "PAUSED",
 }
 
 export enum OrderStatusEnum {
-  AWAITING_PAYMENT = 'awaiting_payment',
-  AWAITING_MAKER = 'awaiting_maker',
-  ON_GOING = 'on_going',
-  DELAYED = 'delayed',
-  NEW_DEADLINE = 'new_deadline',
-  READY = 'ready',
-  AWAITING_CONFIRMATION = 'awaiting_confirmation',
-  REFUND_IN_ANALYSIS = 'refund_in_analysis',
-  REFUND_IN_PROCESS = 'refund_in_process',
-  PARTIAL_REFUND = 'partial_refund',
-  REFUNDED = 'refunded',
-  DONE = 'done',
+  AWAITING_PAYMENT = "awaiting_payment",
+  AWAITING_MAKER = "awaiting_maker",
+  ON_GOING = "on_going",
+  DELAYED = "delayed",
+  NEW_DEADLINE = "new_deadline",
+  READY = "ready",
+  AWAITING_CONFIRMATION = "awaiting_confirmation",
+  REFUND_IN_ANALYSIS = "refund_in_analysis",
+  REFUND_IN_PROCESS = "refund_in_process",
+  PARTIAL_REFUND = "partial_refund",
+  REFUNDED = "refunded",
+  DONE = "done",
+}
+
+export enum MaterialTypeEnum {
+  PLA = "PLA",
+  ABS = "ABS",
+  PETG = "PETG",
+  TPU = "TPU",
+  Nylon = "Nylon",
+  ASA = "ASA",
+  PC = "Policarbonato",
+  Resin = "Resina",
+  Outro = "Outro",
 }
 
 export interface DevolutionImage {
@@ -148,6 +163,6 @@ export interface DevolutionResponseDTO {
   contact: string;
   creationTime: Date;
   products: DevolutionProductItem[];
-  images: DevolutionImage[]; 
+  images: DevolutionImage[];
   orderStatus: OrderStatusEnum | null;
 }

@@ -39,7 +39,7 @@ const MakerDashboardContent = () => (
     <h1 className="text-3xl font-bold text-texto-principal">Meu Dashboard</h1>
     <p className="text-texto-secundario mt-4">Bem-vindo à sua área, Maker!</p>
     <p className="text-texto-secundario mt-2">
-      Use o menu ao lado para gerenciar seus produtos.
+      Navegue até produtos para gerenciar seus produtos.
     </p>
   </div>
 );

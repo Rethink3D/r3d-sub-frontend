@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Product, ProductTypeEnum } from "../../../../../../types/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
@@ -70,6 +70,17 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
     };
   }, [lightboxIndex]);
 
+  const finalPrice = useMemo(() => {
+    const originalPrice = parseFloat(product.price);
+    if (isNaN(originalPrice)) return "0.00";
+
+    if (product.discountPercentage && product.discountPercentage > 0) {
+      const discount = originalPrice * (product.discountPercentage / 100);
+      return (originalPrice - discount).toFixed(2);
+    }
+    return originalPrice.toFixed(2);
+  }, [product.price, product.discountPercentage]);
+
   if (!product.images || product.images.length === 0) {
     return <p>Este produto não possui imagens.</p>;
   }
@@ -87,6 +98,12 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
               className={`absolute top-0 left-0 z-30 px-3 py-1 rounded-br-lg text-xs font-bold uppercase tracking-wide shadow-md ${CAMPAIGN_CONFIG.badgeColor}`}
             >
               {CAMPAIGN_CONFIG.label}
+            </div>
+          )}
+
+          {product.discountPercentage && product.discountPercentage > 0 && (
+            <div className="absolute top-0 right-0 z-30 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-bl-lg shadow-md">
+              -{product.discountPercentage}%
             </div>
           )}
 
@@ -167,9 +184,23 @@ const FeaturedProductCarousel: React.FC<FeaturedProductCarouselProps> = ({
             ) : (
               <span />
             )}
-            <p className="font-bold text-xl text-gray-900 dark:text-white">
-              R$ {product.price}
-            </p>
+
+            <div className="text-right">
+              {product.discountPercentage && product.discountPercentage > 0 ? (
+                <>
+                  <span className="text-xs text-gray-400 block line-through">
+                    De R${parseFloat(product.price).toFixed(2)}
+                  </span>
+                  <p className="font-bold text-xl text-green-600 dark:text-green-400">
+                    A partir de R$ {finalPrice}
+                  </p>
+                </>
+              ) : (
+                <p className="font-bold text-xl text-gray-900 dark:text-white">
+                  R$ {product.price}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>

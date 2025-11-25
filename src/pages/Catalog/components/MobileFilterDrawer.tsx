@@ -19,15 +19,24 @@ const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
   onClose,
   ...sidebarProps
 }) => {
-  if (!isOpen) return null;
-
   return (
-    <div role="dialog" aria-modal="true">
+    <>
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity opacity-100"
-      ></div>
-      <div className="fixed top-0 left-0 h-full w-full max-w-xs bg-white dark:bg-gray-900 z-50 transform transition-transform translate-x-0">
+        className={`fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity duration-300 ${
+          isOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+      />
+
+      <div
+        className={`
+          fixed top-0 left-0 h-full w-full max-w-xs bg-white dark:bg-gray-900 z-50 
+          transform transition-transform duration-300
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
         <CategorySidebar
           inDrawer={true}
           onClose={onClose}
@@ -35,7 +44,7 @@ const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
           {...sidebarProps}
         />
       </div>
-    </div>
+    </>
   );
 };
 

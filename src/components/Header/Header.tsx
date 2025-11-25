@@ -62,6 +62,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
     <header className="bg-fundo-principal border-b border-gray-300 dark:border-gray-700 sticky top-0 z-40 transition-colors">
       <div className="container mx-auto flex w-full items-center justify-between h-28 px-4">
         <div className="flex items-center gap-4">
+          {/* Mobile menu button */}
           <button
             onClick={toggleMenu}
             className={`text-texto-principal z-50 md:hidden transition-opacity duration-300 ${
@@ -71,6 +72,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
             <MenuIcon />
           </button>
 
+          {/* Logo Desktop */}
           <div className="hidden md:flex items-center">
             <NavHashLink
               to="/#"
@@ -88,6 +90,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
             </NavHashLink>
           </div>
 
+          {/* Mobile title */}
           <div className={`md:hidden relative ${styles.activeMobile}`}>
             <span className="text-lg sm:text-xl font-medium text-gray-800 dark:text-[#ffffff]">
               {currentPageName}
