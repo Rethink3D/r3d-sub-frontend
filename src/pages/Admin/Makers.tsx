@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getMakers, deleteMaker, mergeMakers } from "../../services/api";
+import { deleteMaker, mergeMakers, getMakersForAdmin } from "../../services/api";
 import CategoryManager from "./components/CategoryManager";
 import { Maker } from "../../types/types";
 import { StatusBadge } from "./components/StatusBadge";
@@ -17,7 +17,7 @@ const Makers: React.FC = () => {
     const fetchMakers = async () => {
         setLoading(true);
         try {
-            const data = await getMakers();
+            const data = await getMakersForAdmin();
             const sortedData = data.sort((a, b) => {
                 const weight = { PENDING: 0, ACTIVE: 1, SUSPENDED: 2, DEACTIVATED: 3 };
                 // @ts-ignore
