@@ -152,6 +152,14 @@ export const getMakersForAdmin = async (): Promise<Maker[]> => {
     return makers; 
 };
 
+export const getMakerByIdForAdmin = async (id: string): Promise<Maker> => {
+    const maker = await request<Maker>(`maker/admin/${id}`);
+    return {
+        ...maker,
+        location: "São Luís",
+    };
+};
+
 export const getMakerById = async (id: string): Promise<Maker> => {
     const maker = await request<Maker>(`maker/${id}`);
     return {

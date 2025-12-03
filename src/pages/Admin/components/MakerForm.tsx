@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import {
-  getMakerById,
+  getMakerByIdForAdmin,
   createMaker,
   updateMaker,
   getCategories,
@@ -44,7 +44,7 @@ const MakerForm: React.FC = () => {
 
   const fetchMakerData = async (makerId: string) => {
     try {
-      const makerData = await getMakerById(makerId);
+      const makerData = await getMakerByIdForAdmin(makerId);
       setName(makerData.name);
       setCpf(maskCPF(makerData.cpf || ""));
       setDescription(makerData.description);
