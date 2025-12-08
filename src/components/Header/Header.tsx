@@ -53,10 +53,14 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
     return `${baseClasses} ${isActive ? styles.active : "hover:text-gray-500"}`;
   };
 
+  // const logoSrc =
+  //   theme === "light"
+  //     ? "/Full-name-2-thin black.png"
+  //     : "/Full-name-2-thin 1.png";
   const logoSrc =
     theme === "light"
-      ? "/Full-name-2-thin black.png"
-      : "/Full-name-2-thin 1.png";
+      ? "/natalblack.png"
+      : "/natalwhite.png";
 
   return (
     <header className="bg-fundo-principal border-b border-gray-300 dark:border-gray-700 sticky top-0 z-40 transition-colors">

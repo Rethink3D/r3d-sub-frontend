@@ -8,6 +8,7 @@ import ScrollToTop from "./components/ScrollTop/ScrollTop";
 import { CatalogProvider } from "./context/CatalogProvider";
 import { ToastProvider } from "./context/ToastContext";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import { EffectProvider } from "./context/EffectContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -24,8 +25,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <ToastProvider>
           <CatalogProvider>
             <ThemeProvider>
-              <ScrollToTop />
-              <App />
+              <EffectProvider>
+                <ScrollToTop />
+                <App />
+              </EffectProvider>
             </ThemeProvider>
           </CatalogProvider>
         </ToastProvider>

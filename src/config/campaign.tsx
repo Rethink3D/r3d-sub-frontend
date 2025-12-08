@@ -3,9 +3,9 @@ import { ProductTypeEnum } from "../types/types";
 export const CAMPAIGN_CONFIG = {
   isActive: true, 
   
-  label: "Black Friday", 
+  label: "Oferta de Natal", 
   
-  badgeColor: "bg-black text-yellow-400 border-yellow-400", 
+  badgeColor: "bg-red-600 text-white border-yellow-400 shadow-sm", 
   
   type: ProductTypeEnum.PROMOTIONAL
 };
