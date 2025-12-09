@@ -11,11 +11,11 @@ const PromotionalBanner: React.FC = () => {
       <picture>
         <source
           media="(max-width: 768px)"
-          srcSet="/promotional/BlackFridayBannerMobile.webp"
+          srcSet="/promotional/NatalBannerMobile.webp"
         />
         <img
-          src="/promotional/BlackFridayBanner.webp"
-          alt="Black Friday Promocional"
+          src="/promotional/NatalBanner.webp"
+          alt="Promoções de Natal"
           className="w-full h-auto object-contain"
         />
       </picture>

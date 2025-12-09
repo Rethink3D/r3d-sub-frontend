@@ -3,6 +3,7 @@ import { TbDiscount } from "react-icons/tb";
 import { BiEdit } from "react-icons/bi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Category } from "../../../types/types";
+import { CAMPAIGN_CONFIG } from "../../../config/campaign";
 
 interface CategorySidebarProps {
   allCategories: Category[];
@@ -119,7 +120,7 @@ const CategorySidebar: React.FC<CategorySidebarProps> = ({
                       : "text-gray-400"
                   }`}
                 />
-                <span>Black Friday</span>
+                <span>{CAMPAIGN_CONFIG.label}</span>
               </div>
             </label>
 

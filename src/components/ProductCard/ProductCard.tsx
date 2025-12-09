@@ -112,6 +112,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </>
               ) : (
                 <>
+                  <span className="text-xs block invisible select-none">
+                    De R$ 00.00
+                  </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400 block">
                     a partir de
                   </span>

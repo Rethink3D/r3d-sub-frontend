@@ -33,6 +33,7 @@ import { MakerProfileEdit } from "./pages/MakerArea/dashboard/subcomponents/Make
 import Terms from "./pages/Terms/Terms";
 import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
 import { MakerForgotPassword } from "./pages/MakerArea/components/MakerForgotPassword";
+import { SnowEffect } from "./effects/SnowEffect";
 
 const MakerDashboardContent = () => (
   <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
@@ -90,6 +91,11 @@ const AppContent: React.FC = () => {
         <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />
       )}
 
+      {!isAdminRoute && (
+        <>
+          <SnowEffect />
+        </>
+      )}
       <main
         className={
           !isAdminRoute
