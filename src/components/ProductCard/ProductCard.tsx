@@ -99,7 +99,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex justify-between items-end mt-auto pt-1">
             <div className="text-right ml-auto">
               {discountPercentage > 0 ? (
-                // CASO COM DESCONTO
                 <>
                   <span className="text-xs text-gray-400 block line-through">
                     De R${parseFloat(price).toFixed(2)}
@@ -112,9 +111,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   </p>
                 </>
               ) : (
-                // CASO SEM DESCONTO
                 <>
-                  {/* Placeholder invisível para manter a altura alinhada */}
                   <span className="text-xs block invisible select-none">
                     De R$ 00.00
                   </span>

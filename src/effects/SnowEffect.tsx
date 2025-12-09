@@ -21,7 +21,7 @@ export const SnowEffect: React.FC = () => {
     const flakes = Array.from({ length: 60 }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
-      animationDuration: `${Math.random() * 21 + 17}s`, // Velocidade de queda
+      animationDuration: `${Math.random() * 21 + 17}s`,
       opacity: Math.random() * 0.8 + 0.3,
       size: `${Math.random() * 1.5 + 0.9}rem`, 
       character: chars[Math.floor(Math.random() * chars.length)],
