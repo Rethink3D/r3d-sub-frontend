@@ -10,6 +10,7 @@ export const useProductModal = () => {
   const { allMakers } = useCatalogContext();
   const match = matchPath("/catalogo/produto/:productId", location.pathname);
   const productId = match?.params?.productId;
+
   const [maker, setMaker] = useState<Maker | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,18 +25,22 @@ export const useProductModal = () => {
         return;
       }
 
-      if (product?.id === productId) return;
+      if (product?.id === productId && maker) return;
 
       setIsLoading(true);
       try {
-        const fetchedProduct = await getProductById(productId);
+        let fetchedProduct = product;
+        if (!fetchedProduct || fetchedProduct.id !== productId) {
+          fetchedProduct = await getProductById(productId);
+        }
+
         if (!isMounted) return;
 
         if (fetchedProduct && fetchedProduct.maker) {
           setProduct(fetchedProduct);
 
           const makerFromContext = allMakers.find(
-            (m) => m.id === fetchedProduct.maker.id
+            (m) => m.id === fetchedProduct!.maker.id
           );
 
           if (makerFromContext) {
@@ -60,7 +65,7 @@ export const useProductModal = () => {
     return () => {
       isMounted = false;
     };
-  }, [productId, navigate, allMakers, product?.id]);
+  }, [productId, navigate, allMakers, product, maker]);
 
   const handleCloseModal = () => {
     if (location.pathname.startsWith("/catalogo/produto/")) {
