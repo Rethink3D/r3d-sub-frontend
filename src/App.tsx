@@ -34,6 +34,7 @@ import Terms from "./pages/Terms/Terms";
 import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
 import { MakerForgotPassword } from "./pages/MakerArea/components/MakerForgotPassword";
 import { SnowEffect } from "./effects/SnowEffect";
+import Maintenance from "./components/Maintenance/Maintenance";
 
 const MakerDashboardContent = () => (
   <div className="bg-fundo-principal p-6 rounded-lg shadow-sm border border-borda">
@@ -48,8 +49,14 @@ const MakerDashboardContent = () => (
 const AppContent: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const IS_MAINTENANCE_MODE = true;
 
   const isAdminRoute = location.pathname.startsWith("/admin");
+
+  if (IS_MAINTENANCE_MODE && !isAdminRoute) {
+    return <Maintenance />;
+  }
+
   const { handleMakerSearch } = useCatalogContext();
 
   const {
