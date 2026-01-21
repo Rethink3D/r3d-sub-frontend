@@ -5,7 +5,6 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { useTheme } from "../../../context/ThemeContext";
 import { auth } from "../../../firebase-config";
 import { MakerIcon, ThemeIcon, UserProfileIcon } from "./HeaderIcons";
-import { EffectToggle } from "../../../effects/EffectToggle";
 
 interface UserMenuProps {
   isMobile?: boolean;
@@ -58,8 +57,6 @@ const UserMenu = ({ isMobile = false, isAuthenticated }: UserMenuProps) => {
           >
             <ThemeIcon theme={theme} /> Trocar de Tema
           </button>
-
-          <EffectToggle/>
 
           {isAuthenticated && (
             <button
@@ -173,7 +170,6 @@ const UserMenu = ({ isMobile = false, isAuthenticated }: UserMenuProps) => {
               <ThemeIcon theme={theme} /> Trocar de Tema
             </button>
 
-            <EffectToggle variant="menuItem" onClick={() => !isMobile && setIsOpen(false)} />
             {isAuthenticated && (
               <button
                 onClick={(e) => {

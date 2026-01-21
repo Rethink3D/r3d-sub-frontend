@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
   const currentPageName =
     navItems.find((item) => location.pathname === item.path)?.name ||
     navItems.find(
-      (item) => location.pathname.startsWith(item.path) && item.path !== "/"
+      (item) => location.pathname.startsWith(item.path) && item.path !== "/",
     )?.name ||
     "Home";
 
@@ -48,19 +48,16 @@ const Header: React.FC<HeaderProps> = ({ onOpenRequestDrawer }) => {
   const navLinkClasses = (itemPath: string) => {
     const baseClasses =
       "text-xl md:text-lg lg:text-xl font-light text-texto-principal transition-colors duration-300";
+
     if (itemPath === "/#faq") return `${baseClasses} hover:text-gray-500`;
     const isActive = location.pathname === itemPath;
     return `${baseClasses} ${isActive ? styles.active : "hover:text-gray-500"}`;
   };
 
-  // const logoSrc =
-  //   theme === "light"
-  //     ? "/Full-name-2-thin black.png"
-  //     : "/Full-name-2-thin 1.png";
   const logoSrc =
     theme === "light"
-      ? "/natalblack.png"
-      : "/natalwhite.png";
+      ? "/Full-name-2-thin black.png"
+      : "/Full-name-2-thin 1.png";
 
   return (
     <header className="bg-fundo-principal border-b border-gray-300 dark:border-gray-700 sticky top-0 z-40 transition-colors">

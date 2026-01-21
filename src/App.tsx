@@ -33,7 +33,6 @@ import { MakerProfileEdit } from "./pages/MakerArea/dashboard/subcomponents/Make
 import Terms from "./pages/Terms/Terms";
 import AccountDeletion from "./pages/AccountDeletion/AccountDeletion";
 import { MakerForgotPassword } from "./pages/MakerArea/components/MakerForgotPassword";
-import { SnowEffect } from "./effects/SnowEffect";
 import Maintenance from "./components/Maintenance/Maintenance";
 
 const MakerDashboardContent = () => (
@@ -49,8 +48,7 @@ const MakerDashboardContent = () => (
 const AppContent: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const IS_MAINTENANCE_MODE = true;
-
+  const IS_MAINTENANCE_MODE = false;
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   if (IS_MAINTENANCE_MODE && !isAdminRoute) {
@@ -98,11 +96,6 @@ const AppContent: React.FC = () => {
         <Header onOpenRequestDrawer={() => setIsRequestPanelOpen(true)} />
       )}
 
-      {!isAdminRoute && (
-        <>
-          <SnowEffect />
-        </>
-      )}
       <main
         className={
           !isAdminRoute
