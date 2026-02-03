@@ -48,7 +48,7 @@ const MakerDashboardContent = () => (
 const AppContent: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const IS_MAINTENANCE_MODE = false;
+  const IS_MAINTENANCE_MODE = true;
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   if (IS_MAINTENANCE_MODE && !isAdminRoute) {
